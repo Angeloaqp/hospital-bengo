@@ -1,0 +1,256 @@
+/* ================================================
+   Hospital Geral do Bengo — Painel Público (TV)
+   Optimizado para ecrãs grandes — mínimo 32"
+   ================================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #0D1117;
+    --bg-card: #161C26;
+    --bg-quad: #111827;
+    --texto: #F9FAFB;
+    --texto-muted: rgba(255, 255, 255, 0.45);
+    --borda: rgba(255, 255, 255, 0.07);
+    --verde: #4ADE80;
+    --vermelho: #EF4444;
+    --radius: 16px;
+}
+
+html,
+body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--texto);
+    font-family: system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+}
+
+/* ---- Header ---- */
+.painel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--borda);
+}
+
+.hospital-nome {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--texto-muted);
+    letter-spacing: 0.5px;
+}
+
+.painel-hora {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--texto-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Zona Principal ---- */
+.zona-principal {
+    padding: 24px 32px 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.em-atendimento-card {
+    background: var(--bg-card);
+    border: 2px solid #EF4444;
+    border-radius: var(--radius);
+    padding: 28px 48px;
+    text-align: center;
+    min-width: 480px;
+    max-width: 600px;
+    width: 100%;
+    transition: border-color 0.4s ease;
+}
+
+.em-atendimento-card.sem-chamada {
+    border-color: var(--borda);
+}
+
+.ea-label {
+    font-size: 13px;
+    color: var(--texto-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.ea-senha {
+    font-size: 80px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    color: #EF4444;
+    transition: all 0.3s ease;
+    font-variant-numeric: tabular-nums;
+}
+
+.ea-consultorio {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.75);
+    margin-top: 12px;
+}
+
+.ea-consultorio strong {
+    color: var(--texto);
+    font-weight: 700;
+}
+
+/* ---- Zona Grid (4 quadrantes) ---- */
+.zona-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 0 32px;
+    flex: 1;
+}
+
+.quadrante {
+    background: var(--bg-quad);
+    border: 1px solid var(--borda);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.quadrante-contador {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.quad-titulo {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--texto-muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--borda);
+}
+
+.quad-titulo.seguir {
+    color: #60A5FA;
+}
+
+.quad-titulo.concluido {
+    color: #4ADE80;
+}
+
+.quad-titulo.cancelado {
+    color: #F87171;
+}
+
+.quad-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.quad-item:last-child {
+    border-bottom: none;
+}
+
+.quad-senha {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+}
+
+.concluido-senha {
+    color: var(--verde);
+}
+
+.cancelado-senha {
+    color: #F87171;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.quad-estado {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.concluido-tag {
+    color: var(--verde);
+}
+
+.cancelado-tag {
+    color: #F87171;
+}
+
+.quad-vazio {
+    font-size: 12px;
+    color: var(--texto-muted);
+    padding: 12px 0;
+    text-align: center;
+}
+
+/* ---- Contador central ---- */
+.contador-num {
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--texto);
+    line-height: 1;
+    margin: 8px 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.contador-desc {
+    font-size: 13px;
+    color: var(--texto-muted);
+}
+
+.tempo-medio {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--texto-muted);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 4px 12px;
+}
+
+/* ---- Rodapé ---- */
+.painel-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 32px;
+    font-size: 11px;
+    color: var(--texto-muted);
+    border-top: 1px solid var(--borda);
+    margin-top: 12px;
+}
+
+/* ---- Animação de nova chamada ---- */
+@keyframes flashChamada {
+    0% {
+        transform: scale(1.12);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.flash-anim {
+    animation: flashChamada 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}

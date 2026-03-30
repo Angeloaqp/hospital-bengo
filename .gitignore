@@ -1,0 +1,21 @@
+# PHP specific
+vendor/
+composer.lock
+.php_cs.cache
+
+# Logs and storage
+storage/*.log
+app/logs/
+
+# IDE and System Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Database config (sensitive)
+# config/database.php
+
+# Temp files
+/tmp/
+*.tmp

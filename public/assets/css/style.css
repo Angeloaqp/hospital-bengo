@@ -1,0 +1,468 @@
+/* ================================================
+   Hospital Geral do Bengo — Estilos Globais
+   ================================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --azul: #1E6FD9;
+    --azul-escuro: #1a5fb8;
+    --vermelho: #DC2626;
+    --laranja: #D97706;
+    --roxo: #7C3AED;
+    --verde: #16A34A;
+    --sidebar-bg: #0F172A;
+    --fundo: #F5F7FA;
+    --card-bg: #FFFFFF;
+    --texto: #1A1A2E;
+    --texto-muted: #6B7280;
+    --borda: #E5E7EB;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --sombra: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ---- Layout Principal ---- */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+    width: 210px;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 12px;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100;
+}
+
+.sidebar-logo {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 8px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 12px;
+}
+
+.sidebar-logo span {
+    color: var(--azul);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+}
+
+.nav-item.activo {
+    background: rgba(30, 111, 217, 0.2);
+    color: #fff;
+}
+
+.nav-item .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+}
+
+.nav-item.activo .dot {
+    background: var(--azul);
+}
+
+.nav-item-logout {
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 12px;
+}
+
+/* ---- Conteúdo Principal ---- */
+.conteudo {
+    margin-left: 210px;
+    flex: 1;
+    padding: 24px;
+    min-height: 100vh;
+}
+
+/* ---- Header ---- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.page-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--texto);
+}
+
+.page-header .sub {
+    font-size: 13px;
+    color: var(--texto-muted);
+    margin-top: 2px;
+}
+
+.header-acoes {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* ---- Botões ---- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--borda);
+    background: var(--card-bg);
+    color: var(--texto);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    text-decoration: none;
+    min-height: 40px;
+}
+
+.btn:hover {
+    background: var(--fundo);
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primario {
+    background: var(--azul);
+    color: #fff;
+    border-color: var(--azul);
+}
+
+.btn-primario:hover {
+    background: var(--azul-escuro);
+}
+
+.btn-perigo {
+    background: var(--vermelho);
+    color: #fff;
+    border-color: var(--vermelho);
+}
+
+.btn-perigo:hover {
+    background: #b91c1c;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-height: 32px;
+}
+
+/* ---- Alertas ---- */
+.alerta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.alerta-aviso {
+    background: #FEF9C3;
+    border: 1px solid #FDE047;
+    color: #854D0E;
+}
+
+.alerta-perigo {
+    background: #FEE2E2;
+    border: 1px solid #FCA5A5;
+    color: #991B1B;
+}
+
+.alerta-sucesso {
+    background: #DCFCE7;
+    border: 1px solid #86EFAC;
+    color: #166534;
+}
+
+/* ---- Métricas ---- */
+.metricas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.metrica-card {
+    background: var(--card-bg);
+    border: 0.5px solid var(--borda);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    box-shadow: var(--sombra);
+}
+
+.metrica-card .valor {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--texto);
+    line-height: 1;
+}
+
+.metrica-card .rotulo {
+    font-size: 12px;
+    color: var(--texto-muted);
+    margin-top: 6px;
+}
+
+/* ---- Cards ---- */
+.card {
+    background: var(--card-bg);
+    border: 0.5px solid var(--borda);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--sombra);
+    margin-bottom: 16px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.card-titulo {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texto-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.chip-tempo {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--fundo);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--texto-muted);
+}
+
+/* ---- Fila de Espera ---- */
+.fila-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    border: 0.5px solid var(--borda);
+    background: var(--card-bg);
+    margin-bottom: 6px;
+    transition: background 0.15s;
+}
+
+.fila-item:hover {
+    background: var(--fundo);
+}
+
+.fila-item.urgente {
+    border-left: 3px solid var(--vermelho);
+    background: #FFF5F5;
+}
+
+.fila-item.idoso {
+    border-left: 3px solid var(--laranja);
+    background: #FFFBEB;
+}
+
+.fila-item.gravida {
+    border-left: 3px solid var(--roxo);
+    background: #F5F3FF;
+}
+
+.fila-item.normal {
+    border-left: 3px solid #E5E7EB;
+}
+
+.senha-codigo {
+    font-size: 14px;
+    font-weight: 700;
+    min-width: 56px;
+    color: var(--texto);
+}
+
+.fila-nome {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--texto);
+}
+
+.fila-tipo {
+    font-size: 12px;
+    color: var(--texto-muted);
+}
+
+.fila-meta {
+    margin-left: auto;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.fila-hora {
+    font-size: 11px;
+    color: var(--texto-muted);
+}
+
+/* ---- Badges de Prioridade ---- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-urgente {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.badge-idoso {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.badge-gravida {
+    background: #EDE9FE;
+    color: #5B21B6;
+}
+
+.badge-normal {
+    background: #E0F2FE;
+    color: #075985;
+}
+
+.badge-concluido {
+    background: #DCFCE7;
+    color: #166534;
+}
+
+.badge-cancelado {
+    background: #F1F5F9;
+    color: #475569;
+}
+
+/* ---- Fila Vazia ---- */
+.fila-vazia {
+    text-align: center;
+    padding: 32px;
+    color: var(--texto-muted);
+    font-size: 13px;
+}
+
+/* ---- Toast ---- */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    min-width: 280px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    animation: slideInRight 0.25s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.toast-sucesso {
+    background: #DCFCE7;
+    border: 1px solid #86EFAC;
+    color: #166534;
+}
+
+.toast-erro {
+    background: #FEE2E2;
+    border: 1px solid #FCA5A5;
+    color: #991B1B;
+}
