@@ -1,256 +1,278 @@
 /* ================================================
-   Hospital Geral do Bengo — Painel Público (TV)
-   Optimizado para ecrãs grandes — mínimo 32"
-   ================================================ */
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+   Hospital Geral do Bengo
+   Estilos específicos do Painel (TV)
+   Incluindo Animação Chamada (Fase 8)
+================================================ */
 
 :root {
-    --bg: #0D1117;
-    --bg-card: #161C26;
-    --bg-quad: #111827;
-    --texto: #F9FAFB;
-    --texto-muted: rgba(255, 255, 255, 0.45);
-    --borda: rgba(255, 255, 255, 0.07);
-    --verde: #4ADE80;
-    --vermelho: #EF4444;
-    --radius: 16px;
+    --vermelho-prio: #EF4444;
+    /* Prioridade 1 */
+    --ambar-prio: #F59E0B;
+    /* Prioridade 2 */
+    --roxo-prio: #A78BFA;
+    /* Prioridade 3 */
+    --azul-prio: #60A5FA;
+    /* Prioridade 4 */
 }
 
-html,
 body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--texto);
-    font-family: system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #F3F4F6;
+    /* Cinza super claro */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 }
 
-/* ---- Header ---- */
+/* CABEÇALHO */
 .painel-header {
+    background: #1E6FD9;
+    color: #fff;
+    padding: 16px 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 32px;
-    border-bottom: 1px solid var(--borda);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .hospital-nome {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--texto-muted);
-    letter-spacing: 0.5px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .painel-hora {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--texto-muted);
-    font-variant-numeric: tabular-nums;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
-/* ---- Zona Principal ---- */
+/* ZONA PRINCIPAL (ACTUAL) */
 .zona-principal {
-    padding: 24px 32px 16px;
+    flex: 1;
     display: flex;
+    align-items: center;
     justify-content: center;
+    padding: 32px;
 }
 
 .em-atendimento-card {
-    background: var(--bg-card);
-    border: 2px solid #EF4444;
-    border-radius: var(--radius);
-    padding: 28px 48px;
+    background: #fff;
+    border-radius: 24px;
+    padding: 48px;
     text-align: center;
-    min-width: 480px;
-    max-width: 600px;
-    width: 100%;
-    transition: border-color 0.4s ease;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    border-top: 12px solid #60A5FA;
+    /* Cor dinâmica inserida via HTML */
+    border-bottom: 12px solid transparent;
+    min-width: 60%;
+    transform: scale(1);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.em-atendimento-card.sem-chamada {
-    border-color: var(--borda);
+/* ANIMAÇÃO QUANDO HÁ UMA NOVA CHAMADA (5 segundos) */
+.chamada-pulsante {
+    animation: pulsar-card 1.5s infinite;
+}
+
+@keyframes pulsar-card {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 25px 50px -12px rgba(30, 111, 217, 0.4);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
 }
 
 .ea-label {
-    font-size: 13px;
-    color: var(--texto-muted);
+    font-size: 24px;
+    font-weight: 600;
+    color: #6B7280;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
 }
 
 .ea-senha {
-    font-size: 80px;
-    font-weight: 800;
-    letter-spacing: -2px;
+    font-size: 140px;
+    font-weight: 900;
     line-height: 1;
-    color: #EF4444;
-    transition: all 0.3s ease;
-    font-variant-numeric: tabular-nums;
+    margin-bottom: 24px;
+    letter-spacing: -4px;
 }
 
 .ea-consultorio {
-    font-size: 20px;
-    color: rgba(255, 255, 255, 0.75);
-    margin-top: 12px;
+    font-size: 36px;
+    color: #1F2937;
+    background: #F9FAFB;
+    display: inline-block;
+    padding: 16px 48px;
+    border-radius: 100px;
 }
 
 .ea-consultorio strong {
-    color: var(--texto);
-    font-weight: 700;
+    color: #1E6FD9;
+    font-weight: 800;
 }
 
-/* ---- Zona Grid (4 quadrantes) ---- */
+/* QUANDO NÃO HÁ NINGUÉM */
+.sem-chamada {
+    border-top-color: #D1D5DB !important;
+    opacity: 0.6;
+}
+
+/* ZONA GRID INFERIOR (FILA, CONCLUÍDAS, ETC) */
 .zona-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    padding: 0 32px;
-    flex: 1;
+    height: 280px;
+    background: #fff;
+    border-top: 1px solid #E5E7EB;
 }
 
 .quadrante {
-    background: var(--bg-quad);
-    border: 1px solid var(--borda);
-    border-radius: var(--radius);
-    padding: 16px;
-}
-
-.quadrante-contador {
-    text-align: center;
+    padding: 24px;
+    border-right: 1px solid #E5E7EB;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+}
+
+.quadrante:last-child {
+    border-right: none;
 }
 
 .quad-titulo {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--texto-muted);
-    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #4B5563;
+    margin-bottom: 16px;
+    border-bottom: 3px solid #E5E7EB;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--borda);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .quad-titulo.seguir {
-    color: #60A5FA;
+    border-color: #3B82F6;
 }
 
 .quad-titulo.concluido {
-    color: #4ADE80;
+    border-color: #10B981;
 }
 
 .quad-titulo.cancelado {
-    color: #F87171;
+    border-color: #EF4444;
+}
+
+.quad-vazio {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9CA3AF;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .quad-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 7px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.quad-item:last-child {
-    border-bottom: none;
+    padding: 12px;
+    background: #F9FAFB;
+    border-radius: 12px;
+    margin-bottom: 8px;
 }
 
 .quad-senha {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    font-variant-numeric: tabular-nums;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -1px;
 }
 
 .concluido-senha {
-    color: var(--verde);
+    color: #1F2937;
 }
 
 .cancelado-senha {
-    color: #F87171;
+    color: #1F2937;
     text-decoration: line-through;
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
 .quad-estado {
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 100px;
 }
 
 .concluido-tag {
-    color: var(--verde);
+    background: #D1FAE5;
+    color: #047857;
 }
 
 .cancelado-tag {
-    color: #F87171;
+    background: #FEE2E2;
+    color: #B91C1C;
 }
 
-.quad-vazio {
-    font-size: 12px;
-    color: var(--texto-muted);
-    padding: 12px 0;
+/* CONTADOR DE ESPERA */
+.quadrante-contador {
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    background: #EFF6FF;
 }
 
-/* ---- Contador central ---- */
+.quadrante-contador .quad-titulo {
+    border: none;
+    margin: 0;
+    color: #1E6FD9;
+}
+
 .contador-num {
-    font-size: 56px;
-    font-weight: 800;
-    color: var(--texto);
+    font-size: 80px;
+    font-weight: 900;
+    color: #1E40AF;
     line-height: 1;
     margin: 8px 0;
-    font-variant-numeric: tabular-nums;
 }
 
 .contador-desc {
-    font-size: 13px;
-    color: var(--texto-muted);
+    font-size: 16px;
+    color: #3B82F6;
+    font-weight: 600;
 }
 
 .tempo-medio {
-    margin-top: 10px;
-    font-size: 12px;
-    color: var(--texto-muted);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    padding: 4px 12px;
+    margin-top: 16px;
+    background: #BFDBFE;
+    color: #1E3A8A;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 700;
 }
 
-/* ---- Rodapé ---- */
+/* RODAPÉ */
 .painel-footer {
+    background: #111827;
+    color: #9CA3AF;
+    padding: 12px 32px;
+    font-size: 12px;
     display: flex;
     justify-content: space-between;
-    padding: 10px 32px;
-    font-size: 11px;
-    color: var(--texto-muted);
-    border-top: 1px solid var(--borda);
-    margin-top: 12px;
-}
-
-/* ---- Animação de nova chamada ---- */
-@keyframes flashChamada {
-    0% {
-        transform: scale(1.12);
-        opacity: 0.6;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.flash-anim {
-    animation: flashChamada 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }

@@ -297,10 +297,14 @@ class Senha
         $db = Database::ligar();
         $stmt = $db->query(
             "SELECT s.codigo, s.prioridade,
-                    c.nome AS consultorio
+                    c.nome AS consultorio,
+                    p.nome AS paciente_nome,
+                    p.idade AS paciente_idade
              FROM senhas s
              LEFT JOIN consultorios c 
                   ON s.consultorio_id = c.id
+             LEFT JOIN pacientes p
+                  ON s.paciente_id = p.id
              WHERE s.estado = 'chamada'
              ORDER BY s.hora_chamada DESC
              LIMIT 1"
@@ -388,5 +392,182 @@ class Senha
         );
         $r = $stmt->fetchColumn();
         return $r ? (int) round($r) : 0;
+    }
+
+    // ================================================
+    // Fase 2 — Filas por Especialidade
+    // ================================================
+
+    /**
+     * Devolve a especialidade do médico logado
+     */
+    public static function especialidadeDoMedico(
+        int $medicoId
+    ): ?array {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "SELECT e.id, e.nome
+             FROM utilizadores u
+             JOIN especialidades e
+                  ON u.especialidade_id = e.id
+             WHERE u.id = :id
+             LIMIT 1"
+        );
+        $stmt->execute([':id' => $medicoId]);
+        $r = $stmt->fetch();
+        return $r ?: null;
+    }
+
+    /**
+     * Devolve o consultório atribuído ao médico (v2)
+     * Usa a coluna consultorio_id em utilizadores
+     */
+    public static function consultorioDoMedicoV2(
+        int $medicoId
+    ): ?array {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "SELECT c.id, c.nome
+             FROM utilizadores u
+             JOIN consultorios c
+                  ON u.consultorio_id = c.id
+             WHERE u.id = :id
+             AND c.activo = 1
+             LIMIT 1"
+        );
+        $stmt->execute([':id' => $medicoId]);
+        $r = $stmt->fetch();
+        if ($r)
+            return $r;
+
+        // Fallback: método original
+        return self::consultorioDoMedico($medicoId);
+    }
+
+    /**
+     * Fila filtrada pela especialidade do médico
+     * Se o médico não tem especialidade, mostra tudo
+     */
+    public static function filaDoMedico(
+        int $medicoId
+    ): array {
+        $db = Database::ligar();
+
+        // Obter especialidade do médico
+        $esp = self::especialidadeDoMedico($medicoId);
+
+        if ($esp) {
+            // Filtrar: tipos de atendimento que correspondam
+            // à especialidade (via nome similar)
+            $stmt = $db->prepare(
+                "SELECT s.id, s.codigo, s.prioridade,
+                        s.estado, s.criado_em,
+                        p.nome AS paciente_nome,
+                        p.idade,
+                        ta.nome AS tipo_atendimento
+                 FROM senhas s
+                 JOIN pacientes p  ON s.paciente_id = p.id
+                 JOIN tipos_atendimento ta
+                      ON s.tipo_atendimento_id = ta.id
+                 WHERE s.estado = 'espera'
+                 AND (
+                    ta.nome LIKE :esp
+                    OR s.prioridade = 1
+                 )
+                 ORDER BY s.prioridade ASC,
+                          s.criado_em ASC"
+            );
+            $stmt->execute([
+                ':esp' => '%' . $esp['nome'] . '%'
+            ]);
+        } else {
+            // Sem especialidade? Mostra fila global
+            $stmt = $db->prepare(
+                "SELECT s.id, s.codigo, s.prioridade,
+                        s.estado, s.criado_em,
+                        p.nome AS paciente_nome,
+                        p.idade,
+                        ta.nome AS tipo_atendimento
+                 FROM senhas s
+                 JOIN pacientes p  ON s.paciente_id = p.id
+                 JOIN tipos_atendimento ta
+                      ON s.tipo_atendimento_id = ta.id
+                 WHERE s.estado = 'espera'
+                 ORDER BY s.prioridade ASC,
+                          s.criado_em ASC"
+            );
+            $stmt->execute();
+        }
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Próxima senha filtrada para o médico
+     */
+    public static function proximaDoMedico(
+        int $medicoId
+    ): ?array {
+        $fila = self::filaDoMedico($medicoId);
+        return $fila[0] ?? null;
+    }
+
+    /**
+     * Conta pacientes em espera para o médico
+     */
+    public static function contarEsperaDoMedico(
+        int $medicoId
+    ): int {
+        return count(self::filaDoMedico($medicoId));
+    }
+
+    /**
+     * Devolve a distribuição da fila por prioridade para o médico
+     * Retorna array com contagem por cada tipo de prioridade
+     */
+    public static function distribuicaoPrioridade(int $medicoId): array
+    {
+        $fila = self::filaDoMedico($medicoId);
+        $dist = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
+        foreach ($fila as $s) {
+            $p = (int) $s['prioridade'];
+            if (isset($dist[$p])) $dist[$p]++;
+        }
+        return $dist;
+    }
+
+    /**
+     * FASE 10: Devolve a contagem de senhas emitidas por hora no dia atual (para a recepção)
+     */
+    public static function fluxoHorario(): array
+    {
+        $db = Database::ligar();
+        $stmt = $db->query(
+            "SELECT HOUR(criado_em) AS hora, COUNT(*) AS volume
+             FROM senhas
+             WHERE DATE(criado_em) = CURDATE()
+             GROUP BY HOUR(criado_em)
+             ORDER BY hora ASC"
+        );
+        $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Preenche as horas de serviço do hospital
+        $horas = [];
+        for ($i = 6; $i <= 20; $i++) {
+            $hFormat = sprintf("%02d:00", $i);
+            $horas[$hFormat] = 0;
+        }
+
+        foreach ($resultado as $row) {
+            $hFormat = sprintf("%02d:00", $row['hora']);
+            if (isset($horas[$hFormat])) {
+                $horas[$hFormat] = (int) $row['volume'];
+            }
+        }
+
+        return [
+            'labels' => array_keys($horas),
+            'data' => array_values($horas)
+        ];
     }
 }

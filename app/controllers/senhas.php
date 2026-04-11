@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../config/base_url.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/sessao.php';
 require_once __DIR__ . '/../../app/models/Senha.php';
+require_once __DIR__ . '/../../app/models/Auditoria.php';
 
 exigirPerfil(['medico', 'admin', 'recepcionista']);
 
@@ -34,6 +35,11 @@ if ($acao === 'chamar' && $senhaId > 0) {
         $_SESSION['mensagem'] = 'Paciente chamado.';
         $_SESSION['ultima_chamada'] = $senhaId;
         $_SESSION['chamada_ts'] = time();
+        Auditoria::registar(
+            $medicoId,
+            'chamar_paciente',
+            'Senha ID: ' . $senhaId
+        );
     } else {
         $_SESSION['erro'] =
             'Não foi possível chamar — senha já alterada.';
@@ -48,6 +54,11 @@ if ($acao === 'chamar' && $senhaId > 0) {
 if ($acao === 'concluir' && $senhaId > 0) {
     if (Senha::concluir($senhaId)) {
         $_SESSION['mensagem'] = 'Atendimento concluído.';
+        Auditoria::registar(
+            $medicoId,
+            'concluir_atendimento',
+            'Senha ID: ' . $senhaId
+        );
     } else {
         $_SESSION['erro'] =
             'Não foi possível concluir o atendimento.';
@@ -63,6 +74,11 @@ if ($acao === 'cancelar' && $senhaId > 0) {
     if (Senha::cancelar($senhaId)) {
         $_SESSION['mensagem'] =
             'Senha cancelada — paciente ausente.';
+        Auditoria::registar(
+            $medicoId,
+            'cancelar_paciente',
+            'Senha ID: ' . $senhaId
+        );
     } else {
         $_SESSION['erro'] =
             'Não foi possível cancelar a senha.';
@@ -78,6 +94,11 @@ if ($acao === 'desfazer' && $senhaId > 0) {
     if (Senha::desfazerChamada($senhaId)) {
         $_SESSION['mensagem'] =
             'Chamada desfeita — paciente voltou à fila.';
+        Auditoria::registar(
+            $medicoId,
+            'desfazer_chamada',
+            'Senha ID: ' . $senhaId
+        );
         unset(
             $_SESSION['ultima_chamada'],
             $_SESSION['chamada_ts']

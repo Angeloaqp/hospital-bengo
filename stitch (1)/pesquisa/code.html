@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html lang="pt"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HGB - Pesquisar Pacientes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#ffffff",
+                        "background": "#f9f9f9",
+                        "on-error-container": "#410002",
+                        "secondary-fixed-dim": "#acabab",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary": "#e5e2e1",
+                        "tertiary-container": "#737575",
+                        "surface-container-high": "#e8e8e8",
+                        "outline": "#777777",
+                        "on-primary-fixed": "#ffffff",
+                        "surface-dim": "#dadada",
+                        "on-tertiary-fixed-variant": "#e2e2e2",
+                        "surface-container": "#eeeeee",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#ffffff",
+                        "inverse-on-surface": "#f1f1f1",
+                        "tertiary": "#3a3c3c",
+                        "primary": "#000000",
+                        "on-secondary-fixed-variant": "#3b3b3c",
+                        "primary-container": "#3c3b3b",
+                        "on-secondary-container": "#1b1c1c",
+                        "secondary": "#5e5e5e",
+                        "outline-variant": "#c6c6c6",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e2e2e2",
+                        "surface": "#f9f9f9",
+                        "secondary-fixed": "#c7c6c6",
+                        "on-tertiary-fixed": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "on-surface": "#1a1c1c",
+                        "surface-container-low": "#f3f3f3",
+                        "on-primary-fixed-variant": "#e5e2e1",
+                        "primary-fixed-dim": "#474746",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#c8c6c5",
+                        "secondary-container": "#d5d4d4",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "inverse-surface": "#2f3131",
+                        "tertiary-fixed-dim": "#454747",
+                        "surface-bright": "#f9f9f9",
+                        "on-surface-variant": "#474747",
+                        "surface-tint": "#5f5e5e",
+                        "tertiary-fixed": "#5d5f5f",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#e2e2e2",
+                        "primary-fixed": "#5f5e5e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .floating-card {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
+        }
+        input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db;
+        }
+    </style>
+</head>
+<body class="text-on-surface h-screen overflow-hidden">
+<!-- Floating Sidebar -->
+<aside class="fixed left-6 top-6 bottom-6 flex flex-col py-6 z-[60] w-56 bg-white rounded-[2rem] floating-card font-['Manrope'] antialiased border border-white/50">
+<div class="mb-8 flex flex-col items-center px-6 gap-2">
+<div class="text-[18px] font-black tracking-tighter text-black flex flex-col items-center leading-tight">
+<span>HGB</span>
+</div>
+<div class="w-10 h-[1.5px] bg-black/5"></div>
+</div>
+<nav class="flex flex-col gap-1.5 px-3 flex-1">
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="text-xs font-semibold tracking-tight">Dashboard</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
+<span class="text-xs font-semibold tracking-tight">Novo Paciente</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full bg-black text-white rounded-2xl transition-all shadow-md">
+<span class="material-symbols-outlined text-[20px]" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="text-xs font-bold tracking-tight">Pesquisar</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
+<span class="text-xs font-semibold tracking-tight">Mensagens</span>
+</button>
+</nav>
+<div class="mt-auto flex flex-col gap-1.5 px-3">
+<div class="px-4 mb-3">
+<div class="h-[1px] bg-black/5 w-full"></div>
+</div>
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all">
+<div class="w-7 h-7 rounded-full overflow-hidden border border-surface-container-high shrink-0">
+<img alt="Afonso Diallo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4OLzjBtDsdOtAr-WaOVoT9eoCzw-DXR2bHqs_9gCs3a1G7o7d19LLm2u5jz85IYOWLKARMaL4xH36Y3KYFI26tGmNXxrImLmHtnVupEepeTESuGylYtb-4XtXs_VdB9G0AI7r2bmIEXDYq0jVUfKFg6ZkqHRW6pQxkMuiEnPPv9YsH465hs6_gy0e2sGuu3nH46IfNG15K47rhrbMnB1iXjOScZ1SAjsyij30zC0MG8eLZky-cWZMnc818pCFzxjWWF3GIeyR8HwY"/>
+</div>
+<span class="text-xs font-semibold tracking-tight">Meu Perfil</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:text-error hover:bg-error/5 rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="text-xs font-semibold tracking-tight text-inherit">Sair</span>
+</button>
+</div>
+</aside>
+<!-- Fixed Header Wrapper -->
+<div class="fixed top-0 right-0 left-56 z-50 flex flex-col bg-[#f3f4f6]">
+<header class="w-full max-w-[1500px] mx-auto px-8 pt-6">
+<div class="rounded-2xl h-16 px-6 flex items-center justify-between floating-card border border-white/50 bg-white">
+<div class="flex items-center gap-3">
+<h1 class="text-base font-extrabold tracking-tight text-black">Pesquisar Pacientes</h1>
+<div class="h-4 w-[1px] bg-black/10"></div>
+<div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-bold">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span>
+<span>14:45</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-black leading-none">Afonso Diallo</p>
+<p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-black mt-0.5">Recepção Principal</p>
+</div>
+<div class="w-9 h-9 rounded-full overflow-hidden bg-surface-container-high ring-2 ring-surface-container">
+<img alt="Perfil" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ5nuWcSrvrYEacZgpyvSBZBI__QsLxZ_L5jRXDQ7E09fKDLq2r1_H3977K4uUJPC4MlIZ8CgxMrSE-5wzvjt-SVdwIHQC8YQ9VxUadUgXkgoTMpUEHbYAYVaHN-boAQikbL2sKMCFWOQD5uLnpU7XP4SBo_rDVkR5XogMgOvI8PEHpMHUIJshznKh0oS_suB-MpE_ps_sQ5N6MduIyG7alR_gSRRS4NLE5Xnc6qt55qLLaLYtivJH4LL6Dw7odX2BWC6L804nJp1i"/>
+</div>
+</div>
+</div>
+</header>
+</div>
+<!-- Scrollable Content Area -->
+<div class="ml-56 h-full overflow-y-auto pt-[88px] custom-scrollbar">
+<main class="w-full max-w-[1500px] mx-auto px-8 pb-24">
+<!-- Hero Header Section -->
+<section class="mb-8 mt-4">
+<h2 class="font-extrabold text-black tracking-tight mb-1 text-3xl">Base de Dados de Pacientes</h2>
+<p class="text-on-surface-variant font-semibold text-sm">Consulte o arquivo ou faça a admissão rápida de um paciente frequente.</p>
+</section>
+<!-- Sticky Search Section -->
+<!-- top-[104px] accounts for 88px header padding + 16px gap -->
+<section class="sticky z-40 mb-8 bg-transparent top-[84px]">
+<div class="bg-white rounded-[1.5rem] flex flex-col md:flex-row items-center gap-4 p-3 floating-card border border-white/50">
+<div class="relative flex-1 w-full">
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
+<input class="w-full rounded-xl bg-surface-container-low border-none font-semibold placeholder:text-on-surface-variant/50 font-['Manrope'] pl-12 pr-6 py-2.5 text-sm" placeholder="Pesquise por Nome, Nº de Identificação ou Telefone..." type="text"/>
+</div>
+<button class="bg-black text-white rounded-xl font-black flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl h-[44px] px-6 text-sm shrink-0">
+<span class="material-symbols-outlined text-xl">search</span>
+                    Procurar
+                </button>
+</div>
+</section>
+<!-- Results Table -->
+<section class="mb-12">
+<div class="bg-white rounded-[2rem] floating-card overflow-hidden border border-white">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low/30 border-b border-surface-container-low">
+<th class="px-8 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Nome Completo</th>
+<th class="px-6 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Identificação</th>
+<th class="px-6 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Telefone</th>
+<th class="px-6 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Última Visita</th>
+<th class="px-8 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-[0.15em] text-right">Acções</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low/50">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors group">
+<td class="px-8 py-6">
+<p class="font-bold text-black text-sm">António Manuel Gouveia</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-sm font-semibold">LA-829102-M</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-sm font-semibold">923 456 789</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-xs font-medium">Há 2 meses</p>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-3">
+<button class="flex items-center gap-2 border border-black/10 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-wider hover:bg-black hover:text-white transition-all active:scale-95 shadow-sm whitespace-nowrap">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                                        Admissão Rápida
+                                    </button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-black/10 text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-90" title="Ver Histórico">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors group">
+<td class="px-8 py-6">
+<p class="font-bold text-black text-sm">Maria Isabel Francisco</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-sm font-semibold">BE-112233-F</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-sm font-semibold">934 112 334</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-xs font-medium">Há 5 dias</p>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-3">
+<button class="flex items-center gap-2 border border-black/10 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-wider hover:bg-black hover:text-white transition-all active:scale-95 shadow-sm whitespace-nowrap">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                                        Admissão Rápida
+                                    </button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-black/10 text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-90" title="Ver Histórico">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors group">
+<td class="px-8 py-6">
+<p class="font-bold text-black text-sm">João Baptista Kizua</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-sm font-semibold">HU-908877-M</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-sm font-semibold">912 009 881</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-xs font-medium">Ontem</p>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-3">
+<button class="flex items-center gap-2 border border-black/10 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-wider hover:bg-black hover:text-white transition-all active:scale-95 shadow-sm whitespace-nowrap">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                                        Admissão Rápida
+                                    </button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-black/10 text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-90" title="Ver Histórico">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors group">
+<td class="px-8 py-6">
+<p class="font-bold text-black text-sm">Teresa de Jesus André</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-sm font-semibold">CN-445566-F</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-sm font-semibold">944 556 677</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-on-surface-variant text-xs font-medium">Há 1 ano</p>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-3">
+<button class="flex items-center gap-2 border border-black/10 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-wider hover:bg-black hover:text-white transition-all active:scale-95 shadow-sm whitespace-nowrap">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                                        Admissão Rápida
+                                    </button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-black/10 text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-90" title="Ver Histórico">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-6 border-t border-surface-container-low flex justify-center">
+<button class="text-on-surface-variant font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:text-black transition-colors">
+                        Ver todos os resultados
+                        <span class="material-symbols-outlined text-lg">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Empty State Section -->
+<section class="flex flex-col items-center justify-center text-center py-12">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 bg-surface-container-high/40 rounded-full blur-3xl opacity-50"></div>
+<span class="material-symbols-outlined text-[80px] text-on-surface-variant/20" style="font-variation-settings: 'wght' 200;">person_search</span>
+</div>
+<h3 class="text-xl font-black text-black mb-2">Comece a digitar para procurar pacientes</h3>
+<p class="max-w-md text-on-surface-variant font-semibold text-xs leading-relaxed">Utilize o campo de busca acima para encontrar rapidamente históricos clínicos ou realizar admissões rápidas de pacientes já registados no sistema HGB.</p>
+</section>
+</main>
+</div>
+</body></html>

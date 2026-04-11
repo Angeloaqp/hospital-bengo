@@ -7,6 +7,7 @@
 require_once __DIR__ . '/../../config/base_url.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/sessao.php';
+require_once __DIR__ . '/../../app/models/Auditoria.php';
 
 // Processa apenas pedidos POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -67,6 +68,13 @@ if ($acao === 'login') {
         // Remove erro anterior se existir
         unset($_SESSION['erro_login']);
 
+        // Regista login na auditoria
+        Auditoria::registar(
+            $utilizador['id'],
+            'login',
+            'Perfil: ' . $utilizador['perfil']
+        );
+
         // Redireciona para o dashboard do perfil
         redirecionarPorPerfil();
 
@@ -82,6 +90,10 @@ if ($acao === 'login') {
 // ACÇÃO: Logout
 // ------------------------------------------------
 if ($acao === 'logout') {
+    $uid = (int) sessao('utilizador_id');
+    if ($uid > 0) {
+        Auditoria::registar($uid, 'logout');
+    }
     encerrarSessao();
     header('Location: ' . BASE_URL . 'public/index.php');
     exit;

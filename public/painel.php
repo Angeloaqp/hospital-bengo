@@ -55,8 +55,23 @@ $coresSenha = [
             ?>
             <div class="em-atendimento-card" style="border-color: <?= $cor ?>">
                 <div class="ea-label">Em atendimento agora</div>
-                <div class="ea-senha" id="senha-actual" style="color: <?= $cor ?>">
+                <div class="ea-senha" id="senha-actual" style="color: <?= $cor ?>" data-id="<?= $emChamada['codigo'] ?>">
                     <?= htmlspecialchars($emChamada['codigo']) ?>
+                </div>
+
+                <?php
+                // Formata o nome para Primeira e Última palavra apenas
+                $nomePartes = explode(' ', trim($emChamada['paciente_nome'] ?? ''));
+                $nomeFormatado = $nomePartes[0];
+                if (count($nomePartes) > 1) {
+                    $nomeFormatado .= ' ' . end($nomePartes);
+                }
+                ?>
+                <div class="ea-paciente" style="font-size: 24px; font-weight: 600; color: #4B5563; margin-bottom: 8px;">
+                    <?= htmlspecialchars($nomeFormatado) ?>
+                    <span style="font-size:18px; color:#9CA3AF; font-weight: 500;">
+                        <?= $emChamada['paciente_idade'] ? "({$emChamada['paciente_idade']} anos)" : '' ?>
+                    </span>
                 </div>
                 <div class="ea-consultorio">
                     Dirija-se ao

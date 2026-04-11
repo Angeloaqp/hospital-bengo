@@ -8,6 +8,8 @@ require_once __DIR__ . '/../../../config/base_url.php';
 require_once __DIR__ . '/../../../config/sessao.php';
 require_once __DIR__ . '/../../../config/database.php';
 require_once __DIR__ . '/../../../app/models/Senha.php';
+require_once __DIR__ . '/../../../app/models/Utilizador.php';
+$meuPerfilObject = Utilizador::obter((int) sessao('utilizador_id'));
 
 // Só recepcionistas e admins podem aceder
 exigirPerfil(['recepcionista', 'admin']);
@@ -18,29 +20,15 @@ $urgentes = Senha::contarUrgentes();
 $atendidos = Senha::atendidosHoje();
 $tempoMedio = Senha::tempoMedioEspera();
 $filaEspera = Senha::filaEspera();
+$fluxoGrafico = Senha::fluxoHorario();
+$ultimaChamada = Senha::emChamadaAgora();
 
 // Mapa de prioridades
 $prioridades = [
-    1 => [
-        'label' => 'Urgente',
-        'classe' => 'urgente',
-        'badge' => 'badge-urgente'
-    ],
-    2 => [
-        'label' => 'Idoso',
-        'classe' => 'idoso',
-        'badge' => 'badge-idoso'
-    ],
-    3 => [
-        'label' => 'Grávida',
-        'classe' => 'gravida',
-        'badge' => 'badge-gravida'
-    ],
-    4 => [
-        'label' => 'Normal',
-        'classe' => 'normal',
-        'badge' => 'badge-normal'
-    ],
+    1 => ['label' => 'Urgente',  'badge' => 'bg-error'],
+    2 => ['label' => 'Idoso',    'badge' => 'bg-[#F59E0B]'],
+    3 => ['label' => 'Grávida',  'badge' => 'bg-purple-600'],
+    4 => ['label' => 'Normal',   'badge' => 'bg-blue-600'],
 ];
 
 // Mensagem flash (após registo de paciente)
@@ -48,196 +36,298 @@ $mensagem = $_SESSION['mensagem'] ?? '';
 unset($_SESSION['mensagem']);
 ?>
 <!DOCTYPE html>
-<html lang="pt">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,
-          initial-scale=1.0">
-    <title>Dashboard — <?= APP_NOME ?></title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>public/assets/css/style.css">
-    <meta http-equiv="refresh" content="30">
+<html lang="pt"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard Recepção — <?= APP_NOME ?></title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                "colors": {
+                    "background": "#f9f9f9",
+                    "surface-container-highest": "#e2e2e2",
+                    "on-primary": "#e5e2e1",
+                    "surface-container-high": "#e8e8e8",
+                    "outline": "#777777",
+                    "surface-dim": "#dadada",
+                    "surface-container": "#eeeeee",
+                    "on-error": "#ffffff",
+                    "primary": "#000000",
+                    "primary-container": "#3c3b3b",
+                    "secondary": "#5e5e5e",
+                    "outline-variant": "#c6c6c6",
+                    "on-secondary": "#ffffff",
+                    "surface-variant": "#e2e2e2",
+                    "surface": "#f9f9f9",
+                    "on-background": "#1a1c1c",
+                    "on-surface": "#1a1c1c",
+                    "surface-container-low": "#f3f3f3",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2f3131",
+                    "surface-bright": "#f9f9f9",
+                    "on-surface-variant": "#474747",
+                    "error": "#ba1a1a",
+                },
+                "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+                },
+                "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+                }
+            },
+        }
+    }
+</script>
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+    h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    .floating-card {
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
+    }
+</style>
 </head>
+<body class="text-on-surface">
 
-<body>
+<?php
+// ── SIDEBAR ──
+$paginaActual = 'dashboard';
+include __DIR__ . '/../comum/sidebar.php';
+?>
 
-    <div class="layout">
+<?php
+// ── HEADER ──
+$tituloPagina = 'Dashboard';
+$subtituloPagina = '';
+$accoesPagina = '';
+include __DIR__ . '/../comum/header.php';
+?>
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <div class="sidebar-logo">
-                HGB <span>Sistema</span>
+<!-- MÉDICO CHAMOU Notification Card (Fixed Top-Right) -->
+<?php if ($ultimaChamada): ?>
+<div class="fixed top-32 right-8 z-[100]" id="notificacao-chamada-card">
+    <div class="bg-black rounded-[1.5rem] py-3 px-5 flex items-center gap-4 floating-card border border-white/10 shadow-2xl">
+        <!-- Speaker Icon Container -->
+        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0 border border-white/10">
+            <span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+        </div>
+        <!-- Text Content -->
+        <div class="flex-1 min-w-[180px]">
+            <p class="text-[9px] font-black text-white/60 uppercase tracking-[0.15em] leading-none">Médico Chamou</p>
+            <p class="text-lg font-extrabold text-white mt-1 leading-tight tracking-tight">
+                <?= htmlspecialchars($ultimaChamada['codigo']) ?> - <?= htmlspecialchars(explode(' ', $ultimaChamada['paciente_nome'])[0]) ?>
+            </p>
+        </div>
+        <!-- Close Icon -->
+        <button class="ml-2 text-white/40 hover:text-white transition-colors" onclick="this.closest('[id]').remove()">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+    </div>
+</div>
+<?php endif; ?>
+
+<!-- Dados Ocultos para o Polling AJAX ler -->
+<div id="memoria-chamada" style="display:none" data-codigo="<?= $ultimaChamada ? $ultimaChamada['codigo'] : '' ?>"
+    data-paciente="<?= $ultimaChamada ? explode(' ', $ultimaChamada['paciente_nome'])[0] : '' ?>">
+</div>
+
+<!-- Main Content Area -->
+<div class="ml-56 mt-28 p-8 flex justify-center">
+<main class="w-full max-w-[1500px]">
+
+    <!-- Welcome Header -->
+    <div class="mb-6">
+        <h2 class="text-3xl font-extrabold text-black tracking-tight">Visão Geral do Dia</h2>
+        <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= date('l, d \d\e F \d\e Y') ?> — Recepção Principal</p>
+    </div>
+
+    <!-- ALERTA DE PICO -->
+    <?php if ($emEspera >= 15): ?>
+    <div class="bg-[#FFFBEB] text-[#B45309] rounded-2xl px-6 py-4 mb-6 flex items-center gap-4 floating-card">
+        <span class="text-xl">⚠</span>
+        <div>
+            <strong class="font-extrabold font-headline">Pico de afluência</strong><br>
+            <span class="text-sm opacity-90"><?= $emEspera ?> pacientes em espera. Tempo médio: <?= $tempoMedio > 0 ? $tempoMedio . ' min' : 'a calcular' ?>.</span>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- ALERTA DE URGÊNCIA -->
+    <?php if ($urgentes > 0): ?>
+    <div class="bg-[#FEF2F2] text-[#991B1B] rounded-2xl px-6 py-4 mb-6 flex items-center gap-4 floating-card">
+        <span class="text-xl">⚡</span>
+        <div>
+            <strong class="font-extrabold font-headline"><?= $urgentes ?> <?= $urgentes === 1 ? 'urgência activa' : 'urgências activas' ?></strong><br>
+            <span class="text-sm opacity-90">aguarda atendimento imediato.</span>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- MENSAGEM FLASH -->
+    <?php if ($mensagem): ?>
+    <div class="bg-[#F0FDF4] text-[#166534] rounded-2xl px-6 py-4 mb-6 flex items-center gap-4 floating-card">
+        <span class="text-xl">✓</span>
+        <div class="font-semibold text-sm"><?= htmlspecialchars($mensagem) ?></div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+            <p class="text-on-surface-variant font-bold uppercase tracking-widest text-[10px]">Em espera</p>
+            <p class="text-4xl font-extrabold text-black mt-2"><?= $emEspera ?></p>
+        </div>
+        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+            <p class="text-error font-black uppercase tracking-widest text-[10px]">Urgentes</p>
+            <p class="text-4xl font-extrabold text-error mt-2"><?= $urgentes ?></p>
+        </div>
+        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+            <p class="text-[#10B981] font-black uppercase tracking-widest text-[10px]">Atendidos hoje</p>
+            <p class="text-4xl font-extrabold text-black mt-2"><?= $atendidos ?></p>
+        </div>
+        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+            <p class="text-on-surface-variant font-bold uppercase tracking-widest text-[10px]">Tempo médio</p>
+            <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-4xl font-extrabold text-black"><?= $tempoMedio > 0 ? $tempoMedio : '--' ?></span>
+                <span class="text-lg font-black text-on-surface-variant">m</span>
             </div>
-            <nav class="sidebar-nav">
-                <a href="dashboard.php" class="nav-item activo">
-                    <span class="dot"></span>
-                    Visão geral
-                </a>
-                <a href="registar.php" class="nav-item">
-                    <span class="dot"></span>
-                    Novo paciente
-                </a>
-                <div class="nav-item-logout">
-                    <form method="POST" action="<?= BASE_URL ?>app/controllers/auth.php">
-                        <input type="hidden" name="acao" value="logout">
-                        <button type="submit" class="nav-item" style="width:100%;background:none;
-                                   border:none;cursor:pointer">
-                            <span class="dot"></span>
-                            Sair
-                        </button>
-                    </form>
-                </div>
-            </nav>
-        </aside>
+        </div>
+    </div>
 
-        <!-- CONTEÚDO PRINCIPAL -->
-        <main class="conteudo">
-
-            <!-- HEADER -->
-            <div class="page-header">
-                <div>
-                    <h2>Boa tarde,
-                        <?= htmlspecialchars(
-                            explode(' ', sessao('utilizador_nome'))[0]
-                        ) ?>
-                    </h2>
-                    <div class="sub">
-                        <?= date('l, d \d\e F \d\e Y') ?>
-                        &mdash; <?= date('H:i') ?>
-                    </div>
-                </div>
-                <div class="header-acoes">
-                    <a href="registar.php?urgencia=1" class="btn btn-perigo">
-                        + Urgência
+    <!-- Main Layout Columns -->
+    <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <!-- Coluna Principal (Fila de Espera) -->
+        <div class="xl:col-span-3">
+            <div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-black tracking-tight">Fila de Espera Atual</h3>
+                    <a href="registar.php" class="bg-black text-white px-6 py-2.5 rounded-full font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                        Novo Atendimento
                     </a>
-                    <a href="registar.php" class="btn btn-primario">
-                        + Novo Paciente
-                    </a>
-                </div>
-            </div>
-
-            <!-- ALERTA DE PICO -->
-            <?php if ($emEspera >= 15): ?>
-                <div class="alerta alerta-aviso">
-                    ⚠ <strong>Pico de afluência</strong> —
-                    <?= $emEspera ?> pacientes em espera.
-                    Tempo médio estimado:
-                    <?= $tempoMedio > 0 ? $tempoMedio . ' min' : 'a calcular' ?>.
-                </div>
-            <?php endif; ?>
-
-            <!-- ALERTA DE URGÊNCIA ACTIVA -->
-            <?php if ($urgentes > 0): ?>
-                <div class="alerta alerta-perigo">
-                    ⚡ <strong>
-                        <?= $urgentes ?>
-                        <?= $urgentes === 1 ? 'urgência activa' : 'urgências activas' ?>
-                    </strong> — aguarda atendimento imediato.
-                </div>
-            <?php endif; ?>
-
-            <!-- MENSAGEM FLASH -->
-            <?php if ($mensagem): ?>
-                <div class="alerta alerta-sucesso">
-                    ✓ <?= htmlspecialchars($mensagem) ?>
-                </div>
-            <?php endif; ?>
-
-            <!-- MÉTRICAS -->
-            <div class="metricas">
-                <div class="metrica-card">
-                    <div class="valor"><?= $emEspera ?></div>
-                    <div class="rotulo">Em espera</div>
-                </div>
-                <div class="metrica-card">
-                    <div class="valor" style="color:var(--vermelho)">
-                        <?= $urgentes ?>
-                    </div>
-                    <div class="rotulo">Urgentes</div>
-                </div>
-                <div class="metrica-card">
-                    <div class="valor" style="color:var(--verde)">
-                        <?= $atendidos ?>
-                    </div>
-                    <div class="rotulo">Atendidos hoje</div>
-                </div>
-                <div class="metrica-card">
-                    <div class="valor">
-                        <?= $tempoMedio > 0
-                            ? $tempoMedio . 'm'
-                            : '--' ?>
-                    </div>
-                    <div class="rotulo">Tempo médio</div>
-                </div>
-            </div>
-
-            <!-- FILA DE ESPERA -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-titulo">
-                        Fila de espera — por prioridade
-                    </span>
-                    <span class="chip-tempo">
-                        Actualiza a cada 30s
-                    </span>
                 </div>
 
                 <?php if (empty($filaEspera)): ?>
-                    <div class="fila-vazia">
+                    <div class="text-center py-12 text-on-surface-variant font-semibold">
                         Nenhum paciente em espera de momento.
                     </div>
                 <?php else: ?>
-                    <?php
-                    $visíveis = array_slice($filaEspera, 0, 8);
-                    $restantes = count($filaEspera) - count($visíveis);
-                    foreach ($visíveis as $s):
-                        $p = $prioridades[$s['prioridade']];
-                        $hora = date(
-                            'H:i',
-                            strtotime($s['criado_em'])
-                        );
-                        ?>
-                        <div class="fila-item <?= $p['classe'] ?>">
-                            <div class="senha-codigo">
-                                <?= htmlspecialchars($s['codigo']) ?>
-                            </div>
-                            <div>
-                                <div class="fila-nome">
-                                    <?= htmlspecialchars(
-                                        $s['paciente_nome']
-                                    ) ?>
-                                </div>
-                                <div class="fila-tipo">
-                                    <?= htmlspecialchars(
-                                        $s['tipo_atendimento']
-                                    ) ?>
-                                </div>
-                            </div>
-                            <div class="fila-meta">
-                                <span class="badge <?= $p['badge'] ?>">
-                                    <?= $p['label'] ?>
-                                </span>
-                                <span class="fila-hora">
-                                    <?= $hora ?>
-                                </span>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-
-                    <?php if ($restantes > 0): ?>
-                        <div style="text-align:center;
-                            padding:12px;
-                            font-size:12px;
-                            color:var(--texto-muted)">
-                            + <?= $restantes ?> pacientes a seguir
-                        </div>
-                    <?php endif; ?>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="border-b border-surface-container-low">
+                            <tr class="text-on-surface-variant text-[10px] font-black uppercase tracking-[0.15em]">
+                                <th class="pb-4">Senha</th>
+                                <th class="pb-4">Nome do Paciente</th>
+                                <th class="pb-4">Consulta</th>
+                                <th class="pb-4 text-center">Prioridade</th>
+                                <th class="pb-4 text-right">Chegada</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-surface-container-low/50">
+                            <?php
+                            $visíveis = array_slice($filaEspera, 0, 8);
+                            $restantes = count($filaEspera) - count($visíveis);
+                            foreach ($visíveis as $s):
+                                $p = $prioridades[$s['prioridade']];
+                                $hora = date('H:i', strtotime($s['criado_em']));
+                                $isUrgente = ($s['prioridade'] == 1);
+                            ?>
+                            <tr class="group hover:bg-surface-container-low/30 transition-colors">
+                                <td class="py-4 font-black <?= $isUrgente ? 'text-error' : 'text-black' ?> text-base"><?= htmlspecialchars($s['codigo']) ?></td>
+                                <td class="py-4 font-bold text-black text-sm"><?= htmlspecialchars($s['paciente_nome']) ?></td>
+                                <td class="py-4 text-on-surface-variant text-xs font-medium"><?= htmlspecialchars($s['tipo_atendimento']) ?></td>
+                                <td class="py-4 text-center">
+                                    <span class="px-3 py-1 <?= $p['badge'] ?> text-white text-[9px] font-black rounded-full"><?= strtoupper($p['label']) ?></span>
+                                </td>
+                                <td class="py-4 text-right text-sm font-bold text-black"><?= $hora ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php if ($restantes > 0): ?>
+                    <div class="text-center pt-6 text-on-surface-variant font-semibold text-xs">
+                        + <?= $restantes ?> pacientes a aguardar atendimento
+                    </div>
+                <?php endif; ?>
                 <?php endif; ?>
             </div>
+        </div>
 
-        </main>
+        <!-- Coluna Lateral (Widgets) -->
+        <div class="space-y-6">
+            <!-- Fluxo Widget -->
+            <div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+                <h3 class="font-black mb-6 text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 text-on-surface-variant">
+                    <span class="material-symbols-outlined text-black text-[18px]">trending_up</span>
+                    Fluxo de Entradas
+                </h3>
+                <div class="h-32 flex items-end gap-2 justify-between px-1">
+                    <?php
+                    // fluxoGrafico = ['labels' => [...], 'data' => [...]]
+                    $fluxoLabels = $fluxoGrafico['labels'] ?? [];
+                    $fluxoData   = $fluxoGrafico['data'] ?? [];
+                    // Pegar as últimas 6 horas
+                    $fluxoLabels = array_slice($fluxoLabels, -6);
+                    $fluxoData   = array_slice($fluxoData, -6);
+                    $maxFluxo    = max(array_merge($fluxoData, [1]));
+                    $totalBars   = count($fluxoData);
+                    foreach ($fluxoData as $i => $qtd):
+                        $pct = ($qtd / $maxFluxo) * 100;
+                        $pct = max($pct, 8); // mínimo visual
+                        $isHighest = ($qtd === $maxFluxo && $qtd > 0);
+                    ?>
+                        <div class="w-full <?= $isHighest ? 'bg-black shadow-md' : 'bg-surface-container-low' ?> rounded-lg" style="height: <?= $pct ?>%"></div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="flex justify-between mt-4 text-[9px] font-black text-on-surface-variant tracking-wider">
+                    <?php if (count($fluxoLabels) >= 2): ?>
+                    <span><?= $fluxoLabels[0] ?></span>
+                    <span><?= end($fluxoLabels) ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Dica Widget -->
+            <div class="bg-black text-white rounded-[1.5rem] p-6 floating-card relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-yellow-400 text-[18px]" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+                        <h3 class="font-black text-[10px] uppercase tracking-[0.2em]">Dica de Produtividade</h3>
+                    </div>
+                    <p class="text-[11px] font-semibold leading-relaxed opacity-90">
+                        Ao triar prioritários, verifique leitos livres para reduzir esperas no corredor. Use o atalho <b>Paciente Frequente</b> para registos rápidos.
+                    </p>
+                </div>
+                <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-white/5 rounded-full blur-2xl"></div>
+            </div>
+        </div>
     </div>
 
-</body>
+</main>
+</div>
 
-</html>
+<!-- Hidden chart canvas for AJAX polling compatibility -->
+<div style="display:none">
+    <canvas id="graficoFluxo"></canvas>
+</div>
+
+<script>
+    const DADOS_FLUXO = <?= json_encode($fluxoGrafico) ?>;
+</script>
+<script src="<?= BASE_URL ?>public/assets/js/fila.js"></script>
+
+</body></html>

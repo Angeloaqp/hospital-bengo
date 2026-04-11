@@ -10,30 +10,72 @@
     padding: 0;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;600;700;800&display=swap');
+
 :root {
-    --azul: #1E6FD9;
-    --azul-escuro: #1a5fb8;
-    --vermelho: #DC2626;
-    --laranja: #D97706;
-    --roxo: #7C3AED;
-    --verde: #16A34A;
-    --sidebar-bg: #0F172A;
-    --fundo: #F5F7FA;
-    --card-bg: #FFFFFF;
-    --texto: #1A1A2E;
-    --texto-muted: #6B7280;
-    --borda: #E5E7EB;
-    --radius: 12px;
-    --radius-sm: 8px;
-    --sombra: 0 1px 4px rgba(0, 0, 0, 0.06);
+    /* 1. Cores / Superfícies (Tactile Editorial) */
+    --primary: #000000;
+    --primary-container: #3c3b3b;
+    --on-primary: #e5e2e1;
+    --surface: #f9f9f9;
+    --surface-container-low: #f3f3f3;
+    --surface-container-highest: #e2e2e2;
+    --surface-container-lowest: #ffffff;
+    --surface-dim: #dadada;
+    
+    --on-surface: #111111;
+    --on-surface-variant: #474747;
+    --outline-variant: rgba(198, 198, 198, 0.2);
+    
+    /* Cores Semânticas / Sinais */
+    --error: #ba1a1a;
+    --warning: #D97706;
+    --success: #16A34A;
+
+    /* 2. Sombras Ambientais (Tonal Layering) */
+    --shadow-ambient: 0px 20px 40px rgba(0, 0, 0, 0.04);
+    --shadow-inset: inset 0px 2px 4px rgba(0,0,0,0.05);
+    
+    /* 3. Raios de Borda (Softness) */
+    --radius-xl: 3rem;   
+    --radius-lg: 2rem;   
+    --radius-md: 1rem;   
+    --radius-sm: 0.5rem; 
+
+    /* Espaçamentos Editoriais */
+    --space-sm: 16px;
+    --space-md: 32px;
+    --space-lg: 48px;
+    --space-xl: 64px;
+    
+    /* Mapeamento de Legado (compatibilidade) */
+    --azul: var(--primary);
+    --azul-escuro: var(--primary-container);
+    --vermelho: var(--error);
+    --laranja: var(--warning);
+    --roxo: var(--on-surface-variant);
+    --verde: var(--success);
+    --sidebar-bg: var(--surface);
+    --fundo: var(--surface);
+    --card-bg: var(--surface-container-lowest);
+    --texto: var(--on-surface);
+    --texto-muted: var(--on-surface-variant);
+    --borda: var(--outline-variant);
+    --radius: var(--radius-md);
+    --sombra: var(--shadow-ambient);
 }
 
 body {
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background: var(--fundo);
     color: var(--texto);
     font-size: 14px;
     line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6, .display-title {
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-weight: 700;
 }
 
 /* ---- Layout Principal ---- */
@@ -42,9 +84,119 @@ body {
     min-height: 100vh;
 }
 
-/* ---- Sidebar ---- */
+/* ========================================
+   SIDEBAR TACTILE EDITORIAL
+   ======================================== */
+.sidebar-slim {
+    width: 80px;
+    background: var(--surface-container-lowest);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100;
+    border-right: 1px solid var(--outline-variant); /* Ghost border fallback */
+}
+
+.slim-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--on-primary);
+    margin-bottom: var(--space-md);
+    flex-shrink: 0;
+}
+
+.slim-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.slim-nav-item {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--on-surface-variant);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    padding: 0;
+    position: relative;
+}
+
+.slim-nav-item:hover {
+    color: var(--on-surface);
+    background: var(--surface-container-low);
+}
+
+.slim-nav-item.activo {
+    color: var(--primary);
+}
+
+/* Tactile Editorial Active Dot Indicator */
+.slim-nav-item.activo::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 16px;
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+/* Tooltip no hover */
+.slim-nav-item[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 64px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
+    color: var(--on-surface);
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    z-index: 999;
+    pointer-events: none;
+    box-shadow: var(--shadow-ambient);
+}
+
+.slim-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border-top: 1px solid var(--outline-variant);
+    padding-top: 16px;
+    margin-top: auto;
+}
+
+/* Suporte para a sidebar antiga (páginas ainda não migradas) */
 .sidebar {
-    width: 210px;
+    width: 72px;
     background: var(--sidebar-bg);
     display: flex;
     flex-direction: column;
@@ -117,15 +269,150 @@ body {
     padding-top: 12px;
 }
 
-/* ---- Conteúdo Principal ---- */
-.conteudo {
-    margin-left: 210px;
-    flex: 1;
-    padding: 24px;
-    min-height: 100vh;
+/* ========================================
+   HEADER HORIZONTAL (topo do conteúdo)
+   ======================================== */
+.top-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--borda);
+    position: fixed;
+    top: 0;
+    left: 72px;
+    right: 0;
+    height: 64px;
+    z-index: 90;
 }
 
-/* ---- Header ---- */
+.header-esquerda {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.header-titulo {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--texto);
+}
+
+.header-sub {
+    font-size: 13px;
+    color: var(--texto-muted);
+}
+
+.header-direita {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-acoes-extra {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-notif {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--texto-muted);
+    transition: all 0.15s;
+    text-decoration: none;
+    background: var(--fundo);
+}
+
+.header-notif:hover {
+    background: var(--borda);
+    color: var(--texto);
+}
+
+.notif-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    background: var(--vermelho);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+.header-relogio {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--texto-muted);
+    font-variant-numeric: tabular-nums;
+    background: var(--fundo);
+    padding: 6px 12px;
+    border-radius: 8px;
+}
+
+.header-perfil {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    padding: 4px 12px 4px 4px;
+    border-radius: 10px;
+    transition: background 0.15s;
+}
+
+.header-perfil:hover {
+    background: var(--fundo);
+}
+
+.header-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--azul);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.header-avatar-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.header-nome {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--texto);
+}
+
+/* ---- Conteúdo Principal (novo layout) ---- */
+.conteudo {
+    margin-left: 72px;
+    margin-top: 64px;
+    flex: 1;
+    padding: 24px;
+    min-height: calc(100vh - 64px);
+}
+
+/* ---- Page Header (dentro do conteúdo) ---- */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -381,6 +668,63 @@ body {
     font-weight: 600;
 }
 
+/* SIDEBAR MÓDULO FASE 9 (Avatar do Utilizador Actual) */
+.sidebar-perfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 16px 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.sidebar-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #3B82F6;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    border: 2px solid #60A5FA;
+    object-fit: cover;
+    /* Para fotos reias */
+    text-decoration: none;
+}
+
+.sidebar-avatar-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #60A5FA;
+    margin-bottom: 12px;
+}
+
+.sidebar-nome {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.sidebar-cargo {
+    font-size: 12px;
+    color: #9CA3AF;
+    text-transform: capitalize;
+}
+
+.nav-item .dot {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
 .badge-urgente {
     background: #FEE2E2;
     color: #991B1B;
@@ -466,3 +810,185 @@ body {
     border: 1px solid #FCA5A5;
     color: #991B1B;
 }
+
+    /* ========================================
+   DASHBOARDS & CARTÕES (Tactile Editorial)
+   ======================================== */
+    .container-recepcao {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        gap: var(--space-md);
+        align-items: start;
+        margin-top: var(--space-sm);
+    }
+    
+    .coluna-principal {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    .coluna-lateral {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    /* Métricas Topo */
+    .metricas {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-sm);
+    }
+
+    .metrica-card {
+        background: var(--surface-container-lowest);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--shadow-ambient);
+        border: none;
+    }
+
+    .metrica-card .rotulo {
+        color: var(--on-surface-variant);
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 0.15em;
+    }
+
+    .metrica-card .valor {
+        font-family: 'Manrope', sans-serif;
+        font-size: 36px;
+        font-weight: 800;
+        color: var(--on-surface);
+        margin-top: 8px;
+    }
+
+    /* Cartões Gerais */
+    .card {
+        background: var(--surface-container-lowest);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        box-shadow: var(--shadow-ambient);
+        border: none;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-md);
+    }
+
+    .card-titulo {
+        font-family: 'Manrope', sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--on-surface);
+        letter-spacing: -0.02em;
+    }
+
+    /* Tabela Editorial (SaaS) */
+    .tabela-saas {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+    .tabela-saas th {
+        color: var(--on-surface-variant);
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--surface-container-low);
+    }
+    .tabela-saas td {
+        padding: 16px 0;
+    }
+    .tabela-saas tr {
+        border-bottom: 1px solid rgba(198, 198, 198, 0.1);
+        transition: background 0.2s ease;
+    }
+    .tabela-saas tr:hover {
+        background: var(--surface-container-low);
+    }
+    .tabela-saas td:first-child { padding-left: 16px; }
+    .tabela-saas td:last-child { padding-right: 16px; }
+    .tabela-saas th:first-child { padding-left: 16px; }
+    .tabela-saas th:last-child { padding-right: 16px; }
+    
+    .senha-tag {
+        font-family: 'Manrope', sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+    }
+    .td-nome {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--on-surface);
+    }
+    .td-tipo {
+        font-size: 12px;
+        color: var(--on-surface-variant);
+        font-weight: 500;
+    }
+    
+    /* Badges de Semáforo (Editorial Minimalista) */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 12px;
+        border-radius: var(--radius-xl);
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    .badge-urgente { background: var(--error); color: white; }
+    .badge-idoso { background: var(--warning); color: white; }
+    .badge-gravida { background: #7C3AED; color: white; }
+    .badge-normal { background: var(--info); color: white; }
+
+    /* Floating Toast / Alertas Críticos */
+    .alerta-tactile {
+        background: var(--surface-container-lowest);
+        border-radius: var(--radius-md);
+        padding: 16px 24px;
+        box-shadow: var(--shadow-ambient);
+        margin-bottom: var(--space-md);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+    .alerta-urgencia {
+        background: #FEF2F2;
+        color: #991B1B;
+    }
+    .alerta-urgencia strong { font-weight: 800; }
+    
+    /* Botões Topo */
+    .btn-action-hero {
+        background: var(--primary);
+        color: var(--on-primary);
+        border-radius: var(--radius-xl);
+        padding: 10px 24px;
+        font-weight: 800;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-action-hero:hover {
+        transform: scale(1.02);
+        box-shadow: var(--shadow-ambient);
+    }

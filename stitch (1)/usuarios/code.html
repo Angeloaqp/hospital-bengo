@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html lang="pt"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestão de Utilizadores - HGB Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f3f4f6",
+                        "surface": "#ffffff",
+                        "on-surface": "#1a1c1c",
+                        "on-surface-variant": "#6b7280",
+                        "primary": "#000000",
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                    },
+                    "boxShadow": {
+                        'tactile': '0 10px 40px -10px rgba(0, 0, 0, 0.04), 0 20px 25px -5px rgba(0, 0, 0, 0.02)',
+                        'tactile-hover': '0 30px 60px -12px rgba(0, 0, 0, 0.12), 0 18px 26px -18px rgba(0, 0, 0, 0.2)',
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+        
+        .floating-card {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* High-End SaaS User Card Transitions */
+        .user-card {
+            background-color: #ffffff;
+            border-radius: 2rem;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card:hover {
+            transform: translateY(-10px) scale(1.01);
+            box-shadow: 
+                0 20px 25px -5px rgba(0, 0, 0, 0.05), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.02),
+                0 40px 60px -15px rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.08);
+            background-color: #ffffff;
+        }
+
+        /* Internal reactions on card hover */
+        .user-card:hover .btn-primary-action {
+            background-color: #1a1a1a;
+            transform: translateY(-2px);
+        }
+
+        .user-card:hover .edit-icon-btn {
+            background-color: #000;
+            color: #fff;
+            transform: rotate(5deg);
+        }
+
+        .user-card:hover .meta-icon {
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        /* Premium Button States */
+        .btn-action {
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .btn-action:hover {
+            filter: brightness(1.05);
+        }
+
+        .btn-action:active {
+            transform: scale(0.94);
+            filter: brightness(0.95);
+        }
+
+        /* Status Animations */
+        @keyframes pulse-status {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 0.4; }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-status 2s infinite ease-in-out;
+        }
+        
+        /* Premium Glide Transitions */
+        @keyframes glideIn {
+            0% { 
+                opacity: 0; 
+                transform: translateY(24px) scale(0.98); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        .glide-content-active {
+            animation: glideIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .stagger-1 { animation-delay: 0.05s; }
+        .stagger-2 { animation-delay: 0.12s; }
+        .stagger-3 { animation-delay: 0.19s; }
+    </style>
+</head>
+<body class="text-on-surface antialiased">
+<!-- Floating Sidebar -->
+<aside class="fixed left-6 top-6 bottom-6 flex flex-col py-6 z-[60] w-56 bg-white rounded-[2rem] floating-card font-['Manrope'] border-none">
+<!-- Top Section: Hospital Logo -->
+<div class="mb-8 flex flex-col items-center px-6 gap-2">
+<div class="text-[18px] font-black tracking-tighter text-black flex flex-col items-center leading-tight">
+<span>HGB</span>
+</div>
+<div class="w-10 h-[1.5px] bg-black/5"></div>
+</div>
+<!-- Middle Section: Navigation -->
+<nav class="flex flex-col gap-1.5 px-3 flex-1">
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-gray-50 hover:text-black rounded-2xl transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span class="text-xs font-semibold tracking-tight">Dashboard</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-gray-50 hover:text-black rounded-2xl transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+<span class="text-xs font-semibold tracking-tight">Visão Geral</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full bg-black text-white rounded-2xl transition-all shadow-lg btn-action">
+<span class="material-symbols-outlined text-[20px]">group</span>
+<span class="text-xs font-bold tracking-tight">Gestão de Utilizadores</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-gray-50 hover:text-black rounded-2xl transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+<span class="text-xs font-semibold tracking-tight">Mensagens</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-gray-50 hover:text-black rounded-2xl transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">security</span>
+<span class="text-xs font-semibold tracking-tight">Auditoria</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-gray-50 hover:text-black rounded-2xl transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="text-xs font-semibold tracking-tight">Relatórios</span>
+</button>
+</nav>
+<!-- Bottom Section: Avatar & Actions -->
+<div class="mt-auto flex flex-col gap-1.5 px-3">
+<div class="px-4 mb-3">
+<div class="h-[1px] bg-black/5 w-full"></div>
+</div>
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:bg-gray-50 hover:text-black rounded-2xl transition-all btn-action">
+<div class="w-7 h-7 rounded-full overflow-hidden shrink-0 grayscale bg-gray-100">
+<img alt="António Kussumua" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwNFe9KNsnd3oQRNpmEpr6u_qtgRQcuNgkqsBOmnB4OR6nzHJKIU34vdbvEY3DNd3MtHTBTnIAen35h-fG8azO8AAkULgRxUVaVnTWedsAY2EgWetzZM3VatnzL5NhLzqc0N50woj7p-GcYNr26K7NDY7d5bDwb7_xABYM_5tu1DOLH3vVMufLpJh4lyx6aEcmk27YtsxPZBjoPWHqJLTeNGczr-fEsiK5NL_zr83Jhwu88ZKKQSsSvqtY-zocu5GMpYvkD88H5fjl"/>
+</div>
+<span class="text-xs font-semibold tracking-tight">Meu Perfil</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="text-xs font-semibold tracking-tight">Sair</span>
+</button>
+</div>
+</aside>
+<!-- Header Wrapper -->
+<div class="fixed top-0 right-0 left-56 z-50 h-28 bg-gradient-to-b from-[#f3f4f6] to-transparent pointer-events-none">
+<header class="h-16 mt-6 px-8 max-w-[1400px] mx-auto pointer-events-auto">
+<div class="rounded-2xl h-full px-6 flex items-center justify-between floating-card bg-white border-none">
+<div class="flex items-center gap-3">
+<h1 class="text-base font-extrabold tracking-tight text-black">Gestão de Utilizadores</h1>
+<div class="h-4 w-[1px] bg-black/10"></div>
+<div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-bold">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>14:32</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-black leading-none">António Kussumua</p>
+<p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-black mt-0.5">Administrador Sénior</p>
+</div>
+<div class="w-9 h-9 rounded-full overflow-hidden bg-gray-100 ring-2 ring-gray-50 cursor-pointer btn-action">
+<img alt="Admin Avatar" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwNFe9KNsnd3oQRNpmEpr6u_qtgRQcuNgkqsBOmnB4OR6nzHJKIU34vdbvEY3DNd3MtHTBTnIAen35h-fG8azO8AAkULgRxUVaVnTWedsAY2EgWetzZM3VatnzL5NhLzqc0N50woj7p-GcYNr26K7NDY7d5bDwb7_xABYM_5tu1DOLH3vVMufLpJh4lyx6aEcmk27YtsxPZBjoPWHqJLTeNGczr-fEsiK5NL_zr83Jhwu88ZKKQSsSvqtY-zocu5GMpYvkD88H5fjl"/>
+</div>
+</div>
+</div>
+</header>
+</div>
+<!-- Main Content Area -->
+<div class="ml-56 mt-28 p-8 flex flex-col items-center">
+<main class="w-full max-w-[1400px]">
+<!-- Page Header -->
+<div class="mb-10 flex justify-between items-end">
+<div>
+<h2 class="text-3xl font-extrabold text-black tracking-tight">Utilizadores do Sistema</h2>
+<p class="text-on-surface-variant font-medium mt-1 text-sm">Gerencie permissões e visualize a atividade dos profissionais de saúde.</p>
+</div>
+<button class="bg-black text-white px-8 py-3.5 rounded-full font-bold text-sm flex items-center gap-2 hover:shadow-xl transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+                    Novo Utilizador
+                </button>
+</div>
+<!-- Profile Cards Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-12" id="cards-container">
+<!-- User Card 1: Dra. Beatriz Santos -->
+<div class="user-card p-6 shadow-tactile glide-content-active stagger-1">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="relative">
+<img alt="Beatriz" class="w-16 h-16 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcxVJRvTumu5lHJLLjG6oaHdc_4T4ECbHOHE_WFS3tbu5oKULwd6mfBO9eEm3jsqMuYt9vIORx1cEarQ-lqTWMkmrKbf3XPTQygdBHnC2IOgNOvcvPcK347z0GG9hmJ67Vy1kjKwPyngijRvV9ZlhwF6WgNFMyihZCoHRVSAB1HujzfyR-Fj85iWAsNNMyMylx28RbR2wUaUjt_3sDPQNQRumQkbEgILp7DwsO1vcRs5LYubSQQm3cgG2GAfXanUtlTagBtrMwr7Ff"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full">
+<div class="absolute inset-0 bg-green-500 rounded-full animate-pulse-subtle"></div>
+</div>
+</div>
+<div class="flex flex-col pt-1">
+<h3 class="text-lg font-extrabold text-black leading-tight">Dra. Beatriz Santos</h3>
+<p class="text-xs text-on-surface-variant font-medium">Médico Especialista</p>
+</div>
+</div>
+<button class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-black hover:text-white transition-all btn-action edit-icon-btn">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+</button>
+</div>
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full">Médico</span>
+<span class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full">Cardiologia</span>
+<span class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full">Cirurgia</span>
+</div>
+<!-- Metadata Section -->
+<div class="grid grid-cols-3 gap-0 mb-8 border-t border-gray-50 pt-6">
+<div class="flex flex-col gap-1 pr-4">
+<div class="flex items-center gap-1.5 h-5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant/70 transition-all duration-300 meta-icon">alternate_email</span>
+<span class="text-xs font-extrabold text-black truncate">@beatriz.santos</span>
+</div>
+<span class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Utilizador</span>
+</div>
+<div class="flex flex-col gap-1 px-4 border-x border-black/5">
+<div class="flex items-center h-5">
+<span class="text-xs font-extrabold text-black">152</span>
+</div>
+<span class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Atendimentos</span>
+</div>
+<div class="flex flex-col gap-1 pl-4">
+<div class="flex items-center h-5">
+<span class="text-xs font-extrabold text-black">12h</span>
+</div>
+<span class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Turno</span>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 bg-black text-white py-3 rounded-xl font-bold text-xs btn-action btn-primary-action">Gerir Perfil</button>
+<button class="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-gray-100 transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">bar_chart</span>
+</button>
+<button class="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-gray-100 transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- User Card 2: João Baptista -->
+<div class="user-card p-6 shadow-tactile glide-content-active stagger-2">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="relative">
+<img alt="João" class="w-16 h-16 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAqH12M09-OwCp0NSJfrITWKFnWYPf2YwQSKIoPYAnfDo3XO1SOxLe56ZBWSB7CXhmVbvFMiQ_ISStRXVcSqEFLUOG9xUe-GAxAH3imASZxW-yJ2k7qFZcu9Q6ddoD_bE9Xhxdq0YNUMUBNjlFEAjucSTlQuSruoJPx_fqgZgotaj2akJyiGl4ihK5-cUlCUa0t2QmhfEg_JlKA5GCHxPzj4rTrMCZiYYqGM2hcz-Oi9IrUrXzrdJnOi_vKRCp_q-l2Fp81WNAaraQ"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full">
+<div class="absolute inset-0 bg-green-500 rounded-full animate-pulse-subtle"></div>
+</div>
+</div>
+<div class="flex flex-col pt-1">
+<h3 class="text-lg font-extrabold text-black leading-tight">João Baptista</h3>
+<p class="text-xs text-on-surface-variant font-medium">Coordenador de Recepção</p>
+</div>
+</div>
+<button class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-black hover:text-white transition-all btn-action edit-icon-btn">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+</button>
+</div>
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full">Administração</span>
+<span class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full">Triagem</span>
+</div>
+<!-- Metadata Section -->
+<div class="grid grid-cols-3 gap-0 mb-8 border-t border-gray-50 pt-6">
+<div class="flex flex-col gap-1 pr-4">
+<div class="flex items-center gap-1.5 h-5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant/70 transition-all duration-300 meta-icon">alternate_email</span>
+<span class="text-xs font-extrabold text-black truncate">@jbaptista.hgb</span>
+</div>
+<span class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Utilizador</span>
+</div>
+<div class="flex flex-col gap-1 px-4 border-x border-black/5">
+<div class="flex items-center h-5">
+<span class="text-xs font-extrabold text-black">2.4k</span>
+</div>
+<span class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Tickets</span>
+</div>
+<div class="flex flex-col gap-1 pl-4">
+<div class="flex items-center h-5">
+<span class="text-xs font-extrabold text-black">08h</span>
+</div>
+<span class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Turno</span>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 bg-black text-white py-3 rounded-xl font-bold text-xs btn-action btn-primary-action">Gerir Perfil</button>
+<button class="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-gray-100 transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">bar_chart</span>
+</button>
+<button class="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-gray-100 transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- User Card 3: Marta Kiluanji -->
+<div class="user-card p-6 shadow-tactile glide-content-active stagger-3">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="relative">
+<img alt="Marta" class="w-16 h-16 rounded-full object-cover grayscale opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTgxbBetFLaIbGEW-JH4o9meDZYeDfNO4xN7QHGPvzBMC5PCBo0uISk17IRwiZKe6L5oJppRtDbujTNmKPEqeUVoZfaz1ResGKULf_vwLp0oIsayGsDXN8-2YjgPfYlGw_oSt7-dlQ9oxb3TkwrGFC_PtAPDR3lZZXeZndGX1REkmsdSWh_OcLdg1ftiLULmEkFfK9-_wYfuVkfyBgZQqV0Uzes_m6A-xasm_a3mzO5bVzyK8EslJpAhVox2e2edoyPi4f7llrV9sv"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-gray-300 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex flex-col pt-1">
+<h3 class="text-lg font-extrabold text-black leading-tight">Marta Kiluanji</h3>
+<p class="text-xs text-on-surface-variant font-medium">Gestora de RH</p>
+</div>
+</div>
+<button class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-black hover:text-white transition-all btn-action edit-icon-btn">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+</button>
+</div>
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full">Direção</span>
+<span class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full">Recursos Humanos</span>
+</div>
+<!-- Metadata Section -->
+<div class="grid grid-cols-3 gap-0 mb-8 border-t border-gray-50 pt-6">
+<div class="flex flex-col gap-1 pr-4">
+<div class="flex items-center gap-1.5 h-5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant/70 transition-all duration-300 meta-icon">alternate_email</span>
+<span class="text-xs font-extrabold text-black truncate">@marta.rh</span>
+</div>
+<span class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Utilizador</span>
+</div>
+<div class="flex flex-col gap-1 px-4 border-x border-black/5">
+<div class="flex items-center h-5">
+<span class="text-xs font-extrabold text-black">42</span>
+</div>
+<span class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Processos</span>
+</div>
+<div class="flex flex-col gap-1 pl-4">
+<div class="flex items-center h-5">
+<span class="text-xs font-extrabold text-black">Off</span>
+</div>
+<span class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Status</span>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 bg-black text-white py-3 rounded-xl font-bold text-xs btn-action btn-primary-action">Gerir Perfil</button>
+<button class="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-gray-100 transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">bar_chart</span>
+</button>
+<button class="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-gray-100 transition-all btn-action">
+<span class="material-symbols-outlined text-[20px]">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Pagination & Stats -->
+<div class="flex justify-between items-center px-4 mb-16">
+<p class="text-sm font-bold text-on-surface-variant/60">A mostrar <span class="text-black">3</span> de 128 utilizadores</p>
+<div class="flex gap-3">
+<button class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-tactile btn-action nav-page">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</button>
+<button class="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center text-sm font-bold shadow-tactile btn-action nav-page">1</button>
+<button class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-tactile text-sm font-bold btn-action nav-page">2</button>
+<button class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-tactile text-sm font-bold btn-action nav-page">3</button>
+<button class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-tactile btn-action nav-page">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Info Cards Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-white/40 p-8 rounded-[2.5rem] shadow-tactile border-none hover:bg-white transition-all duration-500 cursor-default group">
+<div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-black group-hover:bg-black group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<h4 class="font-extrabold text-lg text-black mb-3 tracking-tight">Acessos Seguros</h4>
+<p class="text-sm font-medium text-on-surface-variant leading-relaxed">Todos os colaboradores utilizam autenticação de dois fatores por padrão para garantir a máxima segurança dos dados clínicos.</p>
+</div>
+<div class="bg-white/40 p-8 rounded-[2.5rem] shadow-tactile border-none hover:bg-white transition-all duration-500 cursor-default group">
+<div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-black group-hover:bg-black group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined">history</span>
+</div>
+<h4 class="font-extrabold text-lg text-black mb-3 tracking-tight">Histórico de Auditoria</h4>
+<p class="text-sm font-medium text-on-surface-variant leading-relaxed">Registo completo e imutável de todas as alterações feitas em perfis de utilizador, em conformidade com as normas hospitalares.</p>
+</div>
+<div class="bg-white/40 p-8 rounded-[2.5rem] shadow-tactile border-none hover:bg-white transition-all duration-500 cursor-default group">
+<div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-black group-hover:bg-black group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined">badge</span>
+</div>
+<h4 class="font-extrabold text-lg text-black mb-3 tracking-tight">Controlo de Funções</h4>
+<p class="text-sm font-medium text-on-surface-variant leading-relaxed">Permissões granulares baseadas na hierarquia do Hospital do Bengo, garantindo que cada profissional aceda apenas ao necessário.</p>
+</div>
+</div>
+</main>
+</div>
+<script>
+        // Enhanced glide transition for pagination
+        document.querySelectorAll('.nav-page').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const container = document.getElementById('cards-container');
+                const cards = document.querySelectorAll('.user-card');
+                
+                // 1. Initial fade and slight scale down out
+                cards.forEach(card => {
+                    card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 1, 1)';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(-10px) scale(0.98)';
+                });
+
+                // 2. Re-trigger the premium "Glide In" animation
+                setTimeout(() => {
+                    cards.forEach((card, index) => {
+                        // Reset styles to allow animation to re-play
+                        card.style.transition = '';
+                        card.style.opacity = '';
+                        card.style.transform = '';
+                        
+                        // Force reflow
+                        void card.offsetWidth;
+                        
+                        // Remove and add class to restart CSS animation
+                        card.classList.remove('glide-content-active');
+                        void card.offsetWidth; // another reflow
+                        card.classList.add('glide-content-active');
+                    });
+                }, 350);
+            });
+        });
+    </script>
+</body></html>

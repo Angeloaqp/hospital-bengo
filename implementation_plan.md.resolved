@@ -1,0 +1,207 @@
+# Plano de Melhoria v3 — Hospital Geral do Bengo
+
+Transformar o MVP num sistema hospitalar completo e profissional.
+
+> [!IMPORTANT]
+> **10 fases progressivas.** Cada fase é independente. Reveja prioridades antes de avançar.
+
+---
+
+## Fase 1 — CRUD de Utilizadores + Especialidades
+
+O admin cria/edita/desactiva contas. Médicos têm especialidade e consultório.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| [database/schema.sql](file:///c:/xampp/htdocs/hospital-bengo/database/schema.sql) | MODIFY | Tabela `especialidades`; colunas `especialidade_id` e `consultorio_id` em `utilizadores` |
+| [app/models/Estatistica.php](file:///c:/xampp/htdocs/hospital-bengo/app/models/Estatistica.php) | MODIFY | Métodos `criarUtilizador()`, `editarUtilizador()`, `obterUtilizador()` |
+| [app/controllers/estatisticas.php](file:///c:/xampp/htdocs/hospital-bengo/app/controllers/estatisticas.php) | MODIFY | Acções POST `criar_utilizador`, `editar_utilizador` |
+| `app/views/admin/criar_utilizador.php` | NEW | Formulário: nome, username, senha, perfil, especialidade, consultório |
+| `app/views/admin/editar_utilizador.php` | NEW | Edição de dados (senha opcional) |
+
+---
+
+## Fase 2 — Filas Inteligentes por Especialidade
+
+Médico vê **apenas** pacientes da sua especialidade, não a fila global.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| [app/models/Senha.php](file:///c:/xampp/htdocs/hospital-bengo/app/models/Senha.php) | MODIFY | `filaDoMedico(int $medicoId)` filtra por especialidade |
+| [app/views/medico/dashboard.php](file:///c:/xampp/htdocs/hospital-bengo/app/views/medico/dashboard.php) | MODIFY | Exibir fila filtrada + nome da especialidade |
+| [app/views/recepcionista/registar.php](file:///c:/xampp/htdocs/hospital-bengo/app/views/recepcionista/registar.php) | MODIFY | Mostrar especialidade ligada ao tipo de atendimento |
+
+---
+
+## Fase 3 — Histórico + Pesquisa de Pacientes
+
+Pesquisar pacientes existentes, ver histórico e rechamar ausentes.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| `app/models/Historico.php` | NEW | `pesquisarPaciente()`, `historicoSenhas()`, `rechamar()` |
+| `app/views/recepcionista/pesquisar.php` | NEW | Pesquisa live + botão "Rechamar" e "Nova senha" |
+| [app/controllers/pacientes.php](file:///c:/xampp/htdocs/hospital-bengo/app/controllers/pacientes.php) | MODIFY | Acção `pesquisar` e `rechamar` |
+
+---
+
+## Fase 4 — Design Responsivo + Micro-Animações
+
+Interface adaptável a tablets e telemóveis. UX premium.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| [public/assets/css/style.css](file:///c:/xampp/htdocs/hospital-bengo/public/assets/css/style.css) | MODIFY | Media queries (≤900px sidebar colapsável, ≤600px drawer mobile) |
+| `public/assets/js/sidebar.js` | NEW | Toggle hamburger + animação de colapso |
+| [public/assets/css/login.css](file:///c:/xampp/htdocs/hospital-bengo/public/assets/css/login.css) | MODIFY | Gradiente animado + logo com entrada suave |
+
+---
+
+## Fase 5 — Auditoria de Acções (Logs)
+
+Registar cada acção crítica: quem, o quê, quando, IP.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| [database/schema.sql](file:///c:/xampp/htdocs/hospital-bengo/database/schema.sql) | MODIFY | Tabela `logs_auditoria` |
+| `app/models/Auditoria.php` | NEW | [registar()](file:///c:/xampp/htdocs/hospital-bengo/app/models/Paciente.php#12-81), `listar()` |
+| `app/views/admin/auditoria.php` | NEW | Tabela filtrada por user/acção/data |
+
+---
+
+## Fase 6 — Relatórios + Gráficos (Chart.js)
+
+Dashboard com gráficos dinâmicos e exports.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| [app/models/Estatistica.php](file:///c:/xampp/htdocs/hospital-bengo/app/models/Estatistica.php) | MODIFY | `resumoPorPeriodo()`, `porMedico()`, `horasPico()` |
+| `app/views/admin/relatorios.php` | NEW | Filtros + Chart.js (barras, linhas, donuts) |
+| `app/controllers/exportar.php` | NEW | Export CSV e PDF |
+| `public/assets/js/graficos.js` | NEW | Integração Chart.js responsiva |
+
+---
+
+## Fase 7 — 💬 Sistema de Mensagens Internas
+
+Chat interno entre médicos, recepcionistas e admin. Comunicação em tempo real sem sair do sistema.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| [database/schema.sql](file:///c:/xampp/htdocs/hospital-bengo/database/schema.sql) | MODIFY | Tabela `mensagens` (id, remetente_id, destinatario_id, assunto, corpo, lida, criado_em) |
+| `app/models/Mensagem.php` | NEW | `enviar()`, `caixaEntrada()`, `enviadas()`, `marcarLida()`, `contarNaoLidas()` |
+| `app/controllers/mensagens.php` | NEW | Acções: `enviar`, `marcar_lida`, `apagar` |
+| `app/views/partials/mensagens.php` | NEW | **Widget flutuante** com ícone de envelope + contador de não lidas (visível em TODAS as views) |
+| `app/views/mensagens/caixa.php` | NEW | Caixa de entrada com lista de mensagens, filtro lida/não lida |
+| `app/views/mensagens/nova.php` | NEW | Formulário: destinatário (dropdown de utilizadores activos), assunto, corpo |
+| `app/views/mensagens/ver.php` | NEW | Visualização de mensagem individual com botão "Responder" |
+| `public/assets/css/mensagens.css` | NEW | Estilos do chat: widget flutuante, bolhas, contador badge |
+| `public/assets/js/mensagens.js` | NEW | Polling a cada 15s para novas mensagens + notificação visual/sonora |
+
+**Funcionalidades-chave:**
+- 🔔 Badge vermelho no ícone com número de mensagens não lidas
+- 📨 Mensagens rápidas pré-definidas: "Paciente a caminho", "Consultório livre", "Urgência"
+- 🔍 Pesquisa por utilizador ou assunto
+- 📌 Mensagens fixadas (pin) para avisos importantes do admin
+
+---
+
+## Fase 8 — 🔊 Notificações Sonoras + Visuais no Painel
+
+Alerta sonoro e visual quando uma nova senha é chamada na TV.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| [public/assets/js/painel.js](file:///c:/xampp/htdocs/hospital-bengo/public/assets/js/painel.js) | MODIFY | Tocar som de campainha ao detectar nova chamada |
+| `public/assets/audio/chamada.mp3` | NEW | Ficheiro de áudio curto (tom de hospital) |
+| [public/assets/css/painel.css](file:///c:/xampp/htdocs/hospital-bengo/public/assets/css/painel.css) | MODIFY | Animação pulsante no card "Em Atendimento" durante 5s |
+| [public/painel.php](file:///c:/xampp/htdocs/hospital-bengo/public/painel.php) | MODIFY | Exibir nome do paciente (só primeiro nome) + idade junto à senha |
+
+---
+
+## Fase 9 — 👤 Perfil do Utilizador + Foto + Histórico de Trabalho
+
+Cada utilizador tem o seu perfil pessoal com foto, dados editáveis e **histórico completo do seu trabalho** no sistema.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| [database/schema.sql](file:///c:/xampp/htdocs/hospital-bengo/database/schema.sql) | MODIFY | Coluna `foto_path` em `utilizadores` |
+| [app/models/Utilizador.php](file:///c:/xampp/htdocs/hospital-bengo/app/models/Utilizador.php) | NEW | `actualizarPerfil()`, `alterarSenha()`, `carregarFoto()`, `estatisticasPessoais()`, `ultimasAccoes()` |
+| `app/views/perfil/editar.php` | NEW | Formulário com foto, nome, senha actual/nova |
+| `app/views/perfil/historico.php` | NEW | Página de histórico de trabalho do utilizador logado |
+| `app/views/admin/ver_utilizador.php` | NEW | Admin pode ver o perfil e histórico de qualquer utilizador |
+| `app/controllers/perfil.php` | NEW | Upload de foto + validação de imagem |
+| [public/assets/css/style.css](file:///c:/xampp/htdocs/hospital-bengo/public/assets/css/style.css) | MODIFY | Avatar circular na sidebar com fallback de iniciais |
+
+**Histórico por perfil:**
+
+| Perfil | Informação no Histórico |
+|--------|------------------------|
+| 🩺 Médico | Total de pacientes atendidos (hoje/semana/mês/total), tempo médio de consulta, taxa de ausências, lista dos últimos 20 atendimentos com nome do paciente + tipo + duração |
+| 🏥 Recepcionista | Total de pacientes registados (hoje/semana/mês/total), senhas emitidas por tipo de prioridade, lista dos últimos 20 registos |
+| 🔑 Admin | Acções administrativas realizadas (criação de utilizadores, toggle de estado, etc.), extraído da tabela de auditoria (Fase 5) |
+
+**Cartão de estatísticas pessoais (widget no topo do perfil):**
+- 📊 Total de acções hoje / esta semana / este mês
+- ⏱️ Tempo médio por atendimento (médicos) ou registos por hora (recepcionistas)
+- 📈 Mini-gráfico sparkline de actividade nos últimos 7 dias
+- 🏆 Ranking opcional entre pares (ex: "2º médico mais activo hoje")
+
+---
+
+## Fase 10 — 📊 Dashboard da Recepção Avançado
+
+Melhorar o dashboard da recepcionista com métricas em tempo real e atalhos inteligentes.
+
+| Ficheiro | Acção | Descrição |
+|----------|-------|-----------|
+| [app/views/recepcionista/dashboard.php](file:///c:/xampp/htdocs/hospital-bengo/app/views/recepcionista/dashboard.php) | MODIFY | Gráfico mini de fluxo horário (sparkline) |
+| [app/models/Senha.php](file:///c:/xampp/htdocs/hospital-bengo/app/models/Senha.php) | MODIFY | `fluxoHorario()`: contagem por hora do dia |
+| [public/assets/js/fila.js](file:///c:/xampp/htdocs/hospital-bengo/public/assets/js/fila.js) | MODIFY | Polling AJAX em vez de meta refresh (sem recarregar página) |
+| [app/views/recepcionista/dashboard.php](file:///c:/xampp/htdocs/hospital-bengo/app/views/recepcionista/dashboard.php) | MODIFY | Notificação visual quando médico chama paciente |
+| [app/views/recepcionista/dashboard.php](file:///c:/xampp/htdocs/hospital-bengo/app/views/recepcionista/dashboard.php) | MODIFY | Atalhos rápidos: "Repetir último registo", "Paciente frequente" |
+
+---
+
+## Resumo de Prioridades
+
+| Fase | Descrição | Impacto | Complexidade |
+|------|-----------|---------|--------------|
+| 1 | CRUD Utilizadores + Especialidades | 🔴 Crítico | Média |
+| 2 | Filas por Especialidade | 🔴 Crítico | Média |
+| 3 | Histórico + Pesquisa | 🟡 Alto | Média |
+| 4 | Design Responsivo | 🟡 Alto | Baixa |
+| 5 | Auditoria de Acções | 🟢 Médio | Baixa |
+| 6 | Relatórios + Gráficos | 🟢 Médio | Alta |
+| 7 | 💬 Mensagens Internas | 🔴 Crítico | Alta |
+| 8 | 🔊 Notificações Sonoras | 🟡 Alto | Baixa |
+| 9 | 👤 Perfil + Foto | 🟢 Médio | Média |
+| 10 | 📊 Dashboard Recepção | 🟡 Alto | Média |
+
+---
+
+## Ordem de Implementação Sugerida
+
+```mermaid
+graph LR
+    F1[Fase 1: CRUD Users] --> F2[Fase 2: Filas Especialidade]
+    F2 --> F7[Fase 7: Mensagens]
+    F7 --> F3[Fase 3: Histórico]
+    F3 --> F4[Fase 4: Responsivo]
+    F4 --> F8[Fase 8: Sons]
+    F8 --> F10[Fase 10: Dashboard Recepção]
+    F10 --> F9[Fase 9: Perfil]
+    F9 --> F5[Fase 5: Auditoria]
+    F5 --> F6[Fase 6: Relatórios]
+```
+
+## Verification Plan
+### Automated Tests
+- Browser: CRUD utilizadores, envio/recepção de mensagens, filtragem de fila
+- Responsividade em 3 breakpoints (1200px, 768px, 375px)
+
+### Manual Verification
+- Login com novo médico criado pelo admin → vê apenas a sua fila
+- Enviar mensagem recepcionista → médico → verificar notificação
+- Painel TV emite som ao chamar nova senha
+- Exportar relatório CSV com dados correctos

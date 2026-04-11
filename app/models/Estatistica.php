@@ -160,16 +160,23 @@ class Estatistica
     }
 
     /**
-     * Lista todos os utilizadores do sistema
+     * Lista todos os utilizadores com especialidade e consultório
      */
     public static function todosUtilizadores(): array
     {
         $db = Database::ligar();
         return $db->query(
-            "SELECT id, nome, nome_utilizador,
-                    perfil, estado, criado_em
-             FROM utilizadores
-             ORDER BY perfil ASC, nome ASC"
+            "SELECT u.id, u.nome, u.nome_utilizador,
+                    u.perfil, u.estado, u.criado_em,
+                    u.telefone,
+                    e.nome AS especialidade,
+                    c.nome AS consultorio
+             FROM utilizadores u
+             LEFT JOIN especialidades e
+                  ON u.especialidade_id = e.id
+             LEFT JOIN consultorios c
+                  ON u.consultorio_id = c.id
+             ORDER BY u.perfil ASC, u.nome ASC"
         )->fetchAll();
     }
 
@@ -192,4 +199,222 @@ class Estatistica
         ]);
         return $stmt->rowCount() > 0;
     }
+
+    // ================================================
+    // CRUD de Utilizadores (Fase 1)
+    // ================================================
+
+    /**
+     * Cria um novo utilizador
+     */
+    public static function criarUtilizador(array $d): int
+    {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "INSERT INTO utilizadores
+                (nome, nome_utilizador, senha_hash,
+                 perfil, especialidade_id,
+                 consultorio_id, telefone, estado)
+             VALUES
+                (:nome, :user, :hash,
+                 :perfil, :esp, :cons, :tel, 1)"
+        );
+        $stmt->execute([
+            ':nome' => $d['nome'],
+            ':user' => $d['nome_utilizador'],
+            ':hash' => password_hash(
+                $d['senha'],
+                PASSWORD_BCRYPT
+            ),
+            ':perfil' => $d['perfil'],
+            ':esp' => $d['especialidade_id'] ?: null,
+            ':cons' => $d['consultorio_id'] ?: null,
+            ':tel' => $d['telefone'] ?: null,
+        ]);
+        return (int) $db->lastInsertId();
+    }
+
+    /**
+     * Obtém um utilizador pelo ID
+     */
+    public static function obterUtilizador(int $id): ?array
+    {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "SELECT u.*, e.nome AS especialidade_nome,
+                    c.nome AS consultorio_nome
+             FROM utilizadores u
+             LEFT JOIN especialidades e
+                  ON u.especialidade_id = e.id
+             LEFT JOIN consultorios c
+                  ON u.consultorio_id = c.id
+             WHERE u.id = :id
+             LIMIT 1"
+        );
+        $stmt->execute([':id' => $id]);
+        $r = $stmt->fetch();
+        return $r ?: null;
+    }
+
+    /**
+     * Edita os dados de um utilizador
+     * (senha só é alterada se preenchida)
+     */
+    public static function editarUtilizador(
+        int $id,
+        array $d
+    ): bool {
+        $db = Database::ligar();
+
+        $sql = "UPDATE utilizadores SET
+                    nome = :nome,
+                    nome_utilizador = :user,
+                    perfil = :perfil,
+                    especialidade_id = :esp,
+                    consultorio_id = :cons,
+                    telefone = :tel";
+
+        $params = [
+            ':nome' => $d['nome'],
+            ':user' => $d['nome_utilizador'],
+            ':perfil' => $d['perfil'],
+            ':esp' => $d['especialidade_id'] ?: null,
+            ':cons' => $d['consultorio_id'] ?: null,
+            ':tel' => $d['telefone'] ?: null,
+            ':id' => $id,
+        ];
+
+        // Actualiza senha apenas se preenchida
+        if (!empty($d['senha'])) {
+            $sql .= ", senha_hash = :hash";
+            $params[':hash'] = password_hash(
+                $d['senha'],
+                PASSWORD_BCRYPT
+            );
+        }
+
+        $sql .= " WHERE id = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->rowCount() >= 0;
+    }
+
+    /**
+     * Verifica se nome_utilizador já existe
+     */
+    public static function usernameExiste(
+        string $username,
+        ?int $excluirId = null
+    ): bool {
+        $db = Database::ligar();
+        $sql = "SELECT COUNT(*) FROM utilizadores
+                WHERE nome_utilizador = :u";
+        $params = [':u' => $username];
+
+        if ($excluirId) {
+            $sql .= " AND id != :id";
+            $params[':id'] = $excluirId;
+        }
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Lista especialidades activas
+     */
+    public static function listarEspecialidades(): array
+    {
+        $db = Database::ligar();
+        return $db->query(
+            "SELECT id, nome FROM especialidades
+             WHERE activo = 1
+             ORDER BY nome ASC"
+        )->fetchAll();
+    }
+
+    /**
+     * Lista consultórios activos
+     */
+    public static function listarConsultorios(): array
+    {
+        $db = Database::ligar();
+        return $db->query(
+            "SELECT id, nome FROM consultorios
+             WHERE activo = 1
+             ORDER BY nome ASC"
+        )->fetchAll();
+    }
+
+    // ================================================
+    // FASE 6 — RELATÓRIOS E GRÁFICOS
+    // ================================================
+
+    /**
+     * Resumo de estados dentro de um período (Agrupado por Data)
+     */
+    public static function resumoPorPeriodo(
+        string $dataInicio,
+        string $dataFim
+    ): array {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "SELECT DATE(criado_em) AS data_dia,
+                    COUNT(*) AS total,
+                    SUM(estado = 'concluida') AS concluidos,
+                    SUM(estado = 'cancelada') AS cancelados
+             FROM senhas
+             WHERE DATE(criado_em) BETWEEN :di AND :df
+             GROUP BY DATE(criado_em)
+             ORDER BY data_dia ASC"
+        );
+        $stmt->execute([':di' => $dataInicio, ':df' => $dataFim]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Produtividade por médico no período seleccionado
+     */
+    public static function porMedico(
+        string $dataInicio,
+        string $dataFim
+    ): array {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "SELECT u.id, u.nome AS medico,
+                    COUNT(s.id) AS total_atendidos,
+                    AVG(TIMESTAMPDIFF(MINUTE, s.criado_em, s.hora_chamada)) AS tempo_medio_espera,
+                    COUNT(DISTINCT s.paciente_id) AS pacientes_unicos
+             FROM senhas s
+             JOIN utilizadores u ON s.atendido_por = u.id
+             WHERE s.estado = 'concluida' 
+               AND DATE(s.criado_em) BETWEEN :di AND :df
+             GROUP BY u.id, u.nome
+             ORDER BY total_atendidos DESC"
+        );
+        $stmt->execute([':di' => $dataInicio, ':df' => $dataFim]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Volume de senhas por hora (pico de fluxo)
+     */
+    public static function horasPico(
+        string $dataInicio,
+        string $dataFim
+    ): array {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "SELECT HOUR(criado_em) AS hora,
+                    COUNT(*) AS volume
+             FROM senhas
+             WHERE DATE(criado_em) BETWEEN :di AND :df
+             GROUP BY HOUR(criado_em)
+             ORDER BY hora ASC"
+        );
+        $stmt->execute([':di' => $dataInicio, ':df' => $dataFim]);
+        return $stmt->fetchAll();
+    }
 }
+

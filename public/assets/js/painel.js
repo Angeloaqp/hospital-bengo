@@ -1,105 +1,122 @@
-// ================================================
-// Hospital Geral do Bengo — Painel Público
-// Polling automático a cada 5 segundos
-// ================================================
+/* ================================================
+   Hospital Geral do Bengo
+   Lógica de actualização automática do Painel (TV)
+================================================ */
 
-'use strict';
+document.addEventListener('DOMContentLoaded', () => {
 
-const INTERVALO_MS = 5000;
-const URL_API = '../app/controllers/painel_api.php';
+    // Configurações
+    const INTERVALO_ACTUALIZACAO = 5000; // 5 segundos
 
-// Guarda o último código chamado para detectar mudanças
-let ultimoCodigo = document.getElementById(
-    'senha-actual'
-)?.textContent?.trim() || '';
+    // Armazena a senha que está a ser apresentada actualmente
+    // para podermos detectar quando muda
+    const elemSenha = document.getElementById('senha-actual');
+    let senhaActualMemoria = elemSenha ? elemSenha.getAttribute('data-id') : null;
 
-// Actualiza o relógio
-function actualizarRelogio() {
-    const el = document.getElementById('relogio');
-    if (!el) return;
-    const agora = new Date();
-    const h = String(agora.getHours()).padStart(2, '0');
-    const m = String(agora.getMinutes()).padStart(2, '0');
-    el.textContent = h + ':' + m;
-}
-
-// Actualiza timestamp da última actualização
-function actualizarTimestamp() {
-    const el = document.getElementById(
-        'ultima-actualizacao'
-    );
-    if (!el) return;
-    const agora = new Date();
-    const h = String(agora.getHours()).padStart(2, '0');
-    const m = String(agora.getMinutes()).padStart(2, '0');
-    const s = String(agora.getSeconds()).padStart(2, '0');
-    el.textContent = 'Última actualização: ' +
-        h + ':' + m + ':' + s;
-}
-
-// Aplica animação de flash quando há nova chamada
-function flashSenha(elemento) {
-    elemento.classList.remove('flash-anim');
-    void elemento.offsetWidth; // reflow
-    elemento.classList.add('flash-anim');
-    setTimeout(() => {
-        elemento.classList.remove('flash-anim');
-    }, 500);
-}
-
-// Polling — busca dados actualizados do servidor
-async function polling() {
-    try {
-        const resp = await fetch(
-            URL_API + '?t=' + Date.now()
-        );
-        if (!resp.ok) return;
-
-        const dados = await resp.json();
-        actualizarPainel(dados);
-        actualizarTimestamp();
-
-    } catch (e) {
-        // Falha silenciosa — tenta de novo no próximo ciclo
-        console.warn('Painel: erro de polling', e);
-    }
-}
-
-// Actualiza o DOM com os novos dados
-function actualizarPainel(d) {
-    // ---- Senha em atendimento ----
-    const elSenha = document.getElementById('senha-actual');
-    if (elSenha && d.em_chamada) {
-        const novoCodigo = d.em_chamada.codigo;
-        if (novoCodigo !== ultimoCodigo) {
-            elSenha.textContent = novoCodigo;
-            elSenha.style.color =
-                d.em_chamada.cor || '#60A5FA';
-            flashSenha(elSenha);
-            ultimoCodigo = novoCodigo;
-
-            // Actualiza consultório
-            const elCons = document.getElementById(
-                'consultorio-actual'
-            );
-            if (elCons) {
-                elCons.textContent =
-                    d.em_chamada.consultorio || '';
-            }
+    // Função que toca o som de notificação (Fase 8)
+    function tocarCampainha() {
+        try {
+            // Tenta reproduzir o ficheiro que descarregámos
+            const audio = new Audio('assets/audio/chamada.mp3');
+            audio.play().catch(e => {
+                console.warn("Navegador bloqueou auto-play de áudio. " +
+                    "É necessário clicar na página pelo menos uma vez.", e);
+            });
+        } catch (e) {
+            console.error("Erro ao tocar áudio", e);
         }
     }
 
-    // Recarrega a página a cada 5 ciclos 
-    // para actualizar todos os quadrantes
-    if (!window._ciclos) window._ciclos = 0;
-    window._ciclos++;
-    if (window._ciclos >= 5) {
-        window._ciclos = 0;
-        location.reload();
-    }
-}
+    // Função para aplicar animação pulsante visual (Fase 8)
+    function pulsarPainel() {
+        const cardAtendimento = document.querySelector('.em-atendimento-card');
+        if (cardAtendimento) {
+            // Adiciona a class que faz a animação pulsar-card
+            cardAtendimento.classList.add('chamada-pulsante');
 
-// Inicia
-actualizarRelogio();
-setInterval(actualizarRelogio, 30000);
-setInterval(polling, INTERVALO_MS);
+            // Remove a animação após 5 segundos
+            setTimeout(() => {
+                cardAtendimento.classList.remove('chamada-pulsante');
+            }, 5000);
+        }
+    }
+
+    // Actualização do relógio a cada segundo
+    setInterval(() => {
+        const relogio = document.getElementById('relogio');
+        if (relogio) {
+            const agora = new Date();
+            const h = String(agora.getHours()).padStart(2, '0');
+            const m = String(agora.getMinutes()).padStart(2, '0');
+            relogio.textContent = `${h}:${m}`;
+        }
+    }, 1000);
+
+    // Sistema de polling que actualiza a página de 5 em 5 segundos
+    // usando Fetch (AJAX) para ler a própria página e extrair as diferenças.
+    // Esta abordagem (HTML replace) é simples mas muito eficaz para painéis em kiosk-mode.
+    function actualizarPainel() {
+        fetch(window.location.href, { cache: 'no-store' })
+            .then(res => res.text())
+            .then(html => {
+                // Cria um DOM virtual para analisar o resultado
+                const parser = new DOMParser();
+                const vDOM = parser.parseFromString(html, 'text/html');
+
+                // Actualiza zona principal
+                const zonaPrincipalNova = vDOM.querySelector('.zona-principal');
+                if (zonaPrincipalNova) {
+                    document.querySelector('.zona-principal').innerHTML = zonaPrincipalNova.innerHTML;
+                }
+
+                // Actualiza a grid de acompanhamento (concluidas, canceladas, espera)
+                const zonaGridNova = vDOM.querySelector('.zona-grid');
+                if (zonaGridNova) {
+                    document.querySelector('.zona-grid').innerHTML = zonaGridNova.innerHTML;
+                }
+
+                // Actualiza a última actualização
+                const ultimaAct = vDOM.getElementById('ultima-actualizacao');
+                if (ultimaAct) {
+                    document.getElementById('ultima-actualizacao').innerHTML = ultimaAct.innerHTML;
+                }
+
+                // --------- DETECTA NOVA CHAMADA (Fase 8) ---------
+                const novoElemSenha = document.getElementById('senha-actual');
+                if (novoElemSenha) {
+                    const novaSenha = novoElemSenha.getAttribute('data-id');
+
+                    if (novaSenha !== null && novaSenha !== senhaActualMemoria) {
+                        console.log("Nova chamada detectada:", novaSenha);
+                        senhaActualMemoria = novaSenha; // actualiza a memoria
+
+                        // Toca o som "Ding"
+                        tocarCampainha();
+
+                        // Pisca o painel "Em Atendimento"
+                        pulsarPainel();
+                    }
+                } else if (!novoElemSenha && senhaActualMemoria !== null) {
+                    // Significa que o sistema ficou sem chamadas, reseta
+                    senhaActualMemoria = null;
+                }
+                // -------------------------------------------------
+            })
+            .catch(err => console.error("Erro na actualização AJAX do painel:", err));
+    }
+
+    // Inicia a actualização periódica
+    setInterval(actualizarPainel, INTERVALO_ACTUALIZACAO);
+
+    // Detectar interação inicial no documento para permitir autoplay de audio
+    document.addEventListener('click', function initAudio() {
+        console.log("Interacção detectada, auto-play desbloqueado pelo browser.");
+        // Audio pré-carregamento (opcional, só para aquecer o motor do bowser)
+        const a = new Audio('assets/audio/chamada.mp3');
+        a.volume = 0; a.play().catch(() => { });
+
+        // Remove listener de si próprio para agir apenas no primeiro clique
+        document.removeEventListener('click', initAudio);
+    });
+
+});

@@ -64,6 +64,11 @@ if ($acao === 'registar') {
 
     // Se houver erros, volta ao formulário
     if (!empty($erros)) {
+        if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'erros' => $erros]);
+            exit;
+        }
         $_SESSION['erros_form'] = $erros;
         $_SESSION['dados_form'] = $_POST;
         header('Location: ' . BASE_URL .
@@ -86,15 +91,70 @@ if ($acao === 'registar') {
             "Paciente registado com sucesso — Senha: {$codigo}";
         $_SESSION['ultima_senha'] = $codigo;
 
+        if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'success', 'senha' => $codigo]);
+            exit;
+        }
+
         header('Location: ' . BASE_URL .
             'app/views/recepcionista/dashboard.php');
         exit;
 
     } catch (RuntimeException $e) {
+        if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'erros' => [$e->getMessage()]]);
+            exit;
+        }
         $_SESSION['erros_form'] = [$e->getMessage()];
         $_SESSION['dados_form'] = $_POST;
         header('Location: ' . BASE_URL .
             'app/views/recepcionista/registar.php');
+        exit;
+    }
+}
+
+// ------------------------------------------------
+// ACÇÃO: Rechamar paciente (nova senha)
+// ------------------------------------------------
+if ($acao === 'rechamar') {
+    require_once __DIR__ . '/../../app/models/Historico.php';
+
+    $pacienteId = (int) ($_POST['paciente_id'] ?? 0);
+    $tipoId = (int) ($_POST['tipo_atendimento_id'] ?? 0);
+    $prioridade = (int) ($_POST['prioridade'] ?? 4);
+
+    if ($pacienteId <= 0 || $tipoId <= 0) {
+        $_SESSION['erro'] = 'Dados inválidos para rechamada.';
+        header('Location: ' . BASE_URL .
+            'app/views/recepcionista/pesquisar.php');
+        exit;
+    }
+
+    if (!in_array($prioridade, [1, 2, 3, 4])) {
+        $prioridade = 4;
+    }
+
+    try {
+        $codigo = Historico::rechamar(
+            $pacienteId,
+            $tipoId,
+            $prioridade,
+            (int) sessao('utilizador_id')
+        );
+
+        $_SESSION['mensagem'] =
+            "Paciente rechamado — Nova senha: {$codigo}";
+        header('Location: ' . BASE_URL .
+            'app/views/recepcionista/pesquisar.php' .
+            '?ver=' . $pacienteId);
+        exit;
+
+    } catch (Exception $e) {
+        $_SESSION['erro'] = 'Erro ao rechamar paciente.';
+        header('Location: ' . BASE_URL .
+            'app/views/recepcionista/pesquisar.php');
         exit;
     }
 }

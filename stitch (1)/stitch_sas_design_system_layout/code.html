@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html lang="pt"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hospital Geral do Bengo - Dashboard de Recepção</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#ffffff",
+                        "background": "#f9f9f9",
+                        "on-error-container": "#410002",
+                        "secondary-fixed-dim": "#acabab",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary": "#e5e2e1",
+                        "tertiary-container": "#737575",
+                        "surface-container-high": "#e8e8e8",
+                        "outline": "#777777",
+                        "on-primary-fixed": "#ffffff",
+                        "surface-dim": "#dadada",
+                        "on-tertiary-fixed-variant": "#e2e2e2",
+                        "surface-container": "#eeeeee",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#ffffff",
+                        "inverse-on-surface": "#f1f1f1",
+                        "tertiary": "#3a3c3c",
+                        "primary": "#000000",
+                        "on-secondary-fixed-variant": "#3b3b3c",
+                        "primary-container": "#3c3b3b",
+                        "on-secondary-container": "#1b1c1c",
+                        "secondary": "#5e5e5e",
+                        "outline-variant": "#c6c6c6",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e2e2e2",
+                        "surface": "#f9f9f9",
+                        "secondary-fixed": "#c7c6c6",
+                        "on-tertiary-fixed": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "on-surface": "#1a1c1c",
+                        "surface-container-low": "#f3f3f3",
+                        "on-primary-fixed-variant": "#e5e2e1",
+                        "primary-fixed-dim": "#474746",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#c8c6c5",
+                        "secondary-container": "#d5d4d4",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "inverse-surface": "#2f3131",
+                        "tertiary-fixed-dim": "#454747",
+                        "surface-bright": "#f9f9f9",
+                        "on-surface-variant": "#474747",
+                        "surface-tint": "#5f5e5e",
+                        "tertiary-fixed": "#5d5f5f",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#e2e2e2",
+                        "primary-fixed": "#5f5e5e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .floating-card {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Floating Sidebar -->
+<aside class="fixed left-6 top-6 bottom-6 flex flex-col py-6 z-[60] w-56 bg-white rounded-[2rem] floating-card font-['Manrope'] antialiased border border-white/50">
+<!-- Top Section: Hospital Logo -->
+<div class="mb-8 flex flex-col items-center px-6 gap-2">
+<div class="text-[18px] font-black tracking-tighter text-black flex flex-col items-center leading-tight">
+<span>HGB</span>
+</div>
+<div class="w-10 h-[1.5px] bg-black/5"></div>
+</div>
+<!-- Middle Section: Navigation Icons -->
+<nav class="flex flex-col gap-1.5 px-3 flex-1">
+<!-- Dashboard (Active) -->
+<button class="flex items-center gap-3 px-4 py-3 w-full bg-black text-white rounded-2xl transition-all shadow-md">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="text-xs font-bold tracking-tight">Dashboard</span>
+</button>
+<!-- Novo Paciente -->
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
+<span class="text-xs font-semibold tracking-tight">Novo Paciente</span>
+</button>
+<!-- Pesquisar -->
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+<span class="text-xs font-semibold tracking-tight">Pesquisar</span>
+</button>
+<!-- Mensagens -->
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
+<span class="text-xs font-semibold tracking-tight">Mensagens</span>
+</button>
+</nav>
+<!-- Bottom Section: Avatar & Logout -->
+<div class="mt-auto flex flex-col gap-1.5 px-3">
+<div class="px-4 mb-3">
+<div class="h-[1px] bg-black/5 w-full"></div>
+</div>
+<!-- Meu Perfil -->
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all">
+<div class="w-7 h-7 rounded-full overflow-hidden border border-surface-container-high shrink-0">
+<img alt="Afonso Diallo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4OLzjBtDsdOtAr-WaOVoT9eoCzw-DXR2bHqs_9gCs3a1G7o7d19LLm2u5jz85IYOWLKARMaL4xH36Y3KYFI26tGmNXxrImLmHtnVupEepeTESuGylYtb-4XtXs_VdB9G0AI7r2bmIEXDYq0jVUfKFg6ZkqHRW6pQxkMuiEnPPv9YsH465hs6_gy0e2sGuu3nH46IfNG15K47rhrbMnB1iXjOScZ1SAjsyij30zC0MG8eLZky-cWZMnc818pCFzxjWWF3GIeyR8HwY"/>
+</div>
+<span class="text-xs font-semibold tracking-tight">Meu Perfil</span>
+</button>
+<!-- Sair -->
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:text-error hover:bg-error/5 rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="text-xs font-semibold tracking-tight text-inherit">Sair</span>
+</button>
+</div>
+</aside>
+<!-- Header Wrapper with Shield -->
+<div class="fixed top-0 right-0 left-56 z-50 h-28 bg-gradient-to-b from-[#f3f4f6] to-transparent">
+<header class="h-16 mt-6 px-8 max-w-[1500px] mx-auto">
+<div class="rounded-2xl h-full px-6 flex items-center justify-between floating-card border border-white/50 bg-white">
+<div class="flex items-center gap-3">
+<h1 class="text-base font-extrabold tracking-tight text-black">Dashboard</h1>
+<div class="h-4 w-[1px] bg-black/10"></div>
+<div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-bold">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span>
+<span>09:41</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-black leading-none">Afonso Diallo</p>
+<p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-black mt-0.5">Recepção Principal</p>
+</div>
+<div class="w-9 h-9 rounded-full overflow-hidden bg-surface-container-high ring-2 ring-surface-container">
+<img alt="Perfil do Usuário" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ5nuWcSrvrYEacZgpyvSBZBI__QsLxZ_L5jRXDQ7E09fKDLq2r1_H3977K4uUJPC4MlIZ8CgxMrSE-5wzvjt-SVdwIHQC8YQ9VxUadUgXkgoTMpUEHbYAYVaHN-boAQikbL2sKMCFWOQD5uLnpU7XP4SBo_rDVkR5XogMgOvI8PEHpMHUIJshznKh0oS_suB-MpE_ps_sQ5N6MduIyG7alR_gSRRS4NLE5Xnc6qt55qLLaLYtivJH4LL6Dw7odX2BWC6L804nJp1i"/>
+</div>
+</div>
+</div>
+</header>
+</div>
+<!-- MÉDICO CHAMOU Notification Card (Fixed Top-Right) -->
+<div class="fixed top-32 right-8 z-[100]">
+<div class="bg-black rounded-[1.5rem] py-3 px-5 flex items-center gap-4 floating-card border border-white/10 animate-in fade-in slide-in-from-top-4 duration-500 shadow-2xl">
+<!-- Speaker Icon Container -->
+<div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0 border border-white/10">
+<span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+</div>
+<!-- Text Content -->
+<div class="flex-1 min-w-[180px]">
+<p class="text-[9px] font-black text-white/60 uppercase tracking-[0.15em] leading-none">Médico Chamou</p>
+<p class="text-lg font-extrabold text-white mt-1 leading-tight tracking-tight">A001 - João Silva</p>
+</div>
+<!-- Close Icon -->
+<button class="ml-2 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</div>
+<!-- Main Content Area -->
+<div class="ml-56 mt-28 p-8 flex justify-center">
+<main class="w-full max-w-[1500px]">
+<!-- Welcome Header -->
+<div class="mb-6">
+<h2 class="text-3xl font-extrabold text-black tracking-tight">Visão Geral do Dia</h2>
+<p class="text-on-surface-variant font-semibold mt-1 text-sm">Segunda-feira, 25 de Setembro de 2026 — Recepção Principal</p>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+<div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+<p class="text-on-surface-variant font-bold uppercase tracking-widest text-[10px]">Em espera</p>
+<p class="text-4xl font-extrabold text-black mt-2">12</p>
+</div>
+<div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+<p class="text-error font-black uppercase tracking-widest text-[10px]">Urgentes</p>
+<p class="text-4xl font-extrabold text-error mt-2">2</p>
+</div>
+<div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+<p class="text-[#10B981] font-black uppercase tracking-widest text-[10px]">Atendidos hoje</p>
+<p class="text-4xl font-extrabold text-black mt-2">145</p>
+</div>
+<div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+<p class="text-on-surface-variant font-bold uppercase tracking-widest text-[10px]">Tempo médio</p>
+<div class="flex items-baseline gap-1 mt-2">
+<span class="text-4xl font-extrabold text-black">35</span>
+<span class="text-lg font-black text-on-surface-variant">m</span>
+</div>
+</div>
+</div>
+<!-- Main Layout Columns -->
+<div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+<!-- Coluna Principal (Fila de Espera) -->
+<div class="xl:col-span-3">
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-xl font-black tracking-tight">Fila de Espera Atual</h3>
+<button class="bg-black text-white px-6 py-2.5 rounded-full font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                                Novo Atendimento
+                            </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="border-b border-surface-container-low">
+<tr class="text-on-surface-variant text-[10px] font-black uppercase tracking-[0.15em]">
+<th class="pb-4">Senha</th>
+<th class="pb-4">Nome do Paciente</th>
+<th class="pb-4">Consulta</th>
+<th class="pb-4 text-center">Prioridade</th>
+<th class="pb-4 text-right">Chegada</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low/50">
+<tr class="group hover:bg-surface-container-low/30 transition-colors">
+<td class="py-4 font-black text-error text-base">U001</td>
+<td class="py-4 font-bold text-black text-sm">Benvinda Manuel</td>
+<td class="py-4 text-on-surface-variant text-xs font-medium">Geral / Triagem</td>
+<td class="py-4 text-center">
+<span class="px-3 py-1 bg-error text-white text-[9px] font-black rounded-full">URGENTE</span>
+</td>
+<td class="py-4 text-right text-sm font-bold text-black">09:12</td>
+</tr>
+<tr class="group hover:bg-surface-container-low/30 transition-colors">
+<td class="py-4 font-black text-black text-base">A012</td>
+<td class="py-4 font-bold text-black text-sm">Joaquim dos Santos</td>
+<td class="py-4 text-on-surface-variant text-xs font-medium">Cardiologia</td>
+<td class="py-4 text-center">
+<span class="px-3 py-1 bg-[#F59E0B] text-white text-[9px] font-black rounded-full">IDOSO</span>
+</td>
+<td class="py-4 text-right text-sm font-bold text-black">09:15</td>
+</tr>
+<tr class="group hover:bg-surface-container-low/30 transition-colors">
+<td class="py-4 font-black text-black text-base">A013</td>
+<td class="py-4 font-bold text-black text-sm">Marta Luísa</td>
+<td class="py-4 text-on-surface-variant text-xs font-medium">Obstetrícia</td>
+<td class="py-4 text-center">
+<span class="px-3 py-1 bg-purple-600 text-white text-[9px] font-black rounded-full">GRÁVIDA</span>
+</td>
+<td class="py-4 text-right text-sm font-bold text-black">09:20</td>
+</tr>
+<tr class="group hover:bg-surface-container-low/30 transition-colors">
+<td class="py-4 font-black text-black text-base">A014</td>
+<td class="py-4 font-bold text-black text-sm">António Kiala</td>
+<td class="py-4 text-on-surface-variant text-xs font-medium">Pediatria</td>
+<td class="py-4 text-center">
+<span class="px-3 py-1 bg-blue-600 text-white text-[9px] font-black rounded-full">NORMAL</span>
+</td>
+<td class="py-4 text-right text-sm font-bold text-black">09:22</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Coluna Lateral (Widgets) -->
+<div class="space-y-6">
+<!-- Fluxo Widget -->
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="font-black mb-6 text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-black text-[18px]" data-icon="trending_up">trending_up</span>
+                            Fluxo de Entradas
+                        </h3>
+<div class="h-32 flex items-end gap-2 justify-between px-1">
+<div class="w-full bg-surface-container-low rounded-lg h-[30%]"></div>
+<div class="w-full bg-surface-container-low rounded-lg h-[45%]"></div>
+<div class="w-full bg-surface-container-low rounded-lg h-[80%]"></div>
+<div class="w-full bg-black rounded-lg h-[95%] shadow-md"></div>
+<div class="w-full bg-surface-container-low rounded-lg h-[60%]"></div>
+<div class="w-full bg-surface-container-low rounded-lg h-[40%]"></div>
+</div>
+<div class="flex justify-between mt-4 text-[9px] font-black text-on-surface-variant tracking-wider">
+<span>06h</span>
+<span>12h</span>
+</div>
+</div>
+<!-- Dica Widget -->
+<div class="bg-black text-white rounded-[1.5rem] p-6 floating-card relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-yellow-400 text-[18px]" data-icon="lightbulb" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+<h3 class="font-black text-[10px] uppercase tracking-[0.2em]">Dica de Produtividade</h3>
+</div>
+<p class="text-[11px] font-semibold leading-relaxed opacity-90">
+                                Ao triar prioritários, verifique leitos livres para reduzir esperas no corredor.
+                            </p>
+</div>
+<div class="absolute -right-6 -bottom-6 w-24 h-24 bg-white/5 rounded-full blur-2xl"></div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
