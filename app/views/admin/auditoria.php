@@ -1,7 +1,7 @@
 <?php
 // ================================================
 // Hospital Geral do Bengo
-// Logs de Auditoria — Admin
+// Logs de Auditoria — Admin (Tactile Editorial)
 // ================================================
 
 require_once __DIR__ . '/../../../config/base_url.php';
@@ -28,25 +28,19 @@ $logs = Auditoria::listar(
 $utilizadores = Auditoria::utilizadoresParaFiltro();
 $totalHoje = Auditoria::totalHoje();
 
-// Ícones por tipo de acção
+// Ícones por tipo de acção (Material Symbols)
 $iconeAccao = [
-    'login' => '🔑',
-    'logout' => '🚪',
-    'chamar_paciente' => '📢',
-    'concluir_atendimento' => '✅',
-    'cancelar_paciente' => '❌',
-    'desfazer_chamada' => '↩️',
-    'registar_paciente' => '📝',
-    'rechamar_paciente' => '🔁',
-    'criar_utilizador' => '👤',
-    'editar_utilizador' => '✏️',
-    'toggle_utilizador' => '🔄',
-];
-
-$perfilBadge = [
-    'admin' => 'badge-urgente',
-    'medico' => 'badge-normal',
-    'recepcionista' => 'badge-gravida',
+    'login' => 'login',
+    'logout' => 'logout',
+    'chamar_paciente' => 'campaign',
+    'concluir_atendimento' => 'check_circle',
+    'cancelar_paciente' => 'cancel',
+    'desfazer_chamada' => 'undo',
+    'registar_paciente' => 'person_add',
+    'rechamar_paciente' => 'replay',
+    'criar_utilizador' => 'manage_accounts',
+    'editar_utilizador' => 'edit',
+    'toggle_utilizador' => 'sync_alt',
 ];
 ?>
 <!DOCTYPE html>
@@ -58,236 +52,184 @@ $perfilBadge = [
     <title>Auditoria — <?= APP_NOME ?></title>
     <?php include __DIR__ . '/../comum/head_assets.php'; ?>
     <style>
-        .tabela {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
 
-        .tabela th {
-            text-align: left;
-            padding: 8px 12px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--texto-muted);
-            text-transform: uppercase;
-            letter-spacing: .5px;
-            border-bottom: 1px solid var(--borda);
-            background: var(--fundo);
+        @keyframes glideIn {
+            0% { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
+        .glide-in { animation: glideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .stagger-1 { animation-delay: 0.05s; }
+        .stagger-2 { animation-delay: 0.1s; }
+        
+        .table-row { transition: all 0.2s ease; border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .table-row:hover { background-color: #f8fafc; }
 
-        .tabela td {
-            padding: 10px 12px;
-            border-bottom: .5px solid var(--borda);
-            vertical-align: middle;
+        /* Modern Select & Input for filters */
+        .filter-input {
+            background: #f4f5f7; border: 2px solid transparent; border-radius: 1rem;
+            padding: 0.8rem 1rem; font-size: 0.85rem; font-weight: 600; color: #111;
+            outline: none; transition: all 0.3s ease;
         }
-
-        .tabela tr:last-child td {
-            border-bottom: none;
-        }
-
-        .tabela tr:hover td {
-            background: var(--fundo);
-        }
-
-        .filtros {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-            align-items: flex-end;
-        }
-
-        .filtro-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .filtro-group label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--texto-muted);
-            text-transform: uppercase;
-        }
-
-        .filtro-group input,
-        .filtro-group select {
-            padding: 8px 10px;
-            border: 1px solid var(--borda);
-            border-radius: var(--radius-sm);
-            font-size: 13px;
-            font-family: inherit;
-        }
-
-        .accao-cell {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .detalhes-text {
-            font-size: 12px;
-            color: var(--texto-muted);
-            max-width: 300px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .ip-text {
-            font-size: 11px;
-            color: var(--texto-muted);
-            font-family: monospace;
-        }
+        .filter-input:focus { background: #fff; border-color: #111; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        /* Buttons */
+        .btn-action { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
+        .btn-action:active { transform: scale(0.98); }
     </style>
 </head>
 
-<body class="text-on-surface">
-<?php $paginaActual = 'auditoria'; ?>
-        <?php include __DIR__ . '/../comum/sidebar.php'; ?>
+<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+    <?php $paginaActual = 'auditoria'; ?>
+    <?php include __DIR__ . '/../comum/sidebar.php'; ?>
+    
+    <?php
+    $tituloPagina = 'Auditoria';
+    ob_start(); ?>
+    <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-black/5 shadow-sm">
+        <span class="material-symbols-outlined text-[16px] text-on-surface-variant">monitoring</span>
+        <span class="text-xs font-bold text-black"><?= $totalHoje ?> acções hoje</span>
+    </div>
+    <?php $accoesPagina = ob_get_clean(); ?>
 
-        <?php
-        $tituloPagina = 'Auditoria';
-        $subtituloPagina = $totalHoje . ' acções registadas hoje';
-        ?>
-        <?php include __DIR__ . '/../comum/header.php'; ?>
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<main class="w-full max-w-[1500px]">
-<!-- FILTROS -->
-            <form method="GET" class="filtros">
-                <div class="filtro-group">
-                    <label>Acção</label>
-                    <select name="accao">
-                        <option value="">Todas</option>
-                        <?php foreach ($iconeAccao as $k => $ic): ?>
-                            <option value="<?= $k ?>" <?= $filtroAccao === $k
-                                  ? 'selected' : '' ?>>
-                                <?= $ic ?>     <?= ucfirst(
-                                           str_replace('_', ' ', $k)
-                                       ) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="filtro-group">
-                    <label>Utilizador</label>
-                    <select name="user">
-                        <option value="0">Todos</option>
-                        <?php foreach ($utilizadores as $u): ?>
-                            <option value="<?= $u['id'] ?>" <?= $filtroUser == $u['id']
-                                  ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($u['nome']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="filtro-group">
-                    <label>De</label>
-                    <input type="date" name="di" value="<?= htmlspecialchars($dataInicio) ?>">
-                </div>
-                <div class="filtro-group">
-                    <label>Até</label>
-                    <input type="date" name="df" value="<?= htmlspecialchars($dataFim) ?>">
-                </div>
-                <button type="submit" class="btn btn-primario">
-                    Filtrar
-                </button>
-                <?php if (
-                    $filtroAccao || $filtroUser
-                    || $dataInicio || $dataFim
-                ): ?>
-                    <a href="auditoria.php" class="btn">Limpar</a>
-                <?php endif; ?>
-            </form>
+    <?php include __DIR__ . '/../comum/header.php'; ?>
 
-            <!-- TABELA -->
-            <div class="card">
+    <main class="ml-64 pt-24 h-screen overflow-y-auto custom-scrollbar">
+        <div class="p-8 max-w-[1400px] mx-auto min-h-full pb-24">
+            
+            <div class="mb-10 flex justify-between items-end glide-in">
+                <div>
+                    <h2 class="text-3xl font-headline font-extrabold text-black tracking-tight">Logs de Sistema</h2>
+                    <p class="text-sm font-semibold text-on-surface-variant mt-1 max-w-xl">Monitorização e rastreio de segurança de todas as atividades realizadas na plataforma.</p>
+                </div>
+            </div>
+
+            <!-- Formulário de Filtros -->
+            <div class="bg-white rounded-[2rem] p-6 mb-8 border border-white/50 shadow-sm glide-in stagger-1">
+                <form method="GET" class="flex flex-wrap items-end gap-4">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest pl-2">Acção</label>
+                        <select name="accao" class="filter-input w-48 appearance-none cursor-pointer">
+                            <option value="">Todas as acções</option>
+                            <?php foreach ($iconeAccao as $k => $ic): ?>
+                                <option value="<?= $k ?>" <?= $filtroAccao === $k ? 'selected' : '' ?>>
+                                    <?= ucfirst(str_replace('_', ' ', $k)) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest pl-2">Utilizador</label>
+                        <select name="user" class="filter-input w-48 appearance-none cursor-pointer">
+                            <option value="0">Todos os utilizadores</option>
+                            <?php foreach ($utilizadores as $u): ?>
+                                <option value="<?= $u['id'] ?>" <?= $filtroUser == $u['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($u['nome']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest pl-2">Data Inicial</label>
+                        <input type="date" name="di" value="<?= htmlspecialchars($dataInicio) ?>" class="filter-input">
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest pl-2">Data Final</label>
+                        <input type="date" name="df" value="<?= htmlspecialchars($dataFim) ?>" class="filter-input">
+                    </div>
+
+                    <div class="flex items-center gap-3 ml-auto">
+                        <?php if ($filtroAccao || $filtroUser || $dataInicio || $dataFim): ?>
+                            <a href="auditoria.php" class="px-5 py-3 text-sm font-bold text-gray-500 hover:text-black transition-colors rounded-xl hover:bg-gray-50">
+                                Limpar
+                            </a>
+                        <?php endif; ?>
+                        <button type="submit" class="bg-black text-white px-7 py-3 rounded-xl font-extrabold text-sm flex items-center gap-2 btn-action shadow-lg shadow-black/10">
+                            <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                            Aplicar Filtros
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabela de Logs -->
+            <div class="bg-white rounded-[2rem] border border-white/50 shadow-sm overflow-hidden glide-in stagger-2">
                 <?php if (empty($logs)): ?>
-                    <div style="text-align:center;padding:24px;
-                        color:var(--texto-muted);font-size:13px">
-                        Nenhuma acção registada
-                        <?= ($filtroAccao || $filtroUser)
-                            ? 'com estes filtros.' : 'ainda.' ?>
+                    <div class="flex flex-col items-center justify-center p-20 text-center">
+                        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                            <span class="material-symbols-outlined text-[32px] text-gray-300">security_update_warning</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-400">Nenhuma acção registada <?= ($filtroAccao || $filtroUser) ? 'com estes filtros.' : 'ainda.' ?></p>
                     </div>
                 <?php else: ?>
-                    <div style="overflow-x:auto">
-                        <table class="tabela">
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse min-w-[900px]">
                             <thead>
                                 <tr>
-                                    <th>Acção</th>
-                                    <th>Utilizador</th>
-                                    <th>Detalhes</th>
-                                    <th>IP</th>
-                                    <th>Data/Hora</th>
+                                    <th class="py-4 px-6 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Registo de Acção</th>
+                                    <th class="py-4 px-6 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Responsável</th>
+                                    <th class="py-4 px-6 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50 max-w-[300px]">Detalhes Técnicos</th>
+                                    <th class="py-4 px-6 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Endereço IP</th>
+                                    <th class="py-4 px-6 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50 text-right">Data / Hora</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($logs as $l):
-                                    $ic = $iconeAccao[$l['accao']] ?? '📋';
-                                    $badge = $perfilBadge[$l['perfil']]
-                                        ?? 'badge-normal';
-                                    ?>
-                                    <tr>
-                                        <td>
-                                            <div class="accao-cell">
-                                                <span><?= $ic ?></span>
-                                                <strong>
-                                                    <?= ucfirst(str_replace(
-                                                        '_',
-                                                        ' ',
-                                                        $l['accao']
-                                                    )) ?>
-                                                </strong>
+                                    $ic = $iconeAccao[$l['accao']] ?? 'rule';
+                                ?>
+                                <tr class="table-row">
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-[16px] text-black"><?= $ic ?></span>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <?= htmlspecialchars(
-                                                $l['utilizador_nome']
-                                            ) ?>
-                                            <br>
-                                            <span class="badge <?= $badge ?>" style="font-size:10px">
-                                                <?= ucfirst($l['perfil']) ?>
+                                            <span class="text-sm font-extrabold text-black">
+                                                <?= ucfirst(str_replace('_', ' ', $l['accao'])) ?>
                                             </span>
-                                        </td>
-                                        <td>
-                                            <?php if ($l['detalhes']): ?>
-                                                <span class="detalhes-text" title="<?= htmlspecialchars(
-                                                    $l['detalhes']
-                                                ) ?>">
-                                                    <?= htmlspecialchars(
-                                                        $l['detalhes']
-                                                    ) ?>
-                                                </span>
-                                            <?php else: ?>
-                                                <span style="color:var(--texto-muted)">
-                                                    —
-                                                </span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <span class="ip-text">
-                                                <?= htmlspecialchars(
-                                                    $l['ip'] ?? '—'
-                                                ) ?>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-bold text-gray-800"><?= htmlspecialchars($l['utilizador_nome']) ?></span>
+                                            <span class="text-[10px] font-extrabold text-blue-500 uppercase mt-0.5"><?= ucfirst($l['perfil']) ?></span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-6 max-w-[300px]">
+                                        <?php if ($l['detalhes']): ?>
+                                            <span class="text-xs font-semibold text-gray-500 truncate block w-full bg-gray-50 px-2 py-1 rounded border border-black/5" title="<?= htmlspecialchars($l['detalhes']) ?>">
+                                                <?= htmlspecialchars($l['detalhes']) ?>
                                             </span>
-                                        </td>
-                                        <td style="color:var(--texto-muted);
-                                   white-space:nowrap">
-                                            <?= date(
-                                                'd/m/Y H:i:s',
-                                                strtotime($l['criado_em'])
-                                            ) ?>
-                                        </td>
-                                    </tr>
+                                        <?php else: ?>
+                                            <span class="text-xs text-gray-300">—</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="text-xs font-mono font-bold text-gray-400 bg-gray-50/50 px-2 py-1 rounded border border-gray-100">
+                                            <?= htmlspecialchars($l['ip'] ?? '—') ?>
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-6 text-right">
+                                        <div class="flex flex-col items-end">
+                                            <span class="text-sm font-bold text-gray-800"><?= date('d, M Y', strtotime($l['criado_em'])) ?></span>
+                                            <span class="text-[11px] font-bold text-gray-400"><?= date('H:i:s', strtotime($l['criado_em'])) ?></span>
+                                        </div>
+                                    </td>
+                                </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
                 <?php endif; ?>
             </div>
-</main>
-</div>
+            
+        </div>
+    </main>
 </body>
-
 </html>

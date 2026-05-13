@@ -78,6 +78,7 @@ $prioridades = [
 
 <div class="ml-56 mt-28 p-8 flex justify-center">
 <form method="POST" action="<?= BASE_URL ?>app/controllers/pacientes.php" id="form-registo" class="w-full max-w-[1500px]">
+    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
 <main class="grid grid-cols-1 xl:grid-cols-3 gap-8 relative">
 
         <!-- FORMULÁRIO (Move para cima do Main) -->
@@ -397,17 +398,26 @@ $prioridades = [
                 if (result.status === 'success') {
                     // Executa a animação de Sucesso!
                     finalizeRegistration(result.senha);
+                    if (typeof window.showToast === 'function') window.showToast('Paciente registado com sucesso', 'success');
                 } else {
                     // Ocorreram erros na validação (Fallback simples de reset visual e alerta nativo)
                     btn.disabled = false;
                     document.getElementById('btn-text-main').textContent = 'Finalizar Registro';
-                    alert('Erro ao registar: \n' + (result.erros || []).join('\n'));
+                    if (typeof window.showToast === 'function') {
+                        window.showToast((result.erros || []).join(', '), 'error', 'ERRO NO REGISTO');
+                    } else {
+                        alert('Erro ao registar: \n' + (result.erros || []).join('\n'));
+                    }
                 }
             } catch (error) {
                 console.error(error);
                 btn.disabled = false;
                 document.getElementById('btn-text-main').textContent = 'Finalizar Registro';
-                alert('Erro na comunicação com o servidor.');
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Erro na comunicação com o servidor.', 'error', 'ERRO');
+                } else {
+                    alert('Erro na comunicação com o servidor.');
+                }
             }
         });
     </script>

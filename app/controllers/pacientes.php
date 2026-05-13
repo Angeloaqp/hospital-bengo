@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+validarTokenCsrf();
+
 $acao = trim($_POST['acao'] ?? '');
 
 // ------------------------------------------------
@@ -104,10 +106,10 @@ if ($acao === 'registar') {
     } catch (RuntimeException $e) {
         if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
             header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'erros' => [$e->getMessage()]]);
+            echo json_encode(['status' => 'error', 'erros' => ['Erro interno ao registar paciente e emitir senha.']]);
             exit;
         }
-        $_SESSION['erros_form'] = [$e->getMessage()];
+        $_SESSION['erros_form'] = ['Erro interno ao registar paciente e emitir senha.'];
         $_SESSION['dados_form'] = $_POST;
         header('Location: ' . BASE_URL .
             'app/views/recepcionista/registar.php');

@@ -298,6 +298,7 @@ $tipos = $db->query(
                         <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed mb-6 text-center">Emita uma nova senha associada a este biótipo no sistema sem refazer o registo demográfico.</p>
                         
                         <form id="quick-admission-form" method="POST" action="<?= BASE_URL ?>app/controllers/pacientes.php" class="flex flex-col gap-5">
+                            <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
                             <input type="hidden" name="acao" value="rechamar">
                             <input type="hidden" name="paciente_id" value="<?= $paciente['id'] ?>">
                             <input type="hidden" name="ajax" value="1">

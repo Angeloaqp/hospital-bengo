@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+validarTokenCsrf();
+
 $acao = trim($_POST['acao'] ?? '');
 
 // ------------------------------------------------
@@ -81,12 +83,53 @@ if ($acao === 'criar_utilizador') {
         $erros[] = 'Este nome de utilizador já existe.';
     }
 
+    // Tratamento de upload de foto (opcional)
+    $fotoPath = null;
+    $maxSize = 2 * 1024 * 1024; // 2MB
+    $formatosPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
+
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $img = $_FILES['foto'];
+
+        if ($img['size'] > $maxSize) {
+            $erros[] = 'A foto deve ter no máximo 2MB.';
+        } else {
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mimeReal = $finfo->file($img['tmp_name']);
+            if (!in_array($mimeReal, $formatosPermitidos)) {
+                $erros[] = 'Foto: apenas JPG, PNG ou WEBP.';
+            }
+        }
+    }
+
     if (!empty($erros)) {
         $_SESSION['erro'] = implode(' ', $erros);
         $_SESSION['form_data'] = $_POST;
         header('Location: ' . BASE_URL .
             'app/views/admin/criar_utilizador.php');
         exit;
+    }
+
+    // Mover foto para destino final (após validação completa)
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $img = $_FILES['foto'];
+        $pastaDestino = __DIR__ . '/../../public/uploads/fotos/';
+        if (!is_dir($pastaDestino)) {
+            mkdir($pastaDestino, 0755, true);
+        }
+        $ext = strtolower(pathinfo($img['name'], PATHINFO_EXTENSION));
+        $nomeArquivo = 'perfil_novo_' . time() . '_' . mt_rand(100, 999) . '.' . $ext;
+        $caminhoFinal = $pastaDestino . $nomeArquivo;
+
+        if (move_uploaded_file($img['tmp_name'], $caminhoFinal)) {
+            $fotoPath = 'uploads/fotos/' . $nomeArquivo;
+        } else {
+            $_SESSION['erro'] = 'Erro ao guardar a foto de perfil.';
+            $_SESSION['form_data'] = $_POST;
+            header('Location: ' . BASE_URL .
+                'app/views/admin/criar_utilizador.php');
+            exit;
+        }
     }
 
     try {
@@ -98,6 +141,7 @@ if ($acao === 'criar_utilizador') {
             'especialidade_id' => $espId,
             'consultorio_id' => $consId,
             'telefone' => $telefone,
+            'foto_path' => $fotoPath,
         ]);
 
         $_SESSION['mensagem'] =
@@ -107,6 +151,13 @@ if ($acao === 'criar_utilizador') {
         exit;
 
     } catch (PDOException $e) {
+        // Se falhou o insert, apagar foto já movida
+        if ($fotoPath) {
+            $fotoReal = __DIR__ . '/../../public/' . $fotoPath;
+            if (file_exists($fotoReal)) {
+                @unlink($fotoReal);
+            }
+        }
         $_SESSION['erro'] = 'Erro ao criar utilizador.';
         $_SESSION['form_data'] = $_POST;
         header('Location: ' . BASE_URL .

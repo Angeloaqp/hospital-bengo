@@ -43,12 +43,45 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
                 <?php endif; ?>
 
                 <!-- Notificações -->
-                <a href="<?= BASE_URL ?>app/views/comum/mensagens.php" class="relative flex items-center justify-center w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container text-black transition-colors" title="Mensagens">
-                    <span class="material-symbols-outlined text-[20px]">notifications</span>
-                    <?php if ($_naoLidas > 0): ?>
-                        <span class="absolute -top-1 -right-1 bg-error text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white"><?= $_naoLidas > 9 ? '9+' : $_naoLidas ?></span>
-                    <?php endif; ?>
-                </a>
+                <div class="relative group" id="notif-dropdown-wrapper">
+                    <button type="button" class="relative flex items-center justify-center w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container text-black transition-colors" title="Notificações" onclick="document.getElementById('notif-menu').classList.toggle('hidden')">
+                        <span class="material-symbols-outlined text-[20px]">notifications</span>
+                        <?php if ($_naoLidas > 0): ?>
+                            <span class="absolute -top-1 -right-1 bg-error text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white"><?= $_naoLidas > 9 ? '9+' : $_naoLidas ?></span>
+                        <?php endif; ?>
+                    </button>
+                    
+                    <!-- Dropdown Card (Hidden by default) -->
+                    <div id="notif-menu" class="hidden absolute right-0 mt-3 w-80 bg-white rounded-[1.5rem] shadow-2xl border border-black/5 overflow-hidden z-50 flex flex-col transform origin-top-right transition-all">
+                        <div class="px-5 py-4 flex items-center justify-between border-b border-black/5 bg-surface-container-low/30">
+                            <h3 class="text-sm font-black text-black tracking-tight">Notificações</h3>
+                            <span class="text-[9px] font-bold text-on-surface-variant uppercase tracking-widest"><?= $_naoLidas ?> Novas</span>
+                        </div>
+                        <div class="flex flex-col max-h-[320px] overflow-y-auto custom-scrollbar">
+                            <?php if ($_naoLidas > 0): ?>
+                                <!-- Exemplo Mockup de Notificação Recente -->
+                                <div class="px-5 py-4 hover:bg-surface-container-low transition-colors cursor-pointer border-b border-black/5 flex gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-[16px]">info</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-0.5">Sistema</p>
+                                        <p class="text-xs font-bold text-black leading-tight">Existem mensagens não lidas no seu painel.</p>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="p-8 text-center flex flex-col items-center">
+                                    <span class="material-symbols-outlined text-4xl text-surface-container-highest mb-2">notifications_paused</span>
+                                    <p class="text-xs font-bold text-on-surface-variant">Tudo tranquilo.</p>
+                                    <p class="text-[10px] text-on-surface-variant/70 mt-1">Não tem notificações pendentes.</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <a href="<?= BASE_URL ?>app/views/comum/mensagens.php" class="block w-full px-5 py-3 text-center text-xs font-bold text-black hover:bg-surface-container-low transition-colors border-t border-black/5">
+                            Ver Todas as Mensagens
+                        </a>
+                    </div>
+                </div>
 
                 <div class="h-6 w-[1px] bg-black/5 mx-1"></div>
 
@@ -85,4 +118,13 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
         el.textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
     }, 30000);
 })();
+
+// Fechar notificação ao clicar fora
+document.addEventListener('click', function(event) {
+    const wrapper = document.getElementById('notif-dropdown-wrapper');
+    const menu = document.getElementById('notif-menu');
+    if (wrapper && menu && !wrapper.contains(event.target)) {
+        menu.classList.add('hidden');
+    }
+});
 </script>

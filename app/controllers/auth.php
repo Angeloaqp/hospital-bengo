@@ -15,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+validarTokenCsrf();
+
 $acao = trim($_POST['acao'] ?? '');
 
 // ------------------------------------------------
@@ -36,7 +38,8 @@ if ($acao === 'login') {
         $db = Database::ligar();
         $stmt = $db->prepare(
             "SELECT id, nome, nome_utilizador, 
-                    senha_hash, perfil, estado
+                    senha_hash, perfil, estado,
+                    tentativas_falhadas, bloqueado_ate
              FROM utilizadores
              WHERE nome_utilizador = :u
              LIMIT 1"
@@ -44,16 +47,51 @@ if ($acao === 'login') {
         $stmt->execute([':u' => $nomeUtilizador]);
         $utilizador = $stmt->fetch();
 
-        // Verifica utilizador + senha + estado activo
-        if (
-            !$utilizador ||
-            !password_verify($senha, $utilizador['senha_hash']) ||
-            $utilizador['estado'] != 1
-        ) {
-            $_SESSION['erro_login'] =
-                'Utilizador ou senha incorrectos.';
+        if (!$utilizador) {
+            $_SESSION['erro_login'] = 'Utilizador ou senha incorrectos.';
             header('Location: ' . BASE_URL . 'public/index.php');
             exit;
+        }
+
+        // Verifica se a conta está bloqueada
+        if ($utilizador['bloqueado_ate']) {
+            $bloqueadoAte = strtotime($utilizador['bloqueado_ate']);
+            if (time() < $bloqueadoAte) {
+                $minutos = ceil(($bloqueadoAte - time()) / 60);
+                $_SESSION['erro_login'] = "Conta bloqueada por segurança. Tente novamente em $minutos minuto(s).";
+                header('Location: ' . BASE_URL . 'public/index.php');
+                exit;
+            } else {
+                // Tempo de bloqueio expirou, limpar
+                $db->prepare("UPDATE utilizadores SET tentativas_falhadas = 0, bloqueado_ate = NULL WHERE id = :id")->execute([':id' => $utilizador['id']]);
+                $utilizador['tentativas_falhadas'] = 0;
+            }
+        }
+
+        // Verifica estado activo e senha
+        if ($utilizador['estado'] != 1 || !password_verify($senha, $utilizador['senha_hash'])) {
+            // Conta falhas
+            $falhas = $utilizador['tentativas_falhadas'] + 1;
+            $query = "UPDATE utilizadores SET tentativas_falhadas = :f";
+            $params = [':f' => $falhas, ':id' => $utilizador['id']];
+            
+            if ($falhas >= 5) {
+                $query .= ", bloqueado_ate = DATE_ADD(NOW(), INTERVAL 15 MINUTE)";
+                $_SESSION['erro_login'] = 'Muitas tentativas falhadas. Conta bloqueada por 15 minutos.';
+            } else {
+                $_SESSION['erro_login'] = 'Utilizador ou senha incorrectos.';
+            }
+            
+            $query .= " WHERE id = :id";
+            $db->prepare($query)->execute($params);
+
+            header('Location: ' . BASE_URL . 'public/index.php');
+            exit;
+        }
+
+        // Sucesso: Limpar falhas se existirem
+        if ($utilizador['tentativas_falhadas'] > 0) {
+            $db->prepare("UPDATE utilizadores SET tentativas_falhadas = 0, bloqueado_ate = NULL WHERE id = :id")->execute([':id' => $utilizador['id']]);
         }
 
         // Regenera ID de sessão por segurança

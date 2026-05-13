@@ -62,13 +62,13 @@ class Utilizador
     public static function alterarSenha(int $id, string $senhaAntiga, string $senhaNova): bool
     {
         $db = Database::ligar();
-        $stmt = $db->prepare("SELECT senha FROM utilizadores WHERE id = :id LIMIT 1");
+        $stmt = $db->prepare("SELECT senha_hash FROM utilizadores WHERE id = :id LIMIT 1");
         $stmt->execute([':id' => $id]);
         $hashAntigo = $stmt->fetchColumn();
 
         if (password_verify($senhaAntiga, $hashAntigo)) {
             $novoHash = password_hash($senhaNova, PASSWORD_DEFAULT);
-            $stmtUpdate = $db->prepare("UPDATE utilizadores SET senha = :senha WHERE id = :id");
+            $stmtUpdate = $db->prepare("UPDATE utilizadores SET senha_hash = :senha WHERE id = :id");
             return $stmtUpdate->execute([':senha' => $novoHash, ':id' => $id]);
         }
 

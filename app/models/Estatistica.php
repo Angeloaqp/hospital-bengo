@@ -214,10 +214,10 @@ class Estatistica
             "INSERT INTO utilizadores
                 (nome, nome_utilizador, senha_hash,
                  perfil, especialidade_id,
-                 consultorio_id, telefone, estado)
+                 consultorio_id, telefone, foto_path, estado)
              VALUES
                 (:nome, :user, :hash,
-                 :perfil, :esp, :cons, :tel, 1)"
+                 :perfil, :esp, :cons, :tel, :foto, 1)"
         );
         $stmt->execute([
             ':nome' => $d['nome'],
@@ -230,6 +230,7 @@ class Estatistica
             ':esp' => $d['especialidade_id'] ?: null,
             ':cons' => $d['consultorio_id'] ?: null,
             ':tel' => $d['telefone'] ?: null,
+            ':foto' => $d['foto_path'] ?? null,
         ]);
         return (int) $db->lastInsertId();
     }
@@ -412,6 +413,93 @@ class Estatistica
              WHERE DATE(criado_em) BETWEEN :di AND :df
              GROUP BY HOUR(criado_em)
              ORDER BY hora ASC"
+        );
+        $stmt->execute([':di' => $dataInicio, ':df' => $dataFim]);
+        return $stmt->fetchAll();
+    }
+
+    // ================================================
+    // FASE 7 — ANÁLISE DEMOGRÁFICA
+    // ================================================
+
+    /**
+     * Distribuição etária dos pacientes atendidos no período
+     */
+    public static function demografiaIdade(
+        string $dataInicio,
+        string $dataFim
+    ): array {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "SELECT 
+                SUM(p.idade < 5) AS criancas,
+                SUM(p.idade BETWEEN 5 AND 17) AS jovens,
+                SUM(p.idade BETWEEN 18 AND 35) AS adultos_jovens,
+                SUM(p.idade BETWEEN 36 AND 59) AS adultos,
+                SUM(p.idade >= 60) AS idosos,
+                COUNT(*) AS total
+             FROM senhas s
+             JOIN pacientes p ON s.paciente_id = p.id
+             WHERE DATE(s.criado_em) BETWEEN :di AND :df"
+        );
+        $stmt->execute([':di' => $dataInicio, ':df' => $dataFim]);
+        return $stmt->fetch() ?: [
+            'criancas' => 0, 'jovens' => 0, 'adultos_jovens' => 0,
+            'adultos' => 0, 'idosos' => 0, 'total' => 0
+        ];
+    }
+
+    /**
+     * Distribuição por prioridade no período
+     */
+    public static function demografiaPrioridade(
+        string $dataInicio,
+        string $dataFim
+    ): array {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "SELECT prioridade, COUNT(*) AS total
+             FROM senhas
+             WHERE DATE(criado_em) BETWEEN :di AND :df
+             GROUP BY prioridade
+             ORDER BY prioridade ASC"
+        );
+        $stmt->execute([':di' => $dataInicio, ':df' => $dataFim]);
+        $rows = $stmt->fetchAll();
+
+        $mapa = [
+            1 => ['label' => 'Urgente',  'total' => 0, 'cor' => '#DC2626', 'icon' => 'bolt'],
+            2 => ['label' => 'Idoso',    'total' => 0, 'cor' => '#D97706', 'icon' => 'elderly'],
+            3 => ['label' => 'Grávida',  'total' => 0, 'cor' => '#7C3AED', 'icon' => 'pregnant_woman'],
+            4 => ['label' => 'Normal',   'total' => 0, 'cor' => '#1E6FD9', 'icon' => 'person'],
+        ];
+
+        foreach ($rows as $r) {
+            $p = (int) $r['prioridade'];
+            if (isset($mapa[$p])) {
+                $mapa[$p]['total'] = (int) $r['total'];
+            }
+        }
+
+        return array_values($mapa);
+    }
+
+    /**
+     * Top especialidades mais procuradas no período
+     */
+    public static function topEspecialidades(
+        string $dataInicio,
+        string $dataFim
+    ): array {
+        $db = Database::ligar();
+        $stmt = $db->prepare(
+            "SELECT ta.nome AS especialidade, COUNT(*) AS total
+             FROM senhas s
+             JOIN tipos_atendimento ta ON s.tipo_atendimento_id = ta.id
+             WHERE DATE(s.criado_em) BETWEEN :di AND :df
+             GROUP BY ta.id, ta.nome
+             ORDER BY total DESC
+             LIMIT 6"
         );
         $stmt->execute([':di' => $dataInicio, ':df' => $dataFim]);
         return $stmt->fetchAll();

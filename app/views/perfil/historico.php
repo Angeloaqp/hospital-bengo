@@ -1,7 +1,7 @@
 <?php
 // ================================================
 // Hospital Geral do Bengo
-// Vista: O Meu Histórico (Métricas pessoais)
+// Vista: O Meu Histórico (Métricas pessoais) - Tactile Editorial
 // ================================================
 
 require_once __DIR__ . '/../../../config/base_url.php';
@@ -29,189 +29,160 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Histórico —
-        <?= APP_NOME ?>
-    </title>
+    <title>Detalhes de Desempenho — <?= APP_NOME ?></title>
     <?php include __DIR__ . '/../comum/head_assets.php'; ?>
 
+    <!-- Carregar Chart.js para os gráficos de barras -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
 
-        .stat-card {
-            background: #fff;
-            padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--borda);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        @keyframes bentoIn {
+            0% { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(5px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
         }
+        .bento-card { animation: bentoIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        
+        .delay-1 { animation-delay: 0.05s; }
+        .delay-2 { animation-delay: 0.1s; }
+        .delay-3 { animation-delay: 0.15s; }
+        .delay-4 { animation-delay: 0.20s; }
+        .delay-5 { animation-delay: 0.25s; }
 
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--azul);
-        }
+        .btn-black { transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .btn-black:hover { transform: translateY(-3px); box-shadow: 0 14px 20px -8px rgba(0,0,0,0.3); }
+        .btn-black:active { transform: scale(0.98); box-shadow: none; }
 
-        .stat-label {
-            font-size: 13px;
-            color: var(--texto-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .historico-tabela {
-            background: #fff;
-            padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--borda);
-        }
-
-        .historico-header {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--texto);
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .sparkline-wrapper {
-            position: relative;
-            height: 120px;
-            width: 100%;
-        }
-
-        .tag-estado {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .tag-concluido {
-            background: var(--verde-claro);
-            color: var(--verde);
-        }
-
-        .tag-cancelado {
-            background: var(--vermelho-claro);
-            color: var(--vermelho);
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
+        .form-row { transition: all 0.2s ease; border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .form-row:hover { background-color: #f8fafc; }
     </style>
 </head>
 
-<body class="text-on-surface">
-<?php $paginaActual = 'historico'; ?>
-        <?php include __DIR__ . '/../comum/sidebar.php'; ?>
+<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+    <?php $paginaActual = 'perfil'; ?>
+    <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
-        <?php
-        $tituloPagina = 'Histórico';
-        $subtituloPagina = '';
-        ?>
-        <?php include __DIR__ . '/../comum/header.php'; ?>
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<main class="w-full max-w-[1500px]">
-<div class="flex items-center justify-between mb-6">
+    <?php $tituloPagina = 'Métricas e Histórico'; ob_start(); ?>
+    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-black hover:bg-black hover:text-white hover:border-black rounded-full flex items-center gap-2 transition-all shadow-sm">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        <span class="text-xs font-bold">Resumo do Perfil</span>
+    </a>
+    <?php $accoesPagina = ob_get_clean(); ?>
+    <?php include __DIR__ . '/../comum/header.php'; ?>
+
+    <main class="ml-64 pt-24 h-screen overflow-y-auto custom-scrollbar relative">
+        <div class="p-8 pb-32 max-w-[1400px] mx-auto min-h-full">
+
+            <div class="mb-10 bento-card flex items-end justify-between">
                 <div>
-                    <h2>Meu Histórico</h2>
-                    <div class="sub"><?= ($meuPerfil === 'medico' && $dados['especialidade'] ? htmlspecialchars($dados['especialidade']) : ucfirst($meuPerfil)) ?></div>
+                    <h2 class="text-3xl font-headline font-black text-black tracking-tight leading-none">Análise de Produtividade</h2>
+                    <p class="text-sm font-bold text-gray-400 mt-2">Visão geral do seu histórico de volume e tempos no sistema.</p>
                 </div>
-                <a href="editar.php" class="btn btn-sm">← Voltar</a>
+                <div class="px-4 py-2 bg-gray-100/50 rounded-xl">
+                    <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Cargo Operacional: </span>
+                    <span class="text-sm font-bold text-black ml-1"><?= ($meuPerfil === 'medico' && $dados['especialidade'] ? htmlspecialchars($dados['especialidade']) : ucfirst($meuPerfil)) ?></span>
+                </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Realizados Hoje</div>
-                    <div class="stat-value">
+            <!-- BLOCO 1: ESTATÍSTICAS NÚMERICAS (4 colunas) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                
+                <div class="bento-card delay-1 bg-white rounded-[2rem] p-6 border border-black/5 shadow-sm">
+                    <div class="flex items-center justify-between mb-8 text-gray-400">
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest">Realizados Hoje</span>
+                        <span class="material-symbols-outlined text-[18px]">today</span>
+                    </div>
+                    <div class="text-5xl font-headline font-black text-black">
                         <?= $estatisticas['hoje'] ?>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Esta Semana</div>
-                    <div class="stat-value">
+
+                <div class="bento-card delay-2 bg-white rounded-[2rem] p-6 border border-black/5 shadow-sm">
+                    <div class="flex items-center justify-between mb-8 text-gray-400">
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest">Esta Semana</span>
+                        <span class="material-symbols-outlined text-[18px]">date_range</span>
+                    </div>
+                    <div class="text-5xl font-headline font-black text-black">
                         <?= $estatisticas['semana'] ?>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total GERAL</div>
-                    <div class="stat-value" style="color:#111827">
+
+                <div class="bento-card delay-3 bg-white rounded-[2rem] p-6 border border-black/5 shadow-sm">
+                    <div class="flex items-center justify-between mb-8 text-gray-400">
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest">Total Histórico</span>
+                        <span class="material-symbols-outlined text-[18px]">functions</span>
+                    </div>
+                    <div class="text-5xl font-headline font-black text-black">
                         <?= $estatisticas['total'] ?>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Tempo Médio / Taxa</div>
-                    <div class="stat-value" style="color:var(--verde)">
-                        <?= $estatisticas['tempo_medio'] ?>
+
+                <div class="bento-card delay-3 bg-white rounded-[2rem] p-6 border border-black/5 shadow-sm relative overflow-hidden group">
+                    <div class="absolute -right-6 -bottom-6 text-green-500 opacity-10 transition-transform duration-500 group-hover:scale-110">
+                        <span class="material-symbols-outlined" style="font-size: 100px;">speed</span>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-8 text-gray-400">
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest">Taxa / Tempo Médio</span>
+                            <span class="material-symbols-outlined text-[18px]">timer</span>
+                        </div>
+                        <div class="text-5xl font-headline font-black text-green-600 tracking-tighter">
+                            <?= $estatisticas['tempo_medio'] ?>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- GRÁFICO (Sparkline Últimos 7 dias) -->
-            <div class="historico-tabela" style="margin-bottom: 24px;">
-                <div class="historico-header">Tendência de Produtividade (Últimos 7 dias)</div>
-                <div class="sparkline-wrapper">
+            <!-- BLOCO 2: GRÁFICO TENDÊNCIA BENTO -->
+            <div class="bento-card delay-4 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm mb-8">
+                <h3 class="text-sm font-extrabold text-black uppercase tracking-widest mb-6">Tendência Produtiva (Últimos 7 dias)</h3>
+                <div class="w-full h-48">
                     <canvas id="meuGrafico"></canvas>
                 </div>
             </div>
 
-            <div class="historico-tabela">
-                <div class="historico-header">Listagem das Últimas 20 Acções</div>
+            <!-- BLOCO 3: DATATABLE HISTÓRICO -->
+            <div class="bento-card delay-5 bg-white rounded-[2.5rem] border border-black/5 shadow-sm overflow-hidden">
+                <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
+                    <h3 class="text-sm font-extrabold text-black uppercase tracking-widest">Registo em Detalhe (Últimos 20)</h3>
+                </div>
 
-                <div class="tabela-responsiva">
-                    <table class="tabela">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse min-w-[800px]">
                         <?php if ($meuPerfil === 'medico'): ?>
                             <thead>
                                 <tr>
-                                    <th>Paciente</th>
-                                    <th>Código</th>
-                                    <th>Atendimento</th>
-                                    <th>Estado</th>
-                                    <th>Tempo (Dur.)</th>
-                                    <th>Data / Hora</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Paciente Identificado</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Código</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Tipo Consulta</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Estado</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50 text-right">Duração</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50 text-right">Data</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($historico as $h): ?>
-                                    <tr>
-                                        <td><strong>
-                                                <?= htmlspecialchars($h['paciente_nome']) ?>
-                                            </strong></td>
-                                        <td>
-                                            <?= htmlspecialchars($h['codigo']) ?>
-                                        </td>
-                                        <td>
-                                            <?= htmlspecialchars($h['atendimento_tipo']) ?>
-                                        </td>
-                                        <td>
+                                    <tr class="form-row">
+                                        <td class="py-4 px-8 font-bold text-sm text-black"><?= htmlspecialchars($h['paciente_nome']) ?></td>
+                                        <td class="py-4 px-8"><span class="px-2 py-1 bg-gray-100 rounded text-xs font-mono font-bold text-gray-500"><?= htmlspecialchars($h['codigo']) ?></span></td>
+                                        <td class="py-4 px-8 text-sm font-bold text-gray-500"><?= htmlspecialchars($h['atendimento_tipo']) ?></td>
+                                        <td class="py-4 px-8">
                                             <?php if ($h['estado'] === 'concluida'): ?>
-                                                <span class="tag-estado tag-concluido">Concluída</span>
+                                                <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-extrabold uppercase">Concluído</span>
                                             <?php else: ?>
-                                                <span class="tag-estado tag-cancelado">Cancelada</span>
+                                                <span class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-[10px] font-extrabold uppercase">Cancelada</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td>
-                                            <?= $h['duracao'] !== null ? $h['duracao'] . ' min' : '--' ?>
+                                        <td class="py-4 px-8 text-right text-sm font-bold text-gray-500">
+                                            <?= $h['duracao'] !== null ? $h['duracao'] . ' <span class="text-xs text-gray-300">m</span>' : '<span class="text-gray-300">—</span>' ?>
                                         </td>
-                                        <td>
-                                            <?= date('d/m/Y H:i', strtotime($h['hora_chamada'])) ?>
+                                        <td class="py-4 px-8 text-right">
+                                            <div class="text-sm font-bold text-gray-800"><?= date('d, M', strtotime($h['hora_chamada'])) ?></div>
+                                            <div class="text-[11px] font-extrabold text-gray-400"><?= date('H:i', strtotime($h['hora_chamada'])) ?></div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -220,30 +191,28 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                         <?php elseif ($meuPerfil === 'recepcionista'): ?>
                             <thead>
                                 <tr>
-                                    <th>Paciente</th>
-                                    <th>Código (Senha)</th>
-                                    <th>Tipo Emitido</th>
-                                    <th>Estado Actual</th>
-                                    <th>Gerado em</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Paciente Inserido</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Senha / Cod.</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Especialidade Distribuída</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Progresso do Paciente</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50 text-right">Geração / Data</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($historico as $h): ?>
-                                    <tr>
-                                        <td><strong>
-                                                <?= htmlspecialchars($h['paciente_nome']) ?>
-                                            </strong></td>
-                                        <td>
-                                            <?= htmlspecialchars($h['codigo']) ?>
+                                    <tr class="form-row">
+                                        <td class="py-4 px-8 font-bold text-sm text-black flex items-center gap-3">
+                                            <span class="material-symbols-outlined text-[16px] text-gray-300">person</span>
+                                            <?= htmlspecialchars($h['paciente_nome']) ?>
                                         </td>
-                                        <td>
-                                            <?= htmlspecialchars($h['atendimento_tipo']) ?>
+                                        <td class="py-4 px-8"><span class="px-2 py-1 bg-gray-100 rounded text-xs font-mono font-bold text-gray-500"><?= htmlspecialchars($h['codigo']) ?></span></td>
+                                        <td class="py-4 px-8 text-sm font-bold text-blue-600"><?= htmlspecialchars($h['atendimento_tipo']) ?></td>
+                                        <td class="py-4 px-8">
+                                            <span class="text-xs font-extrabold uppercase tracking-widest text-gray-400"><?= htmlspecialchars($h['estado']) ?></span>
                                         </td>
-                                        <td>
-                                            <?= ucfirst($h['estado']) ?>
-                                        </td>
-                                        <td>
-                                            <?= date('d/m/Y H:i', strtotime($h['criado_em'])) ?>
+                                        <td class="py-4 px-8 text-right">
+                                            <div class="text-sm font-bold text-gray-800"><?= date('d, M', strtotime($h['criado_em'])) ?></div>
+                                            <div class="text-[11px] font-extrabold text-gray-400"><?= date('H:i', strtotime($h['criado_em'])) ?></div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -253,26 +222,29 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                             <!-- ADMIN -->
                             <thead>
                                 <tr>
-                                    <th>Acção Base</th>
-                                    <th>Detalhes e Dados Modificados</th>
-                                    <th>IP do Gestor</th>
-                                    <th>Data e Hora</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Ação de Gestão</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Metadados Modificados</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50">Sessão IP</th>
+                                    <th class="py-4 px-8 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest bg-gray-50/50 text-right">Data da Modificação</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($historico as $h): ?>
-                                    <tr>
-                                        <td><strong>
+                                    <tr class="form-row">
+                                        <td class="py-4 px-8">
+                                            <span class="px-3 py-1.5 bg-black text-white rounded-md text-[10px] font-extrabold uppercase tracking-widest">
                                                 <?= htmlspecialchars($h['accao']) ?>
-                                            </strong></td>
-                                        <td>
+                                            </span>
+                                        </td>
+                                        <td class="py-4 px-8 text-sm font-medium text-gray-500 max-w-[250px] truncate" title="<?= htmlspecialchars($h['detalhes']) ?>">
                                             <?= htmlspecialchars($h['detalhes']) ?>
                                         </td>
-                                        <td>
+                                        <td class="py-4 px-8 text-xs font-mono font-bold text-gray-400 bg-gray-50 rounded">
                                             <?= htmlspecialchars($h['ip']) ?>
                                         </td>
-                                        <td>
-                                            <?= date('d/m/Y H:i', strtotime($h['criado_em'])) ?>
+                                        <td class="py-4 px-8 text-right">
+                                            <div class="text-sm font-bold text-black"><?= date('d, M Y', strtotime($h['criado_em'])) ?></div>
+                                            <div class="text-[11px] font-extrabold text-gray-400"><?= date('H:i:s', strtotime($h['criado_em'])) ?></div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -281,14 +253,16 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                     </table>
 
                     <?php if (empty($historico)): ?>
-                        <p style="text-align:center; padding:24px; color:gray">Nenhum histórico encontrado recentemente.</p>
+                        <div class="p-16 text-center">
+                            <span class="material-symbols-outlined text-[32px] text-gray-300 mb-2">inbox</span>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Nenhuma informação arquivada recente.</p>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
 
-        </main>
-
-    </div>
+        </div>
+    </main>
 
     <script>
         const DADOS_CHART = <?= json_encode($grafico) ?>;
@@ -301,27 +275,29 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                     data: {
                         labels: DADOS_CHART.labels,
                         datasets: [{
-                            label: 'Produtividade / Trabalhos Registados',
+                            label: 'Volume Diário',
                             data: DADOS_CHART.data,
-                            backgroundColor: 'rgba(30, 111, 217, 0.8)',
-                            borderColor: '#1E6FD9',
-                            borderRadius: 4
+                            backgroundColor: '#111827', // Preto profundo tátil
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            hoverBackgroundColor: '#374151'
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
+                        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#000', padding: 12, titleFont: { size: 14, family: 'Manrope' } } },
                         scales: {
-                            y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { stepSize: 1 } },
-                            x: { grid: { display: false } }
+                            y: { beginAtZero: true, grid: { color: '#f3f4f6', drawBorder: false }, border: { display: false }, ticks: { stepSize: 1, font: { weight: 'bold', color: '#9ca3af' } } },
+                            x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 'bold', color: '#6b7280' } } }
+                        },
+                        animation: {
+                            y: { duration: 1500, easing: 'easeOutQuart' }
                         }
                     }
                 });
             }
         });
     </script>
-
 </body>
-
 </html>

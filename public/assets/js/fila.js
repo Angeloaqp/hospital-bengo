@@ -49,16 +49,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Função de notificação visual
     function tocarNotificacaoChamada(codigo, nome) {
-        somRecepcao.play().catch(e => console.log('Bloqueado pelo browser (necessita interacção prévia).'));
-
-        const toast = document.getElementById('notificacao-chamada');
-        if (toast) {
-            document.getElementById('notif-senha').innerText = codigo;
-            document.getElementById('notif-paciente').innerText = nome;
-
-            toast.classList.add('mostrar');
-            setTimeout(() => { toast.classList.remove('mostrar'); }, 6000);
+        somRecepcao.play().catch(e => console.log('Som bloqueado pelo browser.'));
+        if (typeof window.showToast === 'function') {
+            window.showToast(`${codigo} - ${nome}`, 'audio', 'MÉDICO CHAMOU', 8000);
         }
+    }
+
+    // Disparar alertas iniciais
+    const initAlerts = document.getElementById('alertas-iniciais');
+    if (initAlerts) {
+        const msg = initAlerts.getAttribute('data-mensagem');
+        if (msg) window.showToast(msg, 'success', 'SISTEMA', 5000);
+        
+        const pico = initAlerts.getAttribute('data-pico') === 'true';
+        if (pico) window.showToast(initAlerts.getAttribute('data-pico-desc'), 'error', 'PICO DE AFLUÊNCIA', 6000);
+        
+        const urgentes = parseInt(initAlerts.getAttribute('data-urgentes') || '0', 10);
+        if (urgentes > 0) window.showToast(`${urgentes} urgência(s) ativa(s)`, 'error', 'URGÊNCIA', 6000);
     }
 
     setInterval(async () => {
@@ -86,15 +93,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (novaFila && antigaFila) antigaFila.innerHTML = novaFila.innerHTML;
 
             // --- 3. Substitui os Alertas (Urgência e Pico de Fila) ---
-            document.querySelectorAll('.alerta:not(.alerta-sucesso)').forEach(a => a.remove());
-            const novasAlertas = docVirtual.querySelectorAll('.alerta:not(.alerta-sucesso)');
-            if (novasAlertas.length > 0) {
-                const header = document.querySelector('.page-header');
-                if (header) {
-                    for (let i = novasAlertas.length - 1; i >= 0; i--) {
-                        header.insertAdjacentElement('afterend', novasAlertas[i]);
-                    }
+            const novosAlertas = docVirtual.querySelector('#alertas-iniciais');
+            const antigosAlertas = document.querySelector('#alertas-iniciais');
+            if (novosAlertas && antigosAlertas) {
+                // Check if Urgentes changed
+                const oldU = parseInt(antigosAlertas.getAttribute('data-urgentes') || '0', 10);
+                const newU = parseInt(novosAlertas.getAttribute('data-urgentes') || '0', 10);
+                if (newU > oldU) {
+                    if (typeof window.showToast === 'function') window.showToast(`${newU} urgência(s) ativa(s)`, 'error', 'NOVA URGÊNCIA', 6000);
                 }
+                
+                // Check if Pico changed
+                const oldP = antigosAlertas.getAttribute('data-pico') === 'true';
+                const newP = novosAlertas.getAttribute('data-pico') === 'true';
+                if (!oldP && newP) {
+                    if (typeof window.showToast === 'function') window.showToast(novosAlertas.getAttribute('data-pico-desc'), 'error', 'PICO DE AFLUÊNCIA', 6000);
+                }
+
+                // Update the DOM to reflect new state
+                antigosAlertas.replaceWith(novosAlertas);
             }
 
             // --- 4. Detecta a nova chamada oculta ---

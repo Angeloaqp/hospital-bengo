@@ -1,6 +1,6 @@
 <?php
 // ================================================
-// Componente Reutilizável: Sidebar Tailwind SaaS
+// Componente Reutilizável: Sidebar + Bottom Nav (Mobile)
 // ================================================
 
 $_perfil = sessao('perfil');
@@ -45,9 +45,13 @@ if ($_perfil === 'recepcionista') {
         ['id' => 'mensagens',     'url' => $_baseComum . 'mensagens.php',     'icon' => 'mail', 'titulo' => 'Mensagens'],
     ];
 }
+
+// Em mobile, os ecrãs são pequenos, então vamos manter os atalhos vitais
+$mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
 ?>
 
-<aside class="fixed left-6 top-6 bottom-6 flex flex-col py-6 z-[60] w-56 bg-white rounded-[2rem] floating-card font-['Manrope'] antialiased border border-white/50">
+<!-- 1. DESKTOP SIDEBAR -->
+<aside class="hidden lg:flex fixed left-6 top-6 bottom-6 flex-col py-6 z-[60] w-56 bg-white rounded-[2rem] floating-card font-['Manrope'] antialiased border border-white/50">
     <!-- Top Section: Hospital Logo -->
     <div class="mb-8 flex flex-col items-center px-6 gap-2">
         <div class="text-[18px] font-black tracking-tighter text-black flex flex-col items-center leading-tight">
@@ -61,14 +65,14 @@ if ($_perfil === 'recepcionista') {
         <?php foreach ($_navLinks as $link): ?>
             <?php if ($_paginaActual === $link['id']): ?>
                 <!-- Active -->
-                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full bg-black text-white rounded-2xl transition-all shadow-md">
-                    <span class="material-symbols-outlined text-[20px]"><?= $link['icon'] ?></span>
+                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full bg-black text-white rounded-2xl transition-all shadow-md hover:scale-105 active:scale-95">
+                    <span class="material-symbols-outlined text-[20px] icon-filled"><?= $link['icon'] ?></span>
                     <span class="text-xs font-bold tracking-tight"><?= $link['titulo'] ?></span>
                 </a>
             <?php else: ?>
                 <!-- Inactive -->
-                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all">
-                    <span class="material-symbols-outlined text-[20px]"><?= $link['icon'] ?></span>
+                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all hover:scale-105">
+                    <span class="material-symbols-outlined text-[20px] icon-outline"><?= $link['icon'] ?></span>
                     <span class="text-xs font-semibold tracking-tight"><?= $link['titulo'] ?></span>
                 </a>
             <?php endif; ?>
@@ -93,6 +97,7 @@ if ($_perfil === 'recepcionista') {
         </a>
         <!-- Sair -->
         <form method="POST" action="<?= BASE_URL ?>app/controllers/auth.php" class="w-full m-0">
+            <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
             <input type="hidden" name="acao" value="logout">
             <button type="submit" class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:text-error hover:bg-error/5 rounded-2xl transition-all cursor-pointer">
                 <span class="material-symbols-outlined text-[20px]">logout</span>
@@ -101,3 +106,41 @@ if ($_perfil === 'recepcionista') {
         </form>
     </div>
 </aside>
+
+<!-- 2. MOBILE BOTTOM NAVIGATION (iOS Style) -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-surface-container-high z-[60] pb-safe flex items-center justify-around px-2 pt-2 pb-4 floating-card">
+    <?php foreach ($mobileLinks as $link): ?>
+        <?php $isActive = $_paginaActual === $link['id']; ?>
+        <a href="<?= $link['url'] ?>" class="flex flex-col items-center justify-center p-2 min-w-[64px] transition-all <?= $isActive ? 'text-black' : 'text-on-surface-variant hover:text-black' ?>">
+            <div class="<?= $isActive ? 'bg-surface-container-low px-4 py-1 rounded-full' : 'px-4 py-1' ?> transition-all">
+                <span class="material-symbols-outlined <?= $isActive ? 'icon-filled text-[24px]' : 'icon-outline text-[24px]' ?>"><?= $link['icon'] ?></span>
+            </div>
+            <span class="text-[10px] font-bold tracking-tight mt-1"><?= $link['titulo'] ?></span>
+        </a>
+    <?php endforeach; ?>
+    
+    <!-- Sair (Mobile) -->
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/auth.php" class="m-0 flex items-center justify-center">
+        <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+        <input type="hidden" name="acao" value="logout">
+        <button type="submit" class="flex flex-col items-center justify-center p-2 min-w-[64px] transition-all text-on-surface-variant hover:text-error">
+            <div class="px-4 py-1">
+                <span class="material-symbols-outlined icon-outline text-[24px]">logout</span>
+            </div>
+            <span class="text-[10px] font-bold tracking-tight mt-1">Sair</span>
+        </button>
+    </form>
+</nav>
+
+<!-- Correção de margens para o conteúdo principal no Mobile -->
+<style>
+    /* Safe area bottom para iOS */
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
+    
+    @media (max-width: 1023px) {
+        /* No mobile, o conteúdo principal não deve ter a margem da sidebar (ml-56) */
+        .ml-56 { margin-left: 0 !important; }
+        /* Adicionar padding em baixo para compensar a bottom nav */
+        main { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 1rem)) !important; }
+    }
+</style>

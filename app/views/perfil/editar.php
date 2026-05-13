@@ -1,7 +1,7 @@
 <?php
 // ================================================
 // Hospital Geral do Bengo
-// Vista: Meu Perfil (Editar Foto, Nome e Senha)
+// Vista: Meu Perfil (Editar Foto, Nome e Senha) - Tactile Editorial
 // ================================================
 
 require_once __DIR__ . '/../../../config/base_url.php';
@@ -34,292 +34,260 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Perfil —
-        <?= APP_NOME ?>
-    </title>
+    <title>Definições de Perfil — <?= APP_NOME ?></title>
     <?php include __DIR__ . '/../comum/head_assets.php'; ?>
     <style>
-        .perfil-grid {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 24px;
-            align-items: start;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
 
-        .perfil-card {
-            background: #fff;
-            padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--borda);
-            text-align: center;
+        @keyframes glideIn {
+            0% { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
+        .glide-in { animation: glideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .stagger-1 { animation-delay: 0.05s; }
+        .stagger-2 { animation-delay: 0.1s; }
 
-        .avatar-wrap {
-            position: relative;
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 16px;
+        /* Floating Label Field */
+        .field-wrap { position: relative; width: 100%; margin-bottom: 24px; }
+        .field-wrap .fi {
+            width: 100%; background: #f4f5f7; border: 2px solid transparent; border-radius: 1.25rem;
+            padding: 1.6rem 1.25rem 0.5rem 3.5rem; font-size: 0.95rem; font-weight: 600; color: #111;
+            font-family: 'Manrope', sans-serif; outline: none; transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); line-height: 1.2;
+            height: 3.8rem;
         }
-
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 4px solid #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        /* No icon padding adjustment */
+        .field-wrap.no-icon .fi { padding-left: 1.25rem; }
+        
+        .field-wrap .fi::placeholder { color: transparent; }
+        .field-wrap .fi:focus { background: #fff; border-color: #111; box-shadow: 0 6px 24px -4px rgba(0,0,0,0.06); }
+        .field-wrap .fi:disabled, .field-wrap .fi[readonly] { background: #f0f1f3; color: #9ca3af; cursor: not-allowed; }
+        
+        .field-wrap .fl {
+            position: absolute; left: 3.5rem; top: 1.3rem; font-size: 0.9rem; font-weight: 600; color: #71717a;
+            pointer-events: none; transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); transform-origin: left top; z-index: 2;
         }
-
-        .avatar-iniciais {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--azul), #3B82F6);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            font-weight: 700;
-            border: 4px solid #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        .field-wrap.no-icon .fl { left: 1.25rem; }
+        
+        .field-wrap .fi:focus ~ .fl, .field-wrap .fi:not(:placeholder-shown) ~ .fl {
+            transform: translateY(-0.85rem) scale(0.75); font-weight: 800; color: #111;
         }
+        .field-wrap .fi:disabled ~ .fl, .field-wrap .fi[readonly] ~ .fl { color: #9ca3af; }
 
+        /* Material Icons prefix */
+        .field-wrap .prefix-icon {
+            position: absolute; left: 1.15rem; top: 50%; transform: translateY(-50%);
+            font-size: 22px; color: #a1a1aa; flex-shrink: 0; pointer-events: none; transition: color 0.3s; z-index: 3;
+        }
+        .field-wrap .fi:focus ~ .prefix-icon { color: #111; }
+
+        /* Setup Avatar Upload */
+        .avatar-edit-container { position: relative; width: 180px; height: 180px; margin: 0 auto; }
+        .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        .avatar-iniciais { width: 100%; height: 100%; border-radius: 50%; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 64px; font-weight: 900; border: 4px solid #fff; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
         .btn-upload {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: var(--azul);
-            color: #fff;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            border: 2px solid #fff;
+            position: absolute; bottom: 5px; right: 5px; background: #fff; color: #111; width: 44px; height: 44px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 2px solid #fff; transition: all 0.3s ease;
         }
+        .btn-upload:hover { transform: scale(1.1); }
+        .btn-upload input[type="file"] { display: none; }
 
-        .btn-upload input[type="file"] {
-            display: none;
-            /* Oculta input, clicamos na div */
-        }
-
-        .perfil-titulo {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--texto);
-            margin-bottom: 4px;
-        }
-
-        .perfil-sub {
-            font-size: 14px;
-            color: var(--texto-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        .form-card {
-            background: #fff;
-            padding: 32px;
-            border-radius: var(--radius);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--borda);
-            margin-bottom: 24px;
-        }
-
-        .card-header {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--texto);
-            border-bottom: 1px solid var(--borda);
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-        }
-
-        .form-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--texto);
-            margin-bottom: 8px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--borda);
-            border-radius: var(--radius-sm);
-        }
-
-        @media (max-width: 768px) {
-            .perfil-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-grid-2 {
-                grid-template-columns: 1fr;
-            }
-        }
+        /* Buttons */
+        .btn-action { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .btn-action:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -6px rgba(0,0,0,0.15); }
+        .btn-action:active { transform: scale(0.97) translateY(0); }
     </style>
 </head>
 
-<body class="text-on-surface">
-<?php $paginaActual = 'perfil'; ?>
-        <?php include __DIR__ . '/../comum/sidebar.php'; ?>
+<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+    <?php $paginaActual = 'perfil'; ?>
+    <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
-        <?php $tituloPagina = 'Perfil'; $subtituloPagina = ''; ?>
-        <?php include __DIR__ . '/../comum/header.php'; ?>
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<main class="w-full max-w-[1500px]">
-<div class="flex items-center justify-between mb-6">
+    <?php $tituloPagina = 'Editar Perfil'; ob_start(); ?>
+    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-black rounded-full flex items-center gap-2 btn-action shadow-sm">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        <span class="text-xs font-bold">Voltar ao Perfil</span>
+    </a>
+    <?php $accoesPagina = ob_get_clean(); ?>
+    <?php include __DIR__ . '/../comum/header.php'; ?>
+
+    <main class="ml-64 pt-24 h-screen overflow-y-auto custom-scrollbar">
+        <div class="p-8 max-w-[1200px] mx-auto min-h-full pb-24">
+            
+            <div class="mb-10 flex justify-between items-end glide-in">
                 <div>
-                    <h2>Definições de Perfil</h2>
-                    <div class="sub">Faça a gestão dos seus dados e segurança</div>
+                    <h2 class="text-3xl font-headline font-extrabold text-black tracking-tight">Definições da Conta</h2>
+                    <p class="text-sm font-semibold text-on-surface-variant mt-1 max-w-xl">Mantenha as suas informações atualizadas e a sua conta segura.</p>
                 </div>
             </div>
 
-            <div class="perfil-grid">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- COLUNA ESQUERDA: FOTO E INFO BASE (Col 4) -->
+                <div class="lg:col-span-4 glide-in stagger-1">
+                    <div class="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm text-center flex flex-col items-center">
+                        <form id="form-foto" action="<?= BASE_URL ?>app/controllers/perfil.php" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                            <input type="hidden" name="acao" value="actualizar">
+                            <input type="hidden" name="nome" value="<?= htmlspecialchars($dados['nome']) ?>">
+                            <input type="hidden" name="telefone" value="<?= htmlspecialchars($dados['telefone'] ?? '') ?>">
 
-                <!-- ESQUERDA: FOTO E IDENTIDADE -->
-                <div class="perfil-card">
-                    <form id="form-foto" action="<?= BASE_URL ?>app/controllers/perfil.php" method="POST"
-                        enctype="multipart/form-data">
-                        <input type="hidden" name="acao" value="actualizar">
-                        <input type="hidden" name="nome" value="<?= htmlspecialchars($dados['nome']) ?>">
-                        <input type="hidden" name="telefone" value="<?= htmlspecialchars($dados['telefone'] ?? '') ?>">
+                            <div class="avatar-edit-container mb-6">
+                                <?php if (!empty($dados['foto_path'])): ?>
+                                    <img src="<?= BASE_URL . 'public/' . $dados['foto_path'] ?>" alt="Avatar" class="avatar-img">
+                                <?php else: ?>
+                                    <div class="avatar-iniciais">
+                                        <?= strtoupper(substr($dados['nome'], 0, 1)) ?>
+                                    </div>
+                                <?php endif; ?>
 
-                        <div class="avatar-wrap">
-                            <?php if (!empty($dados['foto_path'])): ?>
-                                <img src="<?= BASE_URL . 'public/' . $dados['foto_path'] ?>" alt="Avatar"
-                                    class="avatar-img">
-                            <?php else: ?>
-                                <div class="avatar-iniciais">
-                                    <?= strtoupper(substr($dados['nome'], 0, 1)) ?>
-                                </div>
-                            <?php endif; ?>
+                                <label class="btn-upload" title="Alterar Fotografia">
+                                    <span class="material-symbols-outlined text-[20px]">add_a_photo</span>
+                                    <input type="file" name="foto" id="foto-input" accept="image/jpeg, image/png, image/webp" onchange="document.getElementById('form-foto').submit();">
+                                </label>
+                            </div>
+                        </form>
 
-                            <label class="btn-upload" title="Alterar Fotografia">
-                                📷
-                                <input type="file" name="foto" id="foto-input"
-                                    accept="image/jpeg, image/png, image/webp"
-                                    onchange="document.getElementById('form-foto').submit();">
-                            </label>
+                        <h3 class="text-2xl font-headline font-black text-black mb-1"><?= htmlspecialchars($dados['nome']) ?></h3>
+                        <div class="px-3 py-1 rounded-md text-[10px] font-extrabold uppercase tracking-widest bg-gray-100 text-gray-500 mb-3">
+                            <?= htmlspecialchars($dados['perfil']) ?>
                         </div>
-                    </form>
 
-                    <div class="perfil-titulo">
-                        <?= htmlspecialchars($dados['nome']) ?>
+                        <?php if (!empty($dados['especialidade'])): ?>
+                            <div class="flex items-center gap-2 text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full mt-2">
+                                <span class="material-symbols-outlined text-[16px]">medical_information</span>
+                                <?= htmlspecialchars($dados['especialidade']) ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                    <div class="perfil-sub">
-                        <?= htmlspecialchars($dados['perfil']) ?>
-                    </div>
-                    <?php if (!empty($dados['especialidade'])): ?>
-                        <div style="font-size:13px; color:var(--azul); margin-top:8px; font-weight: 500;">
-                            🩺
-                            <?= htmlspecialchars($dados['especialidade']) ?>
-                        </div>
-                    <?php endif; ?>
                 </div>
 
-                <!-- DIREITA: FORMULÁRIOS DE DADOS -->
-                <div>
+                <!-- COLUNA DIREITA: FORMULÁRIOS (Col 8) -->
+                <div class="lg:col-span-8 flex flex-col gap-8 glide-in stagger-2">
+                    
+                    <!-- Bloco Dados Básicos -->
+                    <div class="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm">
+                        <h4 class="flex items-center gap-3 text-lg font-headline font-extrabold text-black mb-8 border-b border-gray-100 pb-4">
+                            <span class="material-symbols-outlined text-gray-400">person</span>
+                            Informação Pessoal
+                        </h4>
 
-                    <!-- Dados Básicos -->
-                    <div class="form-card">
-                        <div class="card-header">Os Seus Dados</div>
                         <?php if ($mensagem): ?>
-                            <div class="alerta alerta-sucesso">✓
-                                <?= htmlspecialchars($mensagem) ?>
+                            <div class="mb-6 p-4 bg-green-50 rounded-2xl flex items-center gap-3 border border-green-100">
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-white text-[16px]">check</span>
+                                </div>
+                                <p class="text-sm font-bold text-green-800"><?= htmlspecialchars($mensagem) ?></p>
                             </div>
                         <?php endif; ?>
                         <?php if ($erro): ?>
-                            <div class="alerta alerta-perigo">⚠
-                                <?= htmlspecialchars($erro) ?>
+                            <div class="mb-6 p-4 bg-red-50 rounded-2xl flex items-center gap-3 border border-red-100">
+                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-white text-[16px]">error</span>
+                                </div>
+                                <p class="text-sm font-bold text-red-800"><?= htmlspecialchars($erro) ?></p>
                             </div>
                         <?php endif; ?>
 
                         <form action="<?= BASE_URL ?>app/controllers/perfil.php" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
                             <input type="hidden" name="acao" value="actualizar">
 
-                            <div class="form-group">
-                                <label>Nome Completo</label>
-                                <input type="text" name="nome" value="<?= htmlspecialchars($dados['nome']) ?>" required>
+                            <div class="field-wrap">
+                                <span class="material-symbols-outlined prefix-icon">badge</span>
+                                <input type="text" name="nome" id="nome" class="fi" required placeholder=" " value="<?= htmlspecialchars($dados['nome']) ?>">
+                                <label for="nome" class="fl">Nome Completo</label>
                             </div>
-                            <div class="form-grid-2">
-                                <div class="form-group">
-                                    <label>Nome de Utilizador (Acesso) <span style="font-weight:normal;color:gray">(Não
-                                            editável)</span></label>
-                                    <input type="text" value="<?= htmlspecialchars($dados['nome_utilizador']) ?>"
-                                        readonly style="background:#f9fafb; cursor:not-allowed">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                                <div class="field-wrap">
+                                    <span class="material-symbols-outlined prefix-icon">alternate_email</span>
+                                    <input type="text" id="username" class="fi" placeholder=" " value="<?= htmlspecialchars($dados['nome_utilizador']) ?>" readonly>
+                                    <label for="username" class="fl">Nome de Utilizador</label>
                                 </div>
-                                <div class="form-group">
-                                    <label>Telefone</label>
-                                    <input type="text" name="telefone"
-                                        value="<?= htmlspecialchars($dados['telefone'] ?? '') ?>">
+                                
+                                <div class="field-wrap">
+                                    <span class="material-symbols-outlined prefix-icon">call</span>
+                                    <input type="text" name="telefone" id="telefone" class="fi" placeholder=" " value="<?= htmlspecialchars($dados['telefone'] ?? '') ?>">
+                                    <label for="telefone" class="fl">Nº de Telefone</label>
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primario" style="margin-top:8px;">Guardar
-                                Alterações</button>
+                            <div class="flex justify-end mt-4">
+                                <button type="submit" class="bg-black text-white px-8 py-3.5 rounded-full font-extrabold text-sm flex items-center gap-2 btn-action shadow-lg shadow-black/10">
+                                    <span class="material-symbols-outlined text-[18px]">save</span>
+                                    Guardar Pessoais
+                                </button>
+                            </div>
                         </form>
                     </div>
 
-                    <!-- Alterar Senha -->
-                    <div class="form-card" id="card-senha">
-                        <div class="card-header" style="color:var(--vermelho)">🔐 Segurança e Palavra-passe</div>
+                    <!-- Bloco Alterar Senha -->
+                    <div id="password" class="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm">
+                        <h4 class="flex items-center gap-3 text-lg font-headline font-extrabold text-black mb-8 border-b border-gray-100 pb-4">
+                            <span class="material-symbols-outlined text-gray-400">lock</span>
+                            Segurança & Palavra-passe
+                        </h4>
+
                         <?php if ($mensagem_senha): ?>
-                            <div class="alerta alerta-sucesso">✓
-                                <?= htmlspecialchars($mensagem_senha) ?>
+                            <div class="mb-6 p-4 bg-green-50 rounded-2xl flex items-center gap-3 border border-green-100">
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-white text-[16px]">check</span>
+                                </div>
+                                <p class="text-sm font-bold text-green-800"><?= htmlspecialchars($mensagem_senha) ?></p>
                             </div>
                         <?php endif; ?>
                         <?php if ($erro_senha): ?>
-                            <div class="alerta alerta-perigo">⚠
-                                <?= htmlspecialchars($erro_senha) ?>
+                            <div class="mb-6 p-4 bg-red-50 rounded-2xl flex items-center gap-3 border border-red-100">
+                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-white text-[16px]">error</span>
+                                </div>
+                                <p class="text-sm font-bold text-red-800"><?= htmlspecialchars($erro_senha) ?></p>
                             </div>
                         <?php endif; ?>
 
                         <form action="<?= BASE_URL ?>app/controllers/perfil.php" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
                             <input type="hidden" name="acao" value="senha">
 
-                            <div class="form-group">
-                                <label>Palavra-passe Actual</label>
-                                <input type="password" name="senha_antiga" required>
+                            <div class="field-wrap no-icon">
+                                <input type="password" name="senha_antiga" id="senha_antiga" class="fi" required placeholder=" ">
+                                <label for="senha_antiga" class="fl">Palavra-passe Actual</label>
                             </div>
-                            <div class="form-grid-2">
-                                <div class="form-group">
-                                    <label>Nova Palavra-passe</label>
-                                    <input type="password" name="senha_nova" minlength="6" required>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                                <div class="field-wrap no-icon">
+                                    <input type="password" name="senha_nova" id="senha_nova" class="fi" minlength="6" required placeholder=" ">
+                                    <label for="senha_nova" class="fl">Nova Palavra-passe (Min. 6 catactéres)</label>
                                 </div>
-                                <div class="form-group">
-                                    <label>Confirmar Nova Palavra-passe</label>
-                                    <input type="password" name="senha_conf" minlength="6" required>
+                                <div class="field-wrap no-icon">
+                                    <input type="password" name="senha_conf" id="senha_conf" class="fi" minlength="6" required placeholder=" ">
+                                    <label for="senha_conf" class="fl">Confirmar Nova Palavra-passe</label>
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-perigo" style="margin-top:8px;">Alterar Senha</button>
+                            <div class="mt-4 p-4 bg-gray-50 border border-gray-100 rounded-2xl">
+                                <p class="text-[11px] font-extrabold text-gray-500 uppercase tracking-widest leading-relaxed flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px] text-gray-400">info</span>
+                                    Sessão será mantida ao alterar a senha. Use a nova no próximo login.
+                                </p>
+                            </div>
+
+                            <div class="flex justify-end mt-6">
+                                <button type="submit" class="bg-white border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors px-8 py-3.5 rounded-full font-extrabold text-sm flex items-center gap-2 btn-action">
+                                    <span class="material-symbols-outlined text-[18px]">key</span>
+                                    Atualizar Palavra-passe
+                                </button>
+                            </div>
                         </form>
                     </div>
 
                 </div>
-
             </div>
-</main>
-</div>
+        </div>
+    </main>
 </body>
-
 </html>

@@ -4,6 +4,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <!-- Material Symbols (ícones) -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+<!-- Tactile Editorial CSS -->
+<link rel="stylesheet" href="/hospital-bengo/public/css/tactile.css">
+
 <!-- Tailwind Config: Tactile Editorial Design System -->
 <script>
 tailwind.config = {
@@ -42,21 +46,28 @@ tailwind.config = {
                 full: "9999px"
             },
             fontFamily: {
-                headline: ["Manrope"],
-                body: ["Inter"],
-                label: ["Inter"]
+                headline: ["Manrope", "sans-serif"],
+                body: ["Inter", "sans-serif"],
+                label: ["Inter", "sans-serif"]
             }
         },
     }
 }
 </script>
 <style>
-    .material-symbols-outlined {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
     body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-    h1, h2, h3 { font-family: 'Manrope', sans-serif; }
-    .floating-card {
-        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
-    }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
 </style>
+
+<!-- UX Magic (Etapa 3) -->
+<script defer src="/hospital-bengo/public/js/ux.js"></script>
+
+<?php if (isset($_SESSION['mensagem']) && !empty($_SESSION['mensagem'])): ?>
+    <meta name="flash-message" content="<?= htmlspecialchars($_SESSION['mensagem']) ?>" data-type="success">
+    <?php unset($_SESSION['mensagem']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['erro']) && !empty($_SESSION['erro'])): ?>
+    <meta name="flash-message" content="<?= htmlspecialchars($_SESSION['erro']) ?>" data-type="error">
+    <?php unset($_SESSION['erro']); ?>
+<?php endif; ?>

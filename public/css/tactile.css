@@ -1,0 +1,131 @@
+/* =========================================================
+   HOSPITAL GERAL DO BENGO - TACTILE EDITORIAL
+   Design System Global CSS
+========================================================= */
+
+/* Scrollbars Universais */
+.custom-scrollbar::-webkit-scrollbar,
+::-webkit-scrollbar { width: 6px; height: 6px; }
+
+.custom-scrollbar::-webkit-scrollbar-track,
+::-webkit-scrollbar-track { background: transparent; }
+
+.custom-scrollbar::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+
+/* Tipografia */
+.tactile-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+}
+
+/* Animações e UI states */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.fade-in-delay-1 { animation: fadeIn 0.4s ease-out 0.1s forwards; opacity: 0; }
+.fade-in-delay-2 { animation: fadeIn 0.4s ease-out 0.2s forwards; opacity: 0; }
+.fade-in-delay-3 { animation: fadeIn 0.4s ease-out 0.3s forwards; opacity: 0; }
+
+.floating-card {
+    box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 10px -2px rgba(0,0,0,0.03);
+}
+
+/* Ocultar barra de scroll principal, mantendo overflow */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Iconografia Padronizada */
+.icon-outline { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.icon-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.icon-sm { font-size: 16px; }
+.icon-md { font-size: 20px; }
+.icon-lg { font-size: 24px; }
+
+/* =========================================================
+   HOSPITAL GERAL DO BENGO - TACTILE EDITORIAL
+   UX Magic & Micro-Interações (Etapa 3)
+========================================================= */
+
+/* 1. Skeleton Loaders */
+@keyframes skeletonPulse {
+    0% { background-color: #f3f4f6; }
+    50% { background-color: #e5e7eb; }
+    100% { background-color: #f3f4f6; }
+}
+.skeleton {
+    animation: skeletonPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    color: transparent !important;
+    border-color: transparent !important;
+    pointer-events: none;
+    background-color: #f3f4f6;
+}
+.skeleton * {
+    visibility: hidden;
+}
+
+/* 2. Painéis Laterais (Drawers) */
+.drawer-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px);
+    z-index: 40; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.drawer-backdrop.active {
+    opacity: 1; pointer-events: auto;
+}
+.drawer-panel {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 100%; max-width: 440px;
+    background: #fff; z-index: 50; box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+    transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex; flex-direction: column;
+}
+.drawer-panel.active {
+    transform: translateX(0);
+}
+
+/* 3. Command Palette */
+.cmd-palette-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+    z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    display: flex; align-items: flex-start; justify-content: center; padding-top: 15vh;
+}
+.cmd-palette-backdrop.active {
+    opacity: 1; pointer-events: auto;
+}
+.cmd-palette {
+    background: #fff; width: 100%; max-width: 600px; border-radius: 1.5rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15); overflow: hidden;
+    transform: scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cmd-palette-backdrop.active .cmd-palette {
+    transform: scale(1); opacity: 1;
+}
+
+/* 4. Notificações Toast Dinâmicas */
+.toast-container {
+    position: fixed; top: 100px; right: 40px;
+    z-index: 9999; display: flex; flex-direction: column; gap: 12px; align-items: flex-end;
+    pointer-events: none;
+}
+.toast {
+    background: #000000; color: #ffffff; padding: 10px 16px 10px 10px; border-radius: 9999px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
+    transform: translateX(50px) scale(0.95); opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: auto; min-width: 280px; max-width: 400px;
+}
+.toast.active {
+    transform: translateX(0) scale(1); opacity: 1;
+}

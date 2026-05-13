@@ -412,11 +412,11 @@ $avatarColors = [
 
                             <!-- Action Buttons -->
                             <div class="flex gap-3">
-                                <a href="ver_utilizador.php?id=<?= $u['id'] ?>"
+                                <button type="button" onclick="carregarPerfilLateral(<?= $u['id'] ?>, '<?= htmlspecialchars(addslashes($u['nome'])) ?>')"
                                     class="flex-1 bg-black text-white py-3 rounded-xl font-bold text-xs text-center btn-action btn-primary-action transition-all flex items-center justify-center gap-2">
                                     <span class="material-symbols-outlined text-[16px]">bar_chart</span>
-                                    Estatística
-                                </a>
+                                    Detalhes Rápidos
+                                </button>
                                 <a href="editar_utilizador.php?id=<?= $u['id'] ?>"
                                     class="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-black hover:text-white transition-all btn-action edit-icon-btn"
                                     title="Editar">
@@ -612,6 +612,33 @@ $avatarColors = [
             // Initial render with animation
             renderPage(true);
         })();
+
+        // UX Magic: Load user details into Drawer
+        async function carregarPerfilLateral(id, nome) {
+            // Open drawer with skeleton immediately
+            window.openDrawer('Perfil: ' + nome, `
+                <div class="flex flex-col gap-4 w-full mt-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-gray-200 rounded-full skeleton shrink-0"></div>
+                        <div class="flex-1 flex flex-col gap-2">
+                            <div class="h-6 bg-gray-200 rounded skeleton w-3/4"></div>
+                            <div class="h-4 bg-gray-200 rounded skeleton w-1/3"></div>
+                        </div>
+                    </div>
+                    <div class="h-24 bg-gray-200 rounded-2xl skeleton w-full mt-4"></div>
+                    <div class="h-32 bg-gray-200 rounded-2xl skeleton w-full mt-2"></div>
+                </div>
+            `);
+
+            try {
+                const response = await fetch('ver_utilizador_ajax.php?id=' + id);
+                if (!response.ok) throw new Error('Network error');
+                const html = await response.text();
+                document.getElementById('drawer-content').innerHTML = html;
+            } catch(e) {
+                document.getElementById('drawer-content').innerHTML = '<div class="p-6 bg-red-50 text-red-600 rounded-2xl border border-red-100 font-bold text-sm text-center">Erro ao carregar detalhes. <br><span class="text-xs font-normal">Verifique a sua ligação.</span></div>';
+            }
+        }
     </script>
 
 </body>

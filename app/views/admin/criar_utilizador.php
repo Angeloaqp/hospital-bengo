@@ -267,6 +267,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                 <div class="lg:col-span-8">
                     <div class="bg-white rounded-[2rem] p-8 md:p-10 border border-white/50 shadow-sm glide-in stagger-2">
                         <form method="POST" id="form-criar" action="<?= BASE_URL ?>app/controllers/estatisticas.php" autocomplete="off" enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
                             <input type="hidden" name="acao" value="criar_utilizador">
                             
                             <!-- Section: Identity -->

@@ -15,6 +15,7 @@ if (session_status() === PHP_SESSION_NONE) {
     ]);
     session_start();
 }
+require_once __DIR__ . '/seguranca.php';
 
 // ------------------------------------------------
 // Funções de autenticação e controlo de acesso

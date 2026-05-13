@@ -9,6 +9,7 @@ require_once __DIR__ . '/../../../config/sessao.php';
 require_once __DIR__ . '/../../../config/database.php';
 require_once __DIR__ . '/../../../app/models/Senha.php';
 require_once __DIR__ . '/../../../app/models/Utilizador.php';
+require_once __DIR__ . '/../../../app/models/Prontuario.php';
 
 exigirPerfil(['medico', 'admin']);
 
@@ -21,6 +22,19 @@ $filaEspera = Senha::filaDoMedico($medicoId);
 $consultorio = Senha::consultorioDoMedicoV2($medicoId);
 $urgentes = Senha::contarUrgentes();
 $emEspera = Senha::contarEsperaDoMedico($medicoId);
+
+// Prontuário Clínico — carregar dados se em atendimento
+$prontuarioAtual = null;
+$historicoPaciente = [];
+$dadosPaciente = null;
+if ($emAtend) {
+    $prontuarioAtual = Prontuario::obterPorSenha($emAtend['id']);
+    $pacId = Prontuario::pacienteDaSenha($emAtend['id']);
+    if ($pacId) {
+        $historicoPaciente = Prontuario::historicoPaciente($pacId, 10);
+        $dadosPaciente = Prontuario::dadosPaciente($pacId);
+    }
+}
 
 // Verifica janela de desfazer (15 segundos)
 $podeDesfazer = false;
@@ -128,53 +142,133 @@ $prioridades = [
                 <!-- Bento Grid for Attendance -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 fade-in-delay-1">
                     
-                    <!-- A Atender Agora Card -->
+                    <!-- MODO CONSULTA — Prontuário Clínico -->
                     <?php if ($emAtend): ?>
-                        <section class="bg-white rounded-[2rem] p-8 floating-card border border-white relative overflow-hidden group min-h-[420px] transition-all duration-500 flex flex-col" id="atendimento-card">
-                            <div class="h-full flex flex-col" id="atendimento-content">
-                                <div class="flex justify-between items-start mb-10">
-                                    <div>
-                                        <span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant">A Atender Agora</span>
-                                        <h3 class="text-7xl tactile-mono mt-4 text-primary"><?= htmlspecialchars($emAtend['codigo']) ?></h3>
-                                    </div>
-                                    <div class="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest border border-green-100">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                                        Em Consulta
-                                    </div>
-                                </div>
-                                <div class="mb-10 flex-1">
-                                    <p class="text-3xl font-headline font-extrabold tracking-tight mb-1"><?= htmlspecialchars($emAtend['paciente_nome']) ?></p>
-                                    <p class="text-on-surface-variant font-semibold">
-                                        <?= htmlspecialchars($emAtend['tipo_atendimento']) ?>
-                                        <?= $emAtend['consultorio'] ? ' — ' . htmlspecialchars($emAtend['consultorio']) : '' ?>
-                                    </p>
-                                </div>
-                                <div class="flex flex-col sm:flex-row gap-4 relative z-10">
-                                    <button onclick="handleConcluir(this, <?= $emAtend['id'] ?>, '<?= addslashes(htmlspecialchars($emAtend['paciente_nome'])) ?>')" class="flex-1 bg-black text-white py-5 px-6 rounded-2xl font-black text-lg btn-press shadow hover:bg-neutral-800 transition-all text-center">
-                                        Concluir Atendimento
-                                    </button>
-                                    <button onclick="handleCancelar(this, <?= $emAtend['id'] ?>, '<?= addslashes(htmlspecialchars($emAtend['paciente_nome'])) ?>')" class="bg-surface-container-low text-on-surface-variant py-5 px-8 rounded-2xl font-black text-sm btn-press shadow hover:bg-surface-container-high transition-all">
-                                        Ausente / Cancelar
-                                    </button>
-                                </div>
-                                <?php if ($podeDesfazer): ?>
-                                    <div class="mt-6 pt-6 border-t border-surface-container-low flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all duration-500" id="undo-inline">
-                                        <div class="flex flex-col flex-1 w-full relative z-10">
-                                            <span class="text-xs font-bold text-on-surface-variant flex items-center gap-1.5 mb-2">
-                                                <span class="material-symbols-outlined text-[16px] text-green-500">check_circle</span>
-                                                Paciente chamado com sucesso
+                        <section class="bg-white rounded-[2rem] floating-card border border-white relative overflow-hidden min-h-[420px] transition-all duration-500 flex flex-col lg:col-span-2" id="atendimento-card">
+                            <div class="h-full flex flex-col lg:flex-row" id="atendimento-content">
+                                <!-- Painel Principal: Dados + Formulário -->
+                                <div class="flex-1 p-8 flex flex-col">
+                                    <!-- Header do paciente -->
+                                    <div class="flex justify-between items-start mb-6">
+                                        <div>
+                                            <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-100 inline-flex items-center gap-1.5">
+                                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                                Modo Consulta
                                             </span>
-                                            <div class="h-1 bg-surface-container-highest rounded-full overflow-hidden w-full max-w-[220px]">
-                                                <div class="h-full bg-blue-500 rounded-full transition-all duration-500 ease-linear" id="undo-fill-inline" style="width:<?= ($restoUndo / 15) * 100 ?>%"></div>
+                                            <div class="flex items-end gap-4 mt-4">
+                                                <h3 class="text-5xl tactile-mono text-primary"><?= htmlspecialchars($emAtend['codigo']) ?></h3>
+                                                <div class="mb-1">
+                                                    <p class="text-2xl font-headline font-extrabold tracking-tight"><?= htmlspecialchars($emAtend['paciente_nome']) ?></p>
+                                                    <p class="text-on-surface-variant font-semibold text-sm">
+                                                        <?= htmlspecialchars($emAtend['tipo_atendimento']) ?>
+                                                        <?= $emAtend['consultorio'] ? ' — ' . htmlspecialchars($emAtend['consultorio']) : '' ?>
+                                                        <?php if ($dadosPaciente && isset($dadosPaciente['idade'])): ?>
+                                                            — <?= (int)$dadosPaciente['idade'] ?> anos
+                                                        <?php endif; ?>
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <button onclick="handleDesfazer(<?= $ultimaChamada ?>)" class="text-blue-600 bg-blue-50 hover:bg-blue-100 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all active:scale-95 border border-blue-100 whitespace-nowrap relative z-10">
-                                            <span class="material-symbols-outlined text-[16px]">undo</span> Desfazer
-                                        </button>
                                     </div>
-                                <?php endif; ?>
-                                <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-surface-container-low rounded-full opacity-30 pointer-events-none"></div>
+
+                                    <!-- Formulário de Prontuário -->
+                                    <form method="POST" action="<?= BASE_URL ?>app/controllers/prontuario.php" class="flex-1 flex flex-col gap-4" id="form-prontuario">
+                                        <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                                        <input type="hidden" name="senha_id" value="<?= $emAtend['id'] ?>">
+                                        <input type="hidden" name="prontuario_id" value="<?= $prontuarioAtual['id'] ?? 0 ?>">
+
+                                        <!-- Diagnóstico -->
+                                        <div>
+                                            <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1.5 block">Diagnóstico</label>
+                                            <input type="text" name="diagnostico" placeholder="Ex: Malária, Hipertensão..." value="<?= htmlspecialchars($prontuarioAtual['diagnostico'] ?? '') ?>" class="w-full px-4 py-3 bg-surface-container-low rounded-xl border border-transparent focus:border-primary focus:ring-2 focus:ring-primary/10 text-sm font-semibold transition-all outline-none placeholder:text-gray-300">
+                                        </div>
+
+                                        <!-- Notas Clínicas -->
+                                        <div class="flex-1 flex flex-col">
+                                            <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1.5 block">Notas Clínicas</label>
+                                            <textarea name="notas_clinicas" rows="4" placeholder="Observações da consulta, exame físico, queixas..." class="flex-1 w-full px-4 py-3 bg-surface-container-low rounded-xl border border-transparent focus:border-primary focus:ring-2 focus:ring-primary/10 text-sm font-medium transition-all outline-none resize-none placeholder:text-gray-300"><?= htmlspecialchars($prontuarioAtual['notas_clinicas'] ?? '') ?></textarea>
+                                        </div>
+
+                                        <!-- Prescrição -->
+                                        <div>
+                                            <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1.5 block">Prescrição / Receita</label>
+                                            <textarea name="prescricao" rows="3" placeholder="Medicamentos, dosagem, instruções..." class="w-full px-4 py-3 bg-surface-container-low rounded-xl border border-transparent focus:border-primary focus:ring-2 focus:ring-primary/10 text-sm font-medium transition-all outline-none resize-none placeholder:text-gray-300"><?= htmlspecialchars($prontuarioAtual['prescricao'] ?? '') ?></textarea>
+                                        </div>
+
+                                        <!-- Botões de Acção -->
+                                        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                                            <button type="submit" name="acao" value="guardar_prontuario" class="bg-surface-container-low text-on-surface-variant py-4 px-6 rounded-2xl font-black text-sm btn-press shadow hover:bg-surface-container-high transition-all flex items-center justify-center gap-2">
+                                                <span class="material-symbols-outlined text-[18px]">save</span>
+                                                Guardar Rascunho
+                                            </button>
+                                            <button type="submit" name="acao" value="concluir_com_prontuario" class="flex-1 bg-black text-white py-4 px-6 rounded-2xl font-black text-sm btn-press shadow hover:bg-neutral-800 transition-all flex items-center justify-center gap-2">
+                                                <span class="material-symbols-outlined text-[18px]">task_alt</span>
+                                                Concluir Consulta
+                                            </button>
+                                            <button type="button" onclick="handleCancelar(this, <?= $emAtend['id'] ?>, '<?= addslashes(htmlspecialchars($emAtend['paciente_nome'])) ?>')" class="bg-error/5 text-error py-4 px-6 rounded-2xl font-black text-sm btn-press hover:bg-error/10 transition-all flex items-center justify-center gap-2">
+                                                <span class="material-symbols-outlined text-[18px]">person_off</span>
+                                                Ausente
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <?php if ($podeDesfazer): ?>
+                                        <div class="mt-4 pt-4 border-t border-surface-container-low flex justify-between items-center gap-4 transition-all duration-500" id="undo-inline">
+                                            <div class="flex flex-col flex-1 w-full relative z-10">
+                                                <span class="text-xs font-bold text-on-surface-variant flex items-center gap-1.5 mb-2">
+                                                    <span class="material-symbols-outlined text-[16px] text-green-500">check_circle</span>
+                                                    Paciente chamado com sucesso
+                                                </span>
+                                                <div class="h-1 bg-surface-container-highest rounded-full overflow-hidden w-full max-w-[220px]">
+                                                    <div class="h-full bg-blue-500 rounded-full transition-all duration-500 ease-linear" id="undo-fill-inline" style="width:<?= ($restoUndo / 15) * 100 ?>%"></div>
+                                                </div>
+                                            </div>
+                                            <button onclick="handleDesfazer(<?= $ultimaChamada ?>)" class="text-blue-600 bg-blue-50 hover:bg-blue-100 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all active:scale-95 border border-blue-100 whitespace-nowrap relative z-10">
+                                                <span class="material-symbols-outlined text-[16px]">undo</span> Desfazer
+                                            </button>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Timeline Lateral: Histórico do Paciente -->
+                                <div class="w-full lg:w-80 bg-surface-container-low/30 border-t lg:border-t-0 lg:border-l border-surface-container-low p-6 overflow-y-auto custom-scrollbar" style="max-height:600px;">
+                                    <div class="flex items-center gap-2 mb-5">
+                                        <span class="material-symbols-outlined text-[18px] text-on-surface-variant">history</span>
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Histórico (<?= count($historicoPaciente) ?>)</span>
+                                    </div>
+
+                                    <?php if (empty($historicoPaciente)): ?>
+                                        <div class="text-center py-8">
+                                            <span class="material-symbols-outlined text-3xl text-surface-container-highest mb-2 block">note_stack</span>
+                                            <p class="text-xs text-on-surface-variant font-semibold">Primeira consulta deste paciente.</p>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="space-y-4">
+                                            <?php foreach ($historicoPaciente as $h): ?>
+                                                <div class="bg-white rounded-xl p-4 border border-white shadow-sm">
+                                                    <div class="flex items-center justify-between mb-2">
+                                                        <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant"><?= date('d/m/Y', strtotime($h['criado_em'])) ?></span>
+                                                        <span class="text-[9px] font-bold text-primary"><?= htmlspecialchars($h['medico_nome']) ?></span>
+                                                    </div>
+                                                    <?php if ($h['diagnostico']): ?>
+                                                        <p class="text-xs font-extrabold text-black mb-1"><?= htmlspecialchars($h['diagnostico']) ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($h['notas_clinicas']): ?>
+                                                        <p class="text-[11px] text-on-surface-variant font-medium line-clamp-3"><?= nl2br(htmlspecialchars(mb_substr($h['notas_clinicas'], 0, 150))) ?><?= mb_strlen($h['notas_clinicas']) > 150 ? '…' : '' ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($h['prescricao']): ?>
+                                                        <div class="mt-2 pt-2 border-t border-surface-container-low">
+                                                            <span class="text-[9px] font-black uppercase tracking-widest text-blue-600">Rx</span>
+                                                            <p class="text-[11px] text-on-surface-variant font-medium line-clamp-2"><?= nl2br(htmlspecialchars(mb_substr($h['prescricao'], 0, 100))) ?></p>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
                             </div>
+                            <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-surface-container-low rounded-full opacity-30 pointer-events-none"></div>
                         </section>
                     <?php else: ?>
                         <section class="bg-white rounded-[2rem] p-8 floating-card border border-white relative overflow-hidden group min-h-[420px] flex items-center justify-center transition-all duration-700" id="atendimento-card">
@@ -278,6 +372,7 @@ $prioridades = [
     <script>
     // Utils for AJAX Form requests
     function req(data, callback) {
+        data.csrf_token = "<?= gerarTokenCsrf() ?>";
         fetch("<?= BASE_URL ?>app/controllers/senhas.php", {
             method: "POST",
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -450,8 +545,56 @@ $prioridades = [
                 }
                 return;
             }
-            fill.style.width = pct + '%';
+        fill.style.width = pct + '%';
         }, 500);
+    })();
+
+    // Etapa 4: Clinical Feedback (Auditory cues for Urgent Patients)
+    (function() {
+        let knownUrgentes = <?= $urgentes ?>;
+        
+        function playUrgentPing() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
+                osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
+                
+                gain.gain.setValueAtTime(0, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.5);
+            } catch(e) { console.log('Audio API blocked or not supported'); }
+        }
+
+        setInterval(async () => {
+            try {
+                const res = await fetch('<?= BASE_URL ?>app/api/notificacoes_clinicas.php');
+                if (!res.ok) return;
+                const data = await res.json();
+                
+                if (data.urgentes_count > knownUrgentes) {
+                    playUrgentPing();
+                    if (typeof window.showToast === 'function') {
+                        window.showToast("Novo paciente URGENTE na fila!", "error");
+                    }
+                    knownUrgentes = data.urgentes_count;
+                    // Opcional: atualizar contador visual se existir
+                    const badge = document.querySelector('.urgent-badge-count');
+                    if(badge) badge.innerText = knownUrgentes;
+                } else if (data.urgentes_count < knownUrgentes) {
+                    knownUrgentes = data.urgentes_count;
+                }
+            } catch(e) { }
+        }, 15000); // 15 seconds
     })();
     </script>
 </body>

@@ -116,28 +116,6 @@ $accoesPagina = '';
 include __DIR__ . '/../comum/header.php';
 ?>
 
-<!-- MÉDICO CHAMOU Notification Card (Fixed Top-Right) -->
-<?php if ($ultimaChamada): ?>
-<div class="fixed top-32 right-8 z-[100]" id="notificacao-chamada-card">
-    <div class="bg-black rounded-[1.5rem] py-3 px-5 flex items-center gap-4 floating-card border border-white/10 shadow-2xl">
-        <!-- Speaker Icon Container -->
-        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0 border border-white/10">
-            <span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">volume_up</span>
-        </div>
-        <!-- Text Content -->
-        <div class="flex-1 min-w-[180px]">
-            <p class="text-[9px] font-black text-white/60 uppercase tracking-[0.15em] leading-none">Médico Chamou</p>
-            <p class="text-lg font-extrabold text-white mt-1 leading-tight tracking-tight">
-                <?= htmlspecialchars($ultimaChamada['codigo']) ?> - <?= htmlspecialchars(explode(' ', $ultimaChamada['paciente_nome'])[0]) ?>
-            </p>
-        </div>
-        <!-- Close Icon -->
-        <button class="ml-2 text-white/40 hover:text-white transition-colors" onclick="this.closest('[id]').remove()">
-            <span class="material-symbols-outlined text-[18px]">close</span>
-        </button>
-    </div>
-</div>
-<?php endif; ?>
 
 <!-- Dados Ocultos para o Polling AJAX ler -->
 <div id="memoria-chamada" style="display:none" data-codigo="<?= $ultimaChamada ? $ultimaChamada['codigo'] : '' ?>"
@@ -154,36 +132,13 @@ include __DIR__ . '/../comum/header.php';
         <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= date('l, d \d\e F \d\e Y') ?> — Recepção Principal</p>
     </div>
 
-    <!-- ALERTA DE PICO -->
-    <?php if ($emEspera >= 15): ?>
-    <div class="bg-[#FFFBEB] text-[#B45309] rounded-2xl px-6 py-4 mb-6 flex items-center gap-4 floating-card">
-        <span class="text-xl">⚠</span>
-        <div>
-            <strong class="font-extrabold font-headline">Pico de afluência</strong><br>
-            <span class="text-sm opacity-90"><?= $emEspera ?> pacientes em espera. Tempo médio: <?= $tempoMedio > 0 ? $tempoMedio . ' min' : 'a calcular' ?>.</span>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- ALERTA DE URGÊNCIA -->
-    <?php if ($urgentes > 0): ?>
-    <div class="bg-[#FEF2F2] text-[#991B1B] rounded-2xl px-6 py-4 mb-6 flex items-center gap-4 floating-card">
-        <span class="text-xl">⚡</span>
-        <div>
-            <strong class="font-extrabold font-headline"><?= $urgentes ?> <?= $urgentes === 1 ? 'urgência activa' : 'urgências activas' ?></strong><br>
-            <span class="text-sm opacity-90">aguarda atendimento imediato.</span>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- MENSAGEM FLASH -->
-    <?php if ($mensagem): ?>
-    <div class="bg-[#F0FDF4] text-[#166534] rounded-2xl px-6 py-4 mb-6 flex items-center gap-4 floating-card">
-        <span class="text-xl">✓</span>
-        <div class="font-semibold text-sm"><?= htmlspecialchars($mensagem) ?></div>
-    </div>
-    <?php endif; ?>
-
+    <!-- Hidden Initial Alerts Data for ux.js -->
+    <div id="alertas-iniciais" style="display:none;" 
+        data-mensagem="<?= htmlspecialchars($mensagem) ?>"
+        data-pico="<?= $emEspera >= 15 ? 'true' : 'false' ?>"
+        data-urgentes="<?= $urgentes > 0 ? $urgentes : '0' ?>"
+        data-pico-desc="<?= $emEspera ?> pacientes em espera."
+    ></div>
     <!-- Metrics Grid -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">

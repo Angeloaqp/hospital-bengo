@@ -18,6 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+validarTokenCsrf();
+
 $acao = trim($_POST['acao'] ?? '');
 $senhaId = (int) ($_POST['senha_id'] ?? 0);
 $medicoId = (int) sessao('utilizador_id');

@@ -23,6 +23,7 @@ $redirCaixa = BASE_URL . 'app/views/comum/mensagens.php';
 // ACÇÃO: Enviar mensagem
 // ------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'enviar') {
+    validarTokenCsrf();
     $destinatarios = $_POST['destinatarios'] ?? []; // Pode ser array se escolhermos múltiplos
     $assunto = $_POST['assunto'] ?? '';
     $conteudo = $_POST['conteudo'] ?? '';
@@ -82,6 +83,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $acao === 'ler') {
     exit;
 }
 
+// ------------------------------------------------
+// ACÇÃO: Apagar Mensagem
+// ------------------------------------------------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'apagar') {
+    validarTokenCsrf();
+    $msgId = (int) ($_POST['id'] ?? 0);
+    
+    if ($msgId > 0 && Mensagem::apagar($msgId, $meuId)) {
+        $_SESSION['mensagem'] = "Mensagem apagada com sucesso.";
+    } else {
+        $_SESSION['erro'] = "Não foi possível apagar a mensagem.";
+    }
+    header("Location: {$redirCaixa}");
+    exit;
+}
+
+// ------------------------------------------------
+// ACÇÃO: Restaurar Mensagem (do Lixo)
+// ------------------------------------------------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'restaurar') {
+    validarTokenCsrf();
+    $msgId = (int) ($_POST['id'] ?? 0);
+    
+    if ($msgId > 0 && Mensagem::restaurar($msgId, $meuId)) {
+        $_SESSION['mensagem'] = "Mensagem restaurada com sucesso.";
+    } else {
+        $_SESSION['erro'] = "Não foi possível restaurar a mensagem.";
+    }
+    header("Location: {$redirCaixa}?tab=lixo");
+    exit;
+}
+
 // Fallback
 header("Location: {$redirCaixa}");
 exit;
+

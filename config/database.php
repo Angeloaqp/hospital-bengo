@@ -4,11 +4,15 @@
 // Configuração da ligação à base de dados MySQL
 // XAMPP 8.2.12 | PHP 8.2 | MySQL 8.x
 // ================================================
+// Override via variáveis de ambiente (opcional):
+//   HB_DB_HOST, HB_DB_USER, HB_DB_PASS, HB_DB_NAME
+// Se não definidas, usa os valores padrão do XAMPP.
+// ================================================
 
-define('DB_HOST',    'localhost');
-define('DB_USER',    'root');
-define('DB_PASS',    '');
-define('DB_NAME',    'hospital_bengo');
+define('DB_HOST',    getenv('HB_DB_HOST')    ?: 'localhost');
+define('DB_USER',    getenv('HB_DB_USER')    ?: 'root');
+define('DB_PASS',    getenv('HB_DB_PASS')    ?: '');
+define('DB_NAME',    getenv('HB_DB_NAME')    ?: 'hospital_bengo');
 define('DB_CHARSET', 'utf8mb4');
 
 class Database {

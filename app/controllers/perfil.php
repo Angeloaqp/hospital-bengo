@@ -28,6 +28,7 @@ $formatosPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
 // ACÇÃO: Actualizar Perfil e Foto
 // ------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'actualizar') {
+    validarTokenCsrf();
     $nome = $_POST['nome'] ?? '';
     // Apenas Médicos e Recepcionistas usam telefone na listagem, mas podemos guardar generalizado
     $telefone = $_POST['telefone'] ?? null;
@@ -51,8 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'actualizar') {
             exit;
         }
 
-        // Verifica o tipo (MIME)
-        if (!in_array($img['type'], $formatosPermitidos)) {
+        // Verifica o tipo (MIME) via finfo (validação server-side)
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeReal = $finfo->file($img['tmp_name']);
+        if (!in_array($mimeReal, $formatosPermitidos)) {
             $_SESSION['erro'] = "São permitidas apenas fotos nos formatos JPG, PNG ou WEBP.";
             header('Location: ' . $urlVoltar);
             exit;
@@ -106,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'actualizar') {
 // ACÇÃO: Alterar Senha Segura
 // ------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'senha') {
+    validarTokenCsrf();
     $senha_antiga = $_POST['senha_antiga'] ?? '';
     $senha_nova = $_POST['senha_nova'] ?? '';
     $senha_conf = $_POST['senha_conf'] ?? '';
