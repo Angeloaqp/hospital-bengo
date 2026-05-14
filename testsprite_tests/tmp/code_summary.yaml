@@ -1,0 +1,33 @@
+version: "2"
+type: frontend
+tech_stack:
+  - php
+  - tailwind css
+  - vanilla javascript
+  - mysql
+routes:
+  - path: /hospital-bengo/public/index.php
+    file: public/index.php
+    auth_required: false
+    description: User login page
+  - path: /hospital-bengo/public/painel.php
+    file: public/painel.php
+    auth_required: false
+    description: Public panel for waiting room
+features:
+  - name: User Login
+    description: Login with username and password
+    files:
+      - public/index.php
+      - app/controllers/auth.php
+    entry_route: /hospital-bengo/public/index.php
+    user_interactions:
+      - Fill username input field
+      - Fill password input field
+      - Click Aceder ao Painel button to submit
+      - See error message on invalid credentials
+    api_calls:
+      - method: POST
+        endpoint: /hospital-bengo/app/controllers/auth.php
+    auth_required: false
+known_limitations: []

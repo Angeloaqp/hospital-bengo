@@ -1,0 +1,8 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:80/hospital-bengo/public/index.php",
+  "loginUser": "admin",
+  "loginPassword": "miguelpungui23"
+}
