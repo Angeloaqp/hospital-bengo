@@ -572,11 +572,13 @@ class Senha
                  )
                  AND (
                     ta.especialidade_id = :esp_id
+                    OR m.medico_id = :medico_id
                     OR s.prioridade = 1
                  )
                  AND (
                     :aceita_walkins = 1
                     OR s.origem != 'mesmo_dia'
+                    OR m.medico_id = :medico_id
                     OR s.prioridade = 1
                  )
                  ORDER BY s.prioridade ASC,
@@ -584,6 +586,7 @@ class Senha
             );
             $stmt->execute([
                 ':esp_id' => $esp['id'],
+                ':medico_id' => $medicoId,
                 ':aceita_walkins' => $aceitaWalkins
             ]);
         } else {
