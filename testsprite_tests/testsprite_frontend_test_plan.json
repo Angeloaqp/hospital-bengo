@@ -1,0 +1,177 @@
+[
+  {
+    "id": "TC001",
+    "title": "Authenticate with valid credentials and enter the system",
+    "description": "Verifies that a staff user can sign in with valid credentials and reach the authenticated area successfully.",
+    "category": "User Login",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/index.php"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to the system is granted"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the authenticated area is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Reject invalid credentials without granting access",
+    "description": "Verifies that an invalid username and password combination shows a clear error and does not grant system access.",
+    "category": "User Login",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/index.php"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with invalid-user"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with invalid-password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login error message is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to the system is not granted"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Display the currently called ticket and upcoming queue",
+    "description": "Verifies that the public panel shows the ticket currently being called along with the next tickets in the queue.",
+    "category": "Public Waiting Room Panel",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/painel.php"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the currently called ticket is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify upcoming queue tickets are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Allow the public waiting room panel to be viewed without login",
+    "description": "Verifies that any visitor can open the public panel page and see the waiting room display without authenticating.",
+    "category": "Public Waiting Room Panel",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/painel.php"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the public waiting room panel is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the panel is accessible without authentication"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Show validation when login fields are left empty",
+    "description": "Verifies that submitting the login form without credentials shows validation feedback instead of proceeding.",
+    "category": "User Login",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/index.php"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify login validation feedback is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to the system is not granted"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC006",
+    "title": "Keep the public queue display readable on desktop",
+    "description": "Verifies that the public waiting room panel remains usable on a standard internal desktop viewport without layout breakage or truncated queue information.",
+    "category": "Public Waiting Room Panel",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/painel.php"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the public panel layout is displayed correctly on desktop"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify queue information is readable"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC007",
+    "title": "Show an empty state when no tickets are waiting",
+    "description": "Verifies that the public panel presents a clear empty state when there are no current or upcoming queue items.",
+    "category": "Public Waiting Room Panel",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/painel.php"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty waiting room state is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no upcoming tickets are shown"
+      }
+    ],
+    "priority": "Low"
+  }
+]

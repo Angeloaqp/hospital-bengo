@@ -8,420 +8,313 @@ require_once __DIR__ . '/../../../config/base_url.php';
 require_once __DIR__ . '/../../../config/sessao.php';
 require_once __DIR__ . '/../../../config/database.php';
 require_once __DIR__ . '/../../../app/models/Paciente.php';
-require_once __DIR__ . '/../../../app/models/Senha.php';
 
 exigirPerfil(['recepcionista', 'admin']);
 
-$tipos = Paciente::tiposAtendimento();
 $erros = $_SESSION['erros_form'] ?? [];
 $antigos = $_SESSION['dados_form'] ?? [];
 unset($_SESSION['erros_form'], $_SESSION['dados_form']);
-
-// Pré-selecciona urgência se vier do botão "Urgência"
-$isUrgencia = isset($_GET['urgencia']);
-$prioPadrao = $isUrgencia ? '1' : '4';
-
-$prioridades = [
-    1 => [
-        'label' => 'Urgente',
-        'cor' => '#DC2626',
-        'bg' => '#FEE2E2',
-        'icone' => '⚡'
-    ],
-    2 => [
-        'label' => 'Idoso',
-        'cor' => '#D97706',
-        'bg' => '#FEF3C7',
-        'icone' => '👴'
-    ],
-    3 => [
-        'label' => 'Grávida',
-        'cor' => '#7C3AED',
-        'bg' => '#EDE9FE',
-        'icone' => '🤰'
-    ],
-    4 => [
-        'label' => 'Normal',
-        'cor' => '#1E6FD9',
-        'bg' => '#E0F2FE',
-        'icone' => '👤'
-    ],
-];
 ?>
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registar Paciente — <?= APP_NOME ?></title>
     <?php include __DIR__ . '/../comum/head_assets.php'; ?>
     <style>
-        /* Custom scrollbar for fixed sidebar se o ticket exceder a altura */
-        .sticky-sidebar-container::-webkit-scrollbar {
-            width: 4px;
+        /* Tactile Editorial Custom Styles */
+        .tactile-input {
+            background-color: #f3f3f3; /* surface-container-low */
+            border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .sticky-sidebar-container::-webkit-scrollbar-thumb {
-            background: rgba(0,0,0,0.1);
-            border-radius: 10px;
+        .tactile-input:hover {
+            background-color: #eeeeee; /* surface-container */
+        }
+        .tactile-input:focus {
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.04);
+            outline: none;
+        }
+        .ambient-shadow {
+            box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.04);
+        }
+        .ambient-shadow-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .ambient-shadow-hover:hover {
+            box-shadow: 0px 24px 48px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #000000 0%, #3c3b3b 100%);
         }
     </style>
 </head>
-
-<body class="text-on-surface">
+<body class="bg-[#f9f9f9] text-[#1a1c1c] font-['Inter'] antialiased">
 
 <?php $paginaActual = 'registar'; ?>
 <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
-<?php $tituloPagina = 'Novo Paciente'; $subtituloPagina = ''; ?>
+<?php $tituloPagina = 'Novo Paciente'; $subtituloPagina = 'Registar novo paciente no sistema'; ?>
 <?php include __DIR__ . '/../comum/header.php'; ?>
 
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<form method="POST" action="<?= BASE_URL ?>app/controllers/pacientes.php" id="form-registo" class="w-full max-w-[1500px]">
-    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
-<main class="grid grid-cols-1 xl:grid-cols-3 gap-8 relative">
+<div class="ml-0 lg:ml-56 pt-28 px-4 sm:px-8 pb-24 lg:pb-8 flex justify-center min-h-screen">
+    <main class="w-full max-w-[900px] relative mt-4">
 
-        <!-- FORMULÁRIO (Move para cima do Main) -->
-        <input type="hidden" name="acao" value="registar">
-
-        <!-- Left Column: Forms -->
-        <div class="xl:col-span-2 space-y-8">
+        <form method="POST" action="<?= BASE_URL ?>app/controllers/pacientes_api.php" id="form-registo">
+            <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+            <input type="hidden" name="acao" value="registar_apenas">
+            <input type="hidden" name="paciente_id" id="paciente_id" value="">
 
             <!-- ERROS -->
             <?php if (!empty($erros)): ?>
-                <div class="bg-error-container text-error px-5 py-4 rounded-2xl text-sm font-bold shadow-sm">
-                    <?php foreach ($erros as $e): ?>
-                        <p class="mb-1 last:mb-0">⚠ <?= htmlspecialchars($e) ?></p>
-                    <?php endforeach; ?>
+                <div class="bg-[#ffdad6] text-[#410002] px-6 py-5 rounded-[1.5rem] text-sm font-bold shadow-sm mb-8 flex gap-3 items-start">
+                    <span class="material-symbols-outlined shrink-0">error</span>
+                    <div>
+                        <?php foreach ($erros as $e): ?>
+                            <p class="mb-1 last:mb-0"><?= htmlspecialchars($e) ?></p>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             <?php endif; ?>
 
             <!-- Section: Dados Pessoais -->
-            <section class="bg-white rounded-[2rem] p-8 floating-card border border-white">
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                        <span class="material-symbols-outlined text-black">badge</span>
-                    </div>
-                    <h3 class="text-xl font-black tracking-tight">Dados Pessoais</h3>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="md:col-span-2">
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1" for="nome">Nome Completo *</label>
-                        <input id="nome" name="nome" value="<?= htmlspecialchars($antigos['nome'] ?? '') ?>" required minlength="3" class="w-full h-12 px-5 bg-surface-container-high border-none rounded-2xl font-semibold text-sm" placeholder="Ex: António Kiala" type="text" />
+            <section class="bg-white rounded-[2.5rem] p-8 sm:p-12 ambient-shadow mb-8 transition-all duration-500 relative z-10" id="section-form">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="w-12 h-12 rounded-[1rem] bg-[#f3f3f3] flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[#1a1c1c] text-2xl">badge</span>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1" for="idade">Idade *</label>
-                        <input id="idade" name="idade" value="<?= htmlspecialchars($antigos['idade'] ?? '') ?>" required min="0" max="120" class="w-full h-12 px-5 bg-surface-container-high border-none rounded-2xl font-semibold text-sm" placeholder="Anos" type="number" />
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1" for="morada">Morada *</label>
-                        <input id="morada" name="morada" value="<?= htmlspecialchars($antigos['morada'] ?? '') ?>" required class="w-full h-12 px-5 bg-surface-container-high border-none rounded-2xl font-semibold text-sm" placeholder="Ex: Centralidade do Sequele" type="text" />
-                    </div>
-                    <div class="md:col-span-2 p-4 bg-surface-container-low rounded-2xl border border-black/5" id="campo-peso-area" style="display:none;">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-xs font-bold text-amber-600">O paciente é menor de idade?</p>
-                                <p class="text-[10px] text-on-surface-variant mt-0.5">Por favor, informe obrigatoriamente o peso (dosagem pediátrica).</p>
-                            </div>
-                            <div class="flex flex-col gap-1 w-24">
-                                <label class="text-[9px] font-black text-amber-600 uppercase" for="peso">Peso (kg)</label>
-                                <input id="peso" name="peso" value="<?= htmlspecialchars($antigos['peso'] ?? '') ?>" step="0.1" min="1" max="200" class="h-9 px-3 bg-white border border-black/10 rounded-xl text-xs font-bold" type="number" />
-                            </div>
-                        </div>
+                        <h3 class="text-2xl font-['Manrope'] font-extrabold tracking-tight text-[#1a1c1c]">Dados Demográficos</h3>
+                        <p class="text-sm font-medium text-[#474747] mt-1">Informações principais de identificação do paciente.</p>
                     </div>
                 </div>
-            </section>
-
-            <!-- Section: Especialidade de Consulta -->
-            <section class="bg-white rounded-[2rem] p-8 floating-card border border-white">
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                        <span class="material-symbols-outlined text-black">medical_services</span>
-                    </div>
-                    <h3 class="text-xl font-black tracking-tight">Especialidade da Consulta</h3>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    <?php 
-                    $iconesEspecialidade = [
-                        'Geral' => 'stethoscope',
-                        'Urgência / Emergência' => 'emergency',
-                        'Pediatria' => 'child_care',
-                        'Maternidade' => 'pregnant_woman',
-                        'Cardiologia' => 'cardiology',
-                        'Ortopedia' => 'orthopedics',
-                        'Oftalmologia' => 'visibility',
-                        'Estomatologia' => 'dentistry'
-                    ];
-                    foreach ($tipos as $t): 
-                        $icone = $iconesEspecialidade[$t['nome']] ?? 'medical_services';
-                        $checked = ($antigos['tipo_atendimento_id'] ?? '') == $t['id'] ? 'checked' : '';
-                    ?>
-                        <label class="relative cursor-pointer group">
-                            <input <?= $checked ?> class="peer sr-only" name="tipo_atendimento_id" type="radio" value="<?= $t['id'] ?>" data-nome="<?= htmlspecialchars($t['nome']) ?>" required />
-                            <div class="p-3.5 rounded-[1.25rem] bg-surface-container-high border border-transparent peer-checked:border-black peer-checked:bg-white transition-all text-center h-full flex flex-col justify-center shadow-sm overflow-hidden">
-                                <span class="material-symbols-outlined text-xl mb-1.5 block text-on-surface-variant group-peer-checked:text-black"><?= $icone ?></span>
-                                <span class="text-[9px] font-black uppercase tracking-wider block leading-tight text-on-surface-variant group-peer-checked:text-black truncate px-1 w-full" title="<?= htmlspecialchars($t['nome']) ?>"><?= htmlspecialchars($t['nome']) ?></span>
-                            </div>
-                        </label>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-
-            <!-- Section: Nível de Prioridade -->
-            <section class="bg-white rounded-[2rem] p-8 floating-card border border-white">
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                        <span class="material-symbols-outlined text-black">priority_high</span>
-                    </div>
-                    <h3 class="text-xl font-black tracking-tight">Nível de Prioridade</h3>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <?php 
-                    $prioTailwind = [
-                        1 => ['bg_color' => 'bg-error', 'border_peer' => 'peer-checked:border-error', 'bg_peer' => 'peer-checked:bg-error/5', 'text_color' => 'text-error', 'sub' => 'Atendimento Imediato'],
-                        2 => ['bg_color' => 'bg-amber-500', 'border_peer' => 'peer-checked:border-amber-500', 'bg_peer' => 'peer-checked:bg-amber-50', 'text_color' => 'text-amber-500', 'sub' => 'Atendimento Prioritário'],
-                        3 => ['bg_color' => 'bg-purple-600', 'border_peer' => 'peer-checked:border-purple-600', 'bg_peer' => 'peer-checked:bg-purple-50', 'text_color' => 'text-purple-600', 'sub' => 'Atendimento Prioritário'],
-                        4 => ['bg_color' => 'bg-blue-600', 'border_peer' => 'peer-checked:border-blue-600', 'bg_peer' => 'peer-checked:bg-blue-50', 'text_color' => 'text-blue-600', 'sub' => 'Fila Regular'],
-                    ];
-                    foreach ($prioridades as $v => $p): 
-                        $tw = $prioTailwind[$v];
-                        $checked = ($antigos['prioridade'] ?? $prioPadrao) == $v ? 'checked' : '';
-                    ?>
-                        <label class="relative cursor-pointer group">
-                            <input <?= $checked ?> class="peer sr-only" name="prioridade" type="radio" value="<?= $v ?>" />
-                            <div class="flex items-center gap-4 p-5 rounded-[1.5rem] bg-surface-container-high border border-transparent <?= $tw['border_peer'] ?> <?= $tw['bg_peer'] ?> transition-all shadow-sm">
-                                <div class="w-4 h-4 rounded-full <?= $tw['bg_color'] ?> shrink-0"></div>
-                                <div>
-                                    <p class="text-sm font-black text-black"><?= $p['label'] ?></p>
-                                    <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider"><?= $tw['sub'] ?></p>
-                                </div>
-                                <span class="material-symbols-outlined ml-auto <?= $tw['text_color'] ?> opacity-0 peer-checked:opacity-100">check_circle</span>
-                            </div>
-                        </label>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-    </div>
-
-    <!-- Right Column: Sticky Sidebar -->
-    <div class="xl:block">
-        <div class="sticky top-28 space-y-4">
-            
-            <!-- Ticket Card Container -->
-            <div class="bg-white rounded-[2rem] p-6 floating-card border border-white flex flex-col items-center overflow-hidden relative min-h-[400px]" id="sidebar-card-content">
                 
-                <!-- Simulation State -->
-                <div class="w-full flex flex-col items-center transition-all duration-500" id="ticket-simulation-view">
-                    <h4 class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-6 text-center">Simulação do Ticket</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
+                    <div class="md:col-span-2 group">
+                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="nome">Nome Completo *</label>
+                        <input id="nome" name="nome" value="<?= htmlspecialchars($antigos['nome'] ?? '') ?>" required minlength="3" class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30" placeholder="Ex: António Kiala" type="text" />
+                    </div>
+                    <div class="group">
+                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="bi_nif">BI ou NIF</label>
+                        <input id="bi_nif" name="bi_nif" value="<?= htmlspecialchars($antigos['bi_nif'] ?? '') ?>" class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30" placeholder="000000000XX000" type="text" />
+                    </div>
+                    <div class="group">
+                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="idade">Idade *</label>
+                        <input id="idade" name="idade" value="<?= htmlspecialchars($antigos['idade'] ?? '') ?>" required min="0" max="120" class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30" placeholder="Anos" type="number" />
+                    </div>
+                    <div class="group">
+                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="sexo">Género</label>
+                        <div class="relative">
+                            <select id="sexo" name="sexo" class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] appearance-none cursor-pointer">
+                                <option value="">Seleccionar...</option>
+                                <option value="M" <?= ($antigos['sexo'] ?? '') === 'M' ? 'selected' : '' ?>>Masculino</option>
+                                <option value="F" <?= ($antigos['sexo'] ?? '') === 'F' ? 'selected' : '' ?>>Feminino</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#474747]">expand_more</span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="morada">Morada *</label>
+                        <input id="morada" name="morada" value="<?= htmlspecialchars($antigos['morada'] ?? '') ?>" required class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30" placeholder="Ex: Centralidade do Sequele" type="text" />
+                    </div>
                     
-                    <div class="w-full border-t border-dashed border-black/10 pt-6 flex flex-col items-center">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center mb-4 transition-colors" id="preview-ticket-icon-bg" style="background:#2563EB;">
-                            <span class="material-symbols-outlined text-white text-2xl">confirmation_number</span>
-                        </div>
-                        <p class="text-[9px] font-bold text-on-surface-variant uppercase tracking-widest text-center" id="preview-desc">Atendimento Geral</p>
-                        <div class="text-[56px] font-black tracking-tighter leading-none my-2 text-black" id="preview-codigo">N-???</div>
-                        
-                        <div class="w-full bg-surface-container-low/50 rounded-2xl p-4 mt-4 space-y-2">
-                            <div class="flex justify-between items-center text-[11px] font-bold">
-                                <span class="text-on-surface-variant">Prioridade</span>
-                                <span class="text-blue-600" id="preview-prio-nome">Normal</span>
+                    <!-- Campo de peso se for menor de idade (Tactile Soft Section) -->
+                    <div class="md:col-span-2 overflow-hidden transition-all duration-500 ease-in-out" id="campo-peso-wrapper" style="max-height: 0; opacity: 0;">
+                        <div class="p-6 bg-[#f9f9f9] rounded-[1.5rem] mt-2 relative overflow-hidden">
+                            <!-- Indicador lateral suave -->
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-400"></div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pl-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-[#f3f3f3] flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-[#1a1c1c]">child_care</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-base font-bold text-[#1a1c1c]">Paciente Pediátrico</p>
+                                        <p class="text-xs text-[#474747] font-medium mt-1 leading-relaxed">Sendo menor de 18 anos, informe o peso (kg) obrigatório para cálculo seguro de dosagens.</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-1 sm:w-32 shrink-0">
+                                    <input id="peso" name="peso" value="<?= htmlspecialchars($antigos['peso'] ?? '') ?>" step="0.1" min="1" max="200" class="tactile-input h-14 px-5 rounded-[1rem] font-bold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30 w-full" type="number" placeholder="Peso (kg)" />
+                                </div>
                             </div>
-                            <div class="flex justify-between items-center text-[11px] font-bold">
-                                <span class="text-on-surface-variant">Setor</span>
-                                <span class="text-black" id="preview-setor-nome">A Selecionar</span>
-                            </div>
                         </div>
-                        <div class="mt-6 opacity-20 grayscale">
-                            <img alt="Código de barras" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOuGSnvPnllLldKlZr-QfOINw8hVRLebMY9D5t40zkcGQLopJ-hHte8-oD8DkBA3zng8PFVMkz26ANClW7gF31bmBg1chdRI04m66HGJfU7y_DqSUFEu9QMrTNcw0sKFapIUKRAAFvDzlFcLnRk2CTjIVKzPj3cocnPKmxd1N_EgG95QstZU5QyMCN0XJmezjr2L--9uSm5HqW8IFuruEXRkwW0PLQqyQXfOSjkVB8RWrdGS3_BE8cv1J4db55JmgwBf_3bFxNpu0f"/>
-                        </div>
-                        <p class="text-[7px] font-mono text-on-surface-variant mt-3 uppercase">Emitido em tempo real</p>
                     </div>
                 </div>
 
-                <!-- Success State (Hidden by default) -->
-                <div class="absolute inset-0 flex flex-col items-center justify-center p-8 bg-white translate-y-full opacity-0 transition-all duration-500 pointer-events-none" id="success-state-view">
-                    <div class="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mb-6 shadow-sm">
-                        <span class="material-symbols-outlined text-green-600 text-5xl font-bold">check_circle</span>
-                    </div>
-                    <h3 class="text-lg font-black text-black text-center leading-tight mb-2">Paciente registado com sucesso</h3>
-                    <div class="bg-surface-container-low px-4 py-2 rounded-xl mb-8">
-                        <p class="text-[10px] text-on-surface-variant font-black uppercase tracking-widest">Senha: <span class="text-green-600 text-sm ml-1" id="success-senha-display">N-000</span></p>
-                    </div>
-                    <button type="button" class="w-full py-3 bg-black text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-transform flex items-center justify-center gap-2" onclick="resetRegistration()">
-                        <span class="material-symbols-outlined text-lg">add_circle</span>
-                        Emitir Novo Registo
+                <div class="mt-12 flex justify-end">
+                    <button type="submit" id="btn-registar" class="btn-gradient text-[#e5e2e1] px-8 py-4 rounded-[2rem] font-black text-sm hover:scale-[1.02] hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] transition-all flex items-center gap-3 active:scale-95">
+                        <span class="material-symbols-outlined text-[20px]">person_add</span>
+                        <span id="btn-text">Registar Paciente</span>
                     </button>
                 </div>
-            </div>
+            </section>
 
-            <!-- Finalize Button Container (Only visible in simulation state) -->
-            <div class="transition-all duration-500" id="finalize-btn-container">
-                <button type="submit" id="btn-registar" class="w-full bg-black text-white floating-card hover:bg-zinc-800 active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-1 group shadow-xl py-4 rounded-2xl cursor-pointer">
-                    <span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">print</span>
-                    <span class="text-base font-black tracking-tight" id="btn-text-main">Finalizar Registro</span>
-                    <span class="text-[9px] font-bold opacity-60 uppercase tracking-widest">Imprimir e Encaminhar</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</main>
-</form>
+            <!-- Painel de Sucesso (Oculto inicialmente) -->
+            <section class="bg-white rounded-[2.5rem] p-8 sm:p-14 ambient-shadow text-center flex flex-col items-center justify-center opacity-0 pointer-events-none absolute inset-0 transition-all duration-700 translate-y-8 z-0" id="section-sucesso">
+                
+                <!-- Circulo Decorativo Tactile -->
+                <div class="relative w-28 h-28 mb-8">
+                    <div class="absolute inset-0 bg-[#e2e2e2] rounded-full animate-ping opacity-20"></div>
+                    <div class="absolute inset-0 bg-[#f3f3f3] rounded-full flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[#1a1c1c] text-5xl font-bold">check_circle</span>
+                    </div>
+                </div>
+
+                <h3 class="text-3xl sm:text-4xl font-['Manrope'] font-extrabold text-[#1a1c1c] tracking-tight mb-3">Paciente Registado!</h3>
+                <p class="text-[#474747] font-medium text-base max-w-md mx-auto mb-12 leading-relaxed">O registo do paciente foi guardado na base de dados com sucesso. Escolha o próximo passo lógico.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
+                    <!-- Card 1 -->
+                    <a href="#" id="link-mesmo-dia" class="group p-8 bg-[#f9f9f9] rounded-[2rem] hover:bg-white ambient-shadow-hover transition-all text-left flex flex-col justify-between h-full relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-black/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="relative z-10">
+                            <div class="w-12 h-12 rounded-[1rem] bg-white flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500">
+                                <span class="material-symbols-outlined text-[#1a1c1c] text-[24px]">local_hospital</span>
+                            </div>
+                            <h4 class="text-xl font-['Manrope'] font-bold tracking-tight mb-2 text-[#1a1c1c]">Atendimento Imediato</h4>
+                            <p class="text-sm text-[#474747] font-medium leading-relaxed">Encaminhar o paciente agora mesmo para a triagem ou urgência.</p>
+                        </div>
+                        <div class="relative z-10 mt-8 flex justify-end">
+                            <span class="w-8 h-8 rounded-full bg-[#1a1c1c] text-white flex items-center justify-center group-hover:bg-[#3c3b3b] transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            </span>
+                        </div>
+                    </a>
+                    
+                    <!-- Card 2 -->
+                    <a href="#" id="link-marcacao" class="group p-8 bg-[#f9f9f9] rounded-[2rem] hover:bg-white ambient-shadow-hover transition-all text-left flex flex-col justify-between h-full relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-black/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="relative z-10">
+                            <div class="w-12 h-12 rounded-[1rem] bg-white flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500">
+                                <span class="material-symbols-outlined text-[#1a1c1c] text-[24px]">calendar_month</span>
+                            </div>
+                            <h4 class="text-xl font-['Manrope'] font-bold tracking-tight mb-2 text-[#1a1c1c]">Fazer Marcação</h4>
+                            <p class="text-sm text-[#474747] font-medium leading-relaxed">Agendar consulta médica para uma data e horário futuro.</p>
+                        </div>
+                        <div class="relative z-10 mt-8 flex justify-end">
+                            <span class="w-8 h-8 rounded-full bg-[#1a1c1c] text-white flex items-center justify-center group-hover:bg-[#3c3b3b] transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="mt-12 flex flex-wrap justify-center gap-6">
+                    <button type="button" onclick="editarPaciente()" class="group flex items-center gap-2 text-xs font-bold text-[#474747] hover:text-[#1a1c1c] uppercase tracking-widest transition-colors">
+                        <span class="material-symbols-outlined text-[16px] group-hover:-translate-x-1 transition-transform">edit</span>
+                        Editar Dados
+                    </button>
+                    <span class="text-[#dadada] hidden sm:block">|</span>
+                    <button type="button" onclick="window.location.reload()" class="group flex items-center gap-2 text-xs font-bold text-[#474747] hover:text-[#1a1c1c] uppercase tracking-widest transition-colors">
+                        <span class="material-symbols-outlined text-[16px] group-hover:rotate-180 transition-transform duration-500">refresh</span>
+                        Registar Outro
+                    </button>
+                </div>
+            </section>
+
+        </form>
+
+    </main>
 </div>
 
-    <script>
-        // ================================================
-        // Lógica do formulário de registo
-        // ================================================
+<script>
+    const inputIdade = document.getElementById('idade');
+    const campoPesoWrapper = document.getElementById('campo-peso-wrapper');
+    const inputPeso = document.getElementById('peso');
 
-        const prefixos = { 1: 'U', 2: 'I', 3: 'G', 4: 'N' };
-        const descricoes = {
-            1: 'Urgente — Crítica',
-            2: 'Terceira Idade',
-            3: 'Gestante',
-            4: 'Fila Regular'
-        };
-        const ticketBgs = {
-            1: '#DC2626', 2: '#D97706',
-            3: '#9333EA', 4: '#2563EB' // Purple for Gravida
-        };
-
-        function atualizarPreview() {
-            const prio = document.querySelector('input[name="prioridade"]:checked');
-            const tipo = document.querySelector('input[name="tipo_atendimento_id"]:checked');
-            
-            if (prio) {
-                const v = parseInt(prio.value);
-                document.getElementById('preview-codigo').textContent = (prefixos[v] || 'N') + '-???';
-                document.getElementById('preview-desc').textContent = descricoes[v] || 'Atendimento Geral';
-                document.getElementById('preview-prio-nome').textContent = descricoes[v]?.split('—')[0] || 'Normal';
-                document.getElementById('preview-prio-nome').style.color = ticketBgs[v] || '#2563EB';
-                document.getElementById('preview-ticket-icon-bg').style.backgroundColor = ticketBgs[v] || '#2563EB';
-            }
-            if (tipo) {
-                document.getElementById('preview-setor-nome').textContent = tipo.dataset.nome || 'Geral';
-            }
+    // Lógica da Idade: Exibir secção pediátrica de forma animada e elegante
+    inputIdade.addEventListener('input', function () {
+        if (parseInt(this.value) < 18 && this.value !== '') {
+            campoPesoWrapper.style.maxHeight = '200px';
+            campoPesoWrapper.style.opacity = '1';
+            inputPeso.required = true;
+        } else {
+            campoPesoWrapper.style.maxHeight = '0';
+            campoPesoWrapper.style.opacity = '0';
+            inputPeso.required = false;
+            inputPeso.value = '';
         }
-
-        // Adiciona eventos aos selects customizados (Tailwind peers)
-        document.querySelectorAll('input[name="prioridade"], input[name="tipo_atendimento_id"]').forEach(el => {
-            el.addEventListener('change', atualizarPreview);
-        });
-        // Corre à partida
-        atualizarPreview();
-
-        // ---- Campo peso condicional ----
-        document.getElementById('idade').addEventListener('input', function () {
-            const campoPesoArea = document.getElementById('campo-peso-area');
-            const inputPeso = document.getElementById('peso');
-            if (parseInt(this.value) < 18 && this.value !== '') {
-                campoPesoArea.style.display = 'flex';
-                inputPeso.required = true;
+    });
+    
+    // Animação de submissão do formulário com feedback tactile
+    document.getElementById('form-registo').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const btn = document.getElementById('btn-registar');
+        const btnText = document.getElementById('btn-text');
+        
+        btn.disabled = true;
+        btn.classList.add('opacity-80', 'cursor-wait');
+        btnText.textContent = 'A processar...';
+        
+        try {
+            const formData = new FormData(form);
+            const response = await fetch(form.action, { method: 'POST', body: formData });
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                // Configurar links baseados no ID retornado do paciente
+                document.getElementById('link-mesmo-dia').href = `marcacao.php?origem=mesmo_dia&paciente_id=${result.paciente_id}`;
+                document.getElementById('link-marcacao').href = `marcacao.php?origem=marcacao&paciente_id=${result.paciente_id}`;
+                document.getElementById('paciente_id').value = result.paciente_id;
+                
+                // Animar transição (Fade Out Form, Fade In Sucesso) usando Tonal Layering
+                const sectionForm = document.getElementById('section-form');
+                const sectionSucesso = document.getElementById('section-sucesso');
+                
+                sectionForm.classList.remove('z-10');
+                sectionForm.classList.add('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4', 'z-0');
+                
+                setTimeout(() => {
+                    sectionSucesso.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-8', 'z-0');
+                    sectionSucesso.classList.add('opacity-100', 'translate-y-0', 'z-10');
+                    sectionForm.style.display = 'none';
+                }, 400);
+                
+                if (typeof window.showToast === 'function') window.showToast('Paciente guardado com sucesso!', 'success');
             } else {
-                campoPesoArea.style.display = 'none';
-                inputPeso.required = false;
-                inputPeso.value = '';
-            }
-        });
-
-        // ---- Interação de Sucesso (Sidebar Dinâmica) ----
-        function finalizeRegistration(senha) {
-            const simulationView = document.getElementById('ticket-simulation-view');
-            const successView = document.getElementById('success-state-view');
-            const finalizeContainer = document.getElementById('finalize-btn-container');
-
-            document.getElementById('success-senha-display').textContent = senha;
-
-            // Animate simulation view out
-            simulationView.classList.add('-translate-y-full', 'opacity-0');
-            
-            // Animate success view in
-            successView.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
-            successView.classList.add('translate-y-0', 'opacity-100');
-
-            // Hide finalize button
-            finalizeContainer.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
-        }
-
-        function resetRegistration() {
-            const simulationView = document.getElementById('ticket-simulation-view');
-            const successView = document.getElementById('success-state-view');
-            const finalizeContainer = document.getElementById('finalize-btn-container');
-
-            // Reset frontend UI visually
-            simulationView.classList.remove('-translate-y-full', 'opacity-0');
-            
-            successView.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
-            successView.classList.remove('translate-y-0', 'opacity-100');
-
-            finalizeContainer.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
-            
-            // Re-ativar botao de registo
-            const btn = document.getElementById('btn-registar');
-            btn.disabled = false;
-            document.getElementById('btn-text-main').textContent = 'Finalizar Registro';
-
-            // Reset do formulário principal
-            document.getElementById('form-registo').reset();
-            atualizarPreview();
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Trigger peso onload event
-        document.getElementById('idade').dispatchEvent(new Event('input'));
-
-        // ---- Submissão via AJAX ----
-        document.getElementById('form-registo').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const btn = document.getElementById('btn-registar');
-            const form = e.target;
-            
-            // Estado visual de loading
-            btn.disabled = true;
-            document.getElementById('btn-text-main').textContent = 'A Registar...';
-            
-            try {
-                const formData = new FormData(form);
-                const actionUrl = form.getAttribute('action');
-                
-                const response = await fetch(actionUrl, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    // Executa a animação de Sucesso!
-                    finalizeRegistration(result.senha);
-                    if (typeof window.showToast === 'function') window.showToast('Paciente registado com sucesso', 'success');
-                } else {
-                    // Ocorreram erros na validação (Fallback simples de reset visual e alerta nativo)
-                    btn.disabled = false;
-                    document.getElementById('btn-text-main').textContent = 'Finalizar Registro';
-                    if (typeof window.showToast === 'function') {
-                        window.showToast((result.erros || []).join(', '), 'error', 'ERRO NO REGISTO');
-                    } else {
-                        alert('Erro ao registar: \n' + (result.erros || []).join('\n'));
-                    }
-                }
-            } catch (error) {
-                console.error(error);
                 btn.disabled = false;
-                document.getElementById('btn-text-main').textContent = 'Finalizar Registro';
-                if (typeof window.showToast === 'function') {
-                    window.showToast('Erro na comunicação com o servidor.', 'error', 'ERRO');
-                } else {
-                    alert('Erro na comunicação com o servidor.');
-                }
+                btn.classList.remove('opacity-80', 'cursor-wait');
+                btnText.textContent = document.getElementById('paciente_id').value ? 'Salvar Alterações' : 'Registar Paciente';
+                if (typeof window.showToast === 'function') window.showToast((result.erros || []).join(', '), 'error');
+                else alert('Erros:\n' + (result.erros || []).join('\n'));
             }
-        });
-    </script>
+        } catch (e) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-80', 'cursor-wait');
+            btnText.textContent = document.getElementById('paciente_id').value ? 'Salvar Alterações' : 'Registar Paciente';
+            if (typeof window.showToast === 'function') window.showToast('Erro de conexão.', 'error');
+            else alert('Erro de conexão.');
+        }
+    });
+
+    // Função para voltar atrás no painel de sucesso (Editar paciente)
+    function editarPaciente() {
+        const sectionSucesso = document.getElementById('section-sucesso');
+        const sectionForm = document.getElementById('section-form');
+        
+        sectionSucesso.classList.remove('z-10');
+        sectionSucesso.classList.add('opacity-0', 'pointer-events-none', 'translate-y-8', 'z-0');
+        sectionSucesso.classList.remove('opacity-100', 'translate-y-0');
+        
+        setTimeout(() => {
+            sectionForm.style.display = 'block';
+            setTimeout(() => {
+                sectionForm.classList.remove('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4', 'z-0');
+                sectionForm.classList.add('z-10');
+                
+                const btn = document.getElementById('btn-registar');
+                document.getElementById('btn-text').textContent = 'Salvar Alterações';
+                btn.disabled = false;
+                btn.classList.remove('opacity-80', 'cursor-wait');
+            }, 50);
+        }, 400);
+    }
+</script>
 
 </body>
-
 </html>

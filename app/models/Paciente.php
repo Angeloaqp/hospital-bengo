@@ -80,6 +80,48 @@ class Paciente
     }
 
     /**
+     * Regista um novo paciente sem emitir senha.
+     * Devolve o ID do paciente recém-criado.
+     *
+     * @param array $dados Dados validados do formulário
+     * @param int   $registadoPor ID do utilizador logado
+     * @return int ID do paciente
+     */
+    public static function registarApenas(
+        array $dados,
+        int $registadoPor
+    ): int {
+        $db = Database::ligar();
+
+        try {
+            $stmt = $db->prepare(
+                "INSERT INTO pacientes 
+                    (nome, bi_nif, idade, sexo, morada, peso, registado_por)
+                 VALUES 
+                    (:nome, :bi_nif, :idade, :sexo, :morada, :peso, :reg_por)"
+            );
+            $stmt->execute([
+                ':nome' => $dados['nome'],
+                ':bi_nif' => !empty($dados['bi_nif']) ? $dados['bi_nif'] : null,
+                ':idade' => (int) $dados['idade'],
+                ':sexo' => !empty($dados['sexo']) ? $dados['sexo'] : null,
+                ':morada' => $dados['morada'],
+                ':peso' => !empty($dados['peso'])
+                    ? (float) $dados['peso']
+                    : null,
+                ':reg_por' => $registadoPor,
+            ]);
+
+            return (int) $db->lastInsertId();
+
+        } catch (PDOException $e) {
+            throw new RuntimeException(
+                'Erro ao registar paciente: ' . $e->getMessage()
+            );
+        }
+    }
+
+    /**
      * Devolve todos os tipos de atendimento activos
      */
     public static function tiposAtendimento(): array
@@ -91,5 +133,41 @@ class Paciente
              WHERE activo = 1 
              ORDER BY id"
         )->fetchAll();
+    }
+    /**
+     * Atualiza os dados demográficos base do paciente
+     */
+    public static function atualizarApenas(
+        int $pacienteId,
+        array $dados
+    ): bool {
+        $db = Database::ligar();
+
+        try {
+            $stmt = $db->prepare(
+                "UPDATE pacientes SET 
+                    nome = :nome,
+                    bi_nif = :bi_nif,
+                    idade = :idade,
+                    sexo = :sexo,
+                    morada = :morada,
+                    peso = :peso
+                 WHERE id = :id"
+            );
+            return $stmt->execute([
+                ':nome' => $dados['nome'],
+                ':bi_nif' => !empty($dados['bi_nif']) ? $dados['bi_nif'] : null,
+                ':idade' => (int) $dados['idade'],
+                ':sexo' => !empty($dados['sexo']) ? $dados['sexo'] : null,
+                ':morada' => $dados['morada'],
+                ':peso' => !empty($dados['peso']) ? (float) $dados['peso'] : null,
+                ':id' => $pacienteId
+            ]);
+
+        } catch (PDOException $e) {
+            throw new RuntimeException(
+                'Erro ao atualizar paciente: ' . $e->getMessage()
+            );
+        }
     }
 }

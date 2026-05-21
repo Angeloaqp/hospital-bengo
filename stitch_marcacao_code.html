@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+
+<html lang="pt"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HGB - Marcação de Consultas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-background": "#1a1c1c",
+                "background": "#f9f9f9",
+                "secondary-fixed": "#c7c6c6",
+                "surface-container-high": "#e8e8e8",
+                "surface-bright": "#f9f9f9",
+                "outline-variant": "#c6c6c6",
+                "secondary": "#5e5e5e",
+                "on-tertiary-fixed-variant": "#e2e2e2",
+                "surface": "#f9f9f9",
+                "surface-container-low": "#f3f3f3",
+                "surface-variant": "#e2e2e2",
+                "tertiary-container": "#737575",
+                "on-error": "#ffffff",
+                "on-secondary-container": "#1b1c1c",
+                "inverse-primary": "#c8c6c5",
+                "surface-dim": "#dadada",
+                "inverse-on-surface": "#f1f1f1",
+                "error-container": "#ffdad6",
+                "on-error-container": "#410002",
+                "tertiary": "#3a3c3c",
+                "primary-fixed-dim": "#474746",
+                "secondary-fixed-dim": "#acabab",
+                "on-primary": "#e5e2e1",
+                "primary-fixed": "#5f5e5e",
+                "primary-container": "#3c3b3b",
+                "on-primary-container": "#ffffff",
+                "tertiary-fixed-dim": "#454747",
+                "on-tertiary-fixed": "#ffffff",
+                "on-tertiary-container": "#ffffff",
+                "outline": "#777777",
+                "on-tertiary": "#e2e2e2",
+                "on-surface-variant": "#474747",
+                "tertiary-fixed": "#5d5f5f",
+                "inverse-surface": "#2f3131",
+                "on-surface": "#1a1c1c",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed-variant": "#3b3b3c",
+                "primary": "#000000",
+                "surface-container-highest": "#e2e2e2",
+                "on-secondary-fixed": "#1b1c1c",
+                "on-secondary": "#ffffff",
+                "on-primary-fixed": "#ffffff",
+                "secondary-container": "#d5d4d4",
+                "surface-container": "#eeeeee",
+                "error": "#ba1a1a",
+                "surface-tint": "#5f5e5e",
+                "on-primary-fixed-variant": "#e5e2e1"
+        },
+        "borderRadius": {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
+        },
+        "spacing": {},
+        "fontFamily": {
+                "headline": [
+                        "Manrope"
+                ],
+                "display": [
+                        "Manrope"
+                ],
+                "body": [
+                        "Inter"
+                ],
+                "label": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {}
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .floating-card {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #000;
+            ring: 1px;
+            ring-color: #000;
+        }
+        
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #68D391;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #000;
+        }
+        .toggle-checkbox:checked + .toggle-label:after {
+            transform: translateX(100%);
+            border-color: #fff;
+        }
+
+        @keyframes scale-up {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-scale-up {
+            animation: scale-up 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+<script>
+  let bookingState = 'initial';
+  function handlePrimaryAction() {
+    if (bookingState === 'initial') {
+      bookingState = 'loading';
+      document.getElementById('submit-content').classList.add('hidden');
+      document.getElementById('submit-loading').classList.remove('hidden');
+      
+      setTimeout(() => {
+        document.getElementById('submit-loading').classList.add('hidden');
+        document.getElementById('submit-content').classList.remove('hidden');
+        
+        const badge = document.getElementById('summary-confirm-badge');
+        badge.classList.remove('hidden');
+        badge.classList.add('flex');
+        
+        document.getElementById('summary-confirm-icon').classList.remove('hidden'); 
+        document.getElementById('summary-senha').classList.remove('hidden'); 
+        document.getElementById('summary-senha').classList.add('flex'); 
+        
+        document.getElementById('submit-btn-title').innerText = 'Imprimir Ticket'; 
+        document.getElementById('submit-btn-subtitle').innerText = 'Imprimir Ficha de Presença';
+        
+        const secBtn = document.getElementById('secondary-action-btn');
+        secBtn.innerText = 'FINALIZAR AGENDAMENTO';
+        secBtn.classList.remove('text-zinc-400', 'hover:text-error', 'hover:bg-error/5');
+        secBtn.classList.add('text-black', 'hover:bg-black/5');
+        
+        bookingState = 'confirmed';
+      }, 1000); // 1s shimmer/loading state
+    } else if (bookingState === 'confirmed') {
+      const toast = document.getElementById('print-success-toast');
+      if(toast) {
+        toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        
+        setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+        }, 3000);
+      }
+    }
+  }
+</script>
+</head>
+<body class="text-on-surface">
+<!-- Floating Sidebar -->
+<aside class="fixed left-6 top-6 bottom-6 flex flex-col py-6 z-[60] w-56 bg-white rounded-[32px] floating-card font-['Manrope'] antialiased border border-white/50">
+<div class="mb-8 flex flex-col items-center px-6 gap-2">
+<div class="text-[18px] font-black tracking-tighter text-black flex flex-col items-center leading-tight">
+<span class="">HGB</span>
+</div>
+<div class="w-10 h-[1.5px] bg-black/5"></div>
+</div>
+<nav class="flex flex-col gap-1.5 px-3 flex-1">
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="text-xs font-semibold tracking-tight">Dashboard</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="calendar_month">calendar_month</span>
+<span class="text-xs font-semibold tracking-tight">Agenda</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="list_alt">list_alt</span>
+<span class="text-xs font-semibold tracking-tight">Atendimento Diário</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full bg-black text-white rounded-2xl transition-all shadow-md active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+<span class="text-xs font-bold tracking-tight">Nova Marcação</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
+<span class="text-xs font-semibold tracking-tight">Novo Paciente</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+<span class="text-xs font-semibold tracking-tight">Pesquisa</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
+<span class="text-xs font-semibold tracking-tight">Mensagens</span>
+</button>
+</nav>
+<div class="mt-auto flex flex-col gap-1.5 px-3">
+<div class="px-4 mb-3">
+<div class="h-[1px] bg-black/5 w-full"></div>
+</div>
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<div class="w-7 h-7 rounded-full overflow-hidden border border-surface-container-high shrink-0">
+<img alt="Afonso Diallo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4OLzjBtDsdOtAr-WaOVoT9eoCzw-DXR2bHqs_9gCs3a1G7o7d19LLm2u5jz85IYOWLKARMaL4xH36Y3KYFI26tGmNXxrImLmHtnVupEepeTESuGylYtb-4XtXs_VdB9G0AI7r2bmIEXDYq0jVUfKFg6ZkqHRW6pQxkMuiEnPPv9YsH465hs6_gy0e2sGuu3nH46IfNG15K47rhrbMnB1iXjOScZ1SAjsyij30zC0MG8eLZky-cWZMnc818pCFzxjWWF3GIeyR8HwY"/>
+</div>
+<span class="text-xs font-semibold tracking-tight">Meu Perfil</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:text-error hover:bg-error/5 rounded-2xl transition-all active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="text-xs font-semibold tracking-tight text-inherit">Sair</span>
+</button>
+</div>
+</aside>
+<!-- Header Wrapper with Shield -->
+<div class="fixed top-0 right-0 left-56 z-50 h-28 bg-gradient-to-b from-[#f3f4f6] to-transparent">
+<header class="h-16 mt-6 px-8 max-w-[1200px] mx-auto">
+<div class="rounded-2xl h-full px-6 flex items-center justify-between floating-card border border-white/50 bg-white">
+<div class="flex items-center gap-3">
+<h1 class="text-base font-extrabold tracking-tight text-black">Marcação de Consultas</h1>
+<div class="h-4 w-[1px] bg-black/10"></div>
+<div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-bold">
+<span class="material-symbols-outlined text-[16px]" data-icon="event_available">event_available</span>
+<span class="">Agendamento</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-black leading-none">Afonso Diallo</p>
+<p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-black mt-0.5">Recepção Principal</p>
+</div>
+<div class="w-9 h-9 rounded-full overflow-hidden bg-surface-container-high ring-2 ring-surface-container">
+<img alt="Perfil do Usuário" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ5nuWcSrvrYEacZgpyvSBZBI__QsLxZ_L5jRXDQ7E09fKDLq2r1_H3977K4uUJPC4MlIZ8CgxMrSE-5wzvjt-SVdwIHQC8YQ9VxUadUgXkgoTMpUEHbYAYVaHN-boAQikbL2sKMCFWOQD5uLnpU7XP4SBo_rDVkR5XogMgOvI8PEHpMHUIJshznKh0oS_suB-MpE_ps_sQ5N6MduIyG7alR_gSRRS4NLE5Xnc6qt55qLLaLYtivJH4LL6Dw7odX2BWC6L804nJp1i"/>
+</div>
+</div>
+</div>
+</header>
+</div>
+<!-- Main Content Area -->
+<div class="ml-56 mt-28 p-8 flex justify-center pb-24">
+<main class="w-full max-w-[1200px]">
+<!-- Form State Content -->
+<div class="flex flex-col lg:flex-row gap-8" id="booking-form-state">
+<!-- Left Column: Forms -->
+<div class="flex-1 space-y-6">
+<!-- Step 1: Identificação do Paciente -->
+<section class="bg-white rounded-[32px] p-8 floating-card border border-white relative animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both motion-reduce:animate-none">
+<div class="absolute top-8 right-8 w-1.5 h-1.5 rounded-full bg-red-500 shadow-sm"></div>
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-[24px] bg-surface-container-low flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-black">person_search</span>
+</div>
+<h3 class="text-xl font-black tracking-tight">1. Identificação do Paciente</h3>
+</div>
+</div>
+<!-- Selected Patient Card -->
+<div class="p-5 bg-blue-50/50 rounded-[24px] border border-blue-100 flex items-start gap-4 transition-all hover:shadow-sm" id="patient-selected-state">
+<div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+<span class="font-bold text-blue-600 text-lg">JS</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-base font-black text-black">João Silva</h4>
+<p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mt-0.5">34 Anos • Masc</p>
+</div>
+<button class="text-xs font-bold text-error hover:bg-error/10 px-3 py-1.5 rounded-[12px] transition-colors active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">Alterar</button>
+</div>
+<div class="mt-4 flex items-center gap-6 text-xs">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-blue-600">call</span>
+<span class="font-semibold text-black">+244 923 456 789</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-blue-600">badge</span>
+<span class="font-semibold text-black">001122334LA000</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 2 & 5 Row: Tipo de Consulta & Prioridade -->
+<div class="flex gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100 fill-mode-both motion-reduce:animate-none">
+<!-- Step 2: Tipo de Consulta -->
+<section class="bg-white rounded-[32px] p-8 floating-card border border-white flex-1 relative">
+<div class="absolute top-8 right-8 w-1.5 h-1.5 rounded-full bg-red-500 shadow-sm"></div>
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-[24px] bg-surface-container-low flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-black">medical_services</span>
+</div>
+<h3 class="text-xl font-black tracking-tight">2. Tipo de Consulta</h3>
+</div>
+</div>
+<div class="relative">
+<select class="w-full h-12 px-5 bg-surface-container-low bg-none border-none rounded-[24px] font-semibold text-sm appearance-none cursor-pointer hover:bg-surface-container transition-colors">
+<option disabled="" selected="" value="">Seleccione a Especialidade...</option>
+<option value="geral">Clínica Geral</option>
+<option value="cardiologia">Cardiologia</option>
+<option value="pediatria">Pediatria</option>
+<option value="ortopedia">Ortopedia</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3.5 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</section>
+<!-- Step 5: Prioridade & Observações -->
+<section class="bg-white rounded-[32px] p-8 floating-card border border-white flex-1 relative">
+<div class="absolute top-8 right-8 w-1.5 h-1.5 rounded-full bg-red-500 shadow-sm"></div>
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-[24px] bg-surface-container-low flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-black">priority</span>
+</div>
+<h3 class="text-xl font-black tracking-tight">5. Prioridade</h3>
+</div>
+</div>
+<div class="space-y-4">
+<div class="relative">
+<select class="w-full h-12 px-5 bg-surface-container-low bg-none border-none rounded-[24px] font-semibold text-sm appearance-none cursor-pointer hover:bg-surface-container transition-colors">
+<option value="regular">Regular</option>
+<option value="gravida">Grávida</option>
+<option value="idoso">Terceira Idade</option>
+<option value="urgente">Urgente</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3.5 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<textarea class="w-full p-4 bg-surface-container-low border-none rounded-[24px] font-medium text-sm resize-none h-20 hover:bg-surface-container transition-colors" placeholder="Observações (Opcional)"></textarea>
+</div>
+</section>
+</div>
+<!-- Step 3: Médico Responsável -->
+<section class="bg-white rounded-[32px] p-8 floating-card border border-white min-h-[220px] relative animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200 fill-mode-both motion-reduce:animate-none">
+<div class="absolute top-8 right-8 w-1.5 h-1.5 rounded-full bg-red-500 shadow-sm"></div>
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-[24px] bg-surface-container-low flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-black">groups</span>
+</div>
+<h3 class="text-xl font-black tracking-tight">3. Médico Responsável</h3>
+</div>
+</div>
+<!-- Grid State -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="doctor-grid-state">
+<label class="relative cursor-pointer group hover:scale-[1.02] hover:shadow-md transition-all motion-reduce:transition-none motion-reduce:transform-none rounded-[32px]">
+<input checked="" class="peer sr-only" name="medico" type="radio" value="dr_augusto"/>
+<div class="flex items-center gap-4 p-4 rounded-[32px] bg-surface-container-low border-2 border-transparent peer-checked:border-black peer-checked:bg-white transition-all h-full">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden shrink-0">
+<img alt="Dr. Augusto" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANb9VTSHWzer0w83n6hsZhlXQkgMkaped3hC-jDotdu4graVBSNnML6VvVaAuoHjyUKOFglum89t8I1BQQzf8hTuWaxxRsb7yWdnQRyPXkWQaO3ZNFPOf8sA-GZCIyK96r68JTm0dHAOITFPae4ezNOXZT397vsMhAvHTPoZrN2t4MKDZdmct8XfmXN1v_C_r2vjN8BAAM0O6BhzMnwG_3yTFGZ95rls1lqpxj4Mjgicf0mW0XRM6AlxOO2ae8UxThub7sMP7MPHdV"/>
+</div>
+<div>
+<p class="text-sm font-black text-black">Dr. Augusto Cândido</p>
+<p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Consultório 2</p>
+</div>
+<div class="absolute top-4 right-4 w-4 h-4 rounded-full border-2 border-surface-variant peer-checked:border-black peer-checked:bg-black flex items-center justify-center transition-colors">
+<div class="w-1.5 h-1.5 bg-white rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+</div>
+</label>
+<label class="relative cursor-pointer group hover:scale-[1.02] hover:shadow-md transition-all motion-reduce:transition-none motion-reduce:transform-none rounded-[32px]">
+<input class="peer sr-only" name="medico" type="radio" value="dra_maria"/>
+<div class="flex items-center gap-4 p-4 rounded-[32px] bg-surface-container-low border-2 border-transparent peer-checked:border-black peer-checked:bg-white transition-all h-full">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden shrink-0">
+<img alt="Dra. Maria" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP4vh-OvlnbKlMLfmGGcn679F0JnqddVoBz9xd_e6iU_KwUcD99a-41V6QtQTDabY6g0OnFLTI6Ki4-n47H8DdBpc54vCh6-gAdp0qdqzWBraKXYyK9WNO0x9Bi13TJuxBviu-8bDBpfIbI7wbx9Cthq021P_thsmkeheJ4HRbCOLELoxNXK9CyUHPPtHBdRcwZSkwuDcys0dz_1XMZiWwR8-sxOtyScGhQCUfnKP-ZVEZKwyeTvDNJYh-m-tBzaxwpBhgMIWL8fIK"/>
+</div>
+<div>
+<p class="text-sm font-black text-black">Dra. Maria Mendes</p>
+<p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Consultório 5</p>
+</div>
+<div class="absolute top-4 right-4 w-4 h-4 rounded-full border-2 border-surface-variant peer-checked:border-black peer-checked:bg-black flex items-center justify-center transition-colors">
+<div class="w-1.5 h-1.5 bg-white rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+</div>
+</label>
+</div>
+</section>
+<!-- Step 4: Data e Horário -->
+<section class="bg-white rounded-[32px] p-8 floating-card border border-white relative animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300 fill-mode-both motion-reduce:animate-none">
+<div class="absolute top-8 right-8 w-1.5 h-1.5 rounded-full bg-red-500 shadow-sm"></div>
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-[24px] bg-surface-container-low flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-black">calendar_month</span>
+</div>
+<h3 class="text-xl font-black tracking-tight">4. Data e Horário</h3>
+</div>
+<!-- Mode Toggle -->
+<div class="flex items-center justify-center w-full max-w-sm sm:w-auto">
+<label class="flex items-center cursor-pointer hover:opacity-80 transition-opacity" for="auto-mode-toggle">
+<div class="relative">
+<input class="sr-only" id="auto-mode-toggle" type="checkbox"/>
+<div class="block bg-surface-container-high w-10 h-6 rounded-full transition-colors duration-300 peer-checked:bg-black"></div>
+<div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300"></div>
+</div>
+<div class="ml-3 text-xs font-bold text-on-surface-variant">Próxima Vaga Auto</div>
+</label>
+<style>
+#auto-mode-toggle:checked ~ .block { background-color: #000; }
+#auto-mode-toggle:checked ~ .dot { transform: translateX(100%); }
+</style>
+</div>
+</div>
+<!-- Manual View -->
+<div class="flex gap-8" id="manual-date-view">
+<!-- Calendar -->
+<div class="flex-1">
+<div class="flex items-center justify-between mb-4 px-2">
+<button class="text-on-surface-variant hover:text-black hover:bg-surface-container-low rounded-full p-1 transition-colors active:scale-95 motion-reduce:transition-none motion-reduce:transform-none"><span class="material-symbols-outlined">chevron_left</span></button>
+<p class="text-xs font-bold text-black uppercase tracking-widest">Outubro 2026</p>
+<button class="text-on-surface-variant hover:text-black hover:bg-surface-container-low rounded-full p-1 transition-colors active:scale-95 motion-reduce:transition-none motion-reduce:transform-none"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+<div class="bg-surface-container-low rounded-[24px] p-5">
+<div class="grid grid-cols-7 gap-y-3 text-center text-xs font-semibold w-full">
+<span class="text-on-surface-variant/50">D</span><span class="">S</span><span class="">T</span><span class="">Q</span><span class="">Q</span><span class="">S</span><span class="text-on-surface-variant/50">S</span>
+<!-- Week 1 -->
+<span class="text-on-surface-variant/30 flex items-center justify-center">27</span><span class="text-on-surface-variant/30 flex items-center justify-center">28</span><span class="text-on-surface-variant/30 flex items-center justify-center">29</span><span class="text-on-surface-variant/30 flex items-center justify-center">30</span>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm disabled:opacity-30 motion-reduce:transition-none motion-reduce:transform-none" disabled="">1</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm disabled:opacity-30 motion-reduce:transition-none motion-reduce:transform-none" disabled="">2</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm disabled:opacity-30 motion-reduce:transition-none motion-reduce:transform-none" disabled="">3</button>
+<!-- Week 2 -->
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm text-on-surface-variant/50 motion-reduce:transition-none motion-reduce:transform-none" disabled="">4</button>
+<button class="bg-black text-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto shadow-md transition-all hover:scale-[1.1] motion-reduce:transition-none motion-reduce:transform-none">5</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm motion-reduce:transition-none motion-reduce:transform-none">6</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm relative motion-reduce:transition-none motion-reduce:transform-none">7<div class="absolute bottom-1 w-1 h-1 rounded-full bg-error"></div></button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm motion-reduce:transition-none motion-reduce:transform-none">8</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm motion-reduce:transition-none motion-reduce:transform-none">9</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm text-on-surface-variant/50 motion-reduce:transition-none motion-reduce:transform-none">10</button>
+<!-- Week 3 -->
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm text-on-surface-variant/50 motion-reduce:transition-none motion-reduce:transform-none">11</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm motion-reduce:transition-none motion-reduce:transform-none">12</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm motion-reduce:transition-none motion-reduce:transform-none">13</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm relative motion-reduce:transition-none motion-reduce:transform-none">14<div class="absolute bottom-1 w-1 h-1 rounded-full bg-green-500"></div></button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm motion-reduce:transition-none motion-reduce:transform-none">15</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm motion-reduce:transition-none motion-reduce:transform-none">16</button>
+<button class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm text-on-surface-variant/50 motion-reduce:transition-none motion-reduce:transform-none">17</button>
+</div>
+<div class="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-black/5">
+<div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-green-500"></div><span class="text-[9px] font-bold text-on-surface-variant uppercase">Vagas</span></div>
+<div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-error"></div><span class="text-[9px] font-bold text-on-surface-variant uppercase">Lotado</span></div>
+</div>
+</div>
+</div>
+<!-- Time/Turn -->
+<div class="flex-1 space-y-6">
+<div>
+<p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-3">Turno</p>
+<div class="grid grid-cols-2 gap-3">
+<label class="relative cursor-pointer group hover:scale-[1.02] transition-all motion-reduce:transition-none motion-reduce:transform-none block">
+<input checked="" class="peer sr-only" name="turno" type="radio" value="manha"/>
+<div class="p-4 rounded-[24px] bg-surface-container-low border-2 border-transparent peer-checked:border-black peer-checked:bg-white transition-all text-center h-full flex flex-col items-center justify-center hover:shadow-sm">
+<span class="material-symbols-outlined text-xl mb-1 text-on-surface-variant group-peer-checked:text-black">light_mode</span>
+<span class="text-[10px] font-black uppercase tracking-wider block">Manhã</span>
+</div>
+</label>
+<label class="relative cursor-pointer group hover:scale-[1.02] transition-all motion-reduce:transition-none motion-reduce:transform-none block">
+<input class="peer sr-only" name="turno" type="radio" value="tarde"/>
+<div class="p-4 rounded-[24px] bg-surface-container-low border-2 border-transparent peer-checked:border-black peer-checked:bg-white transition-all text-center h-full flex flex-col items-center justify-center hover:shadow-sm">
+<span class="material-symbols-outlined text-xl mb-1 text-on-surface-variant group-peer-checked:text-black">routine</span>
+<span class="text-[10px] font-black uppercase tracking-wider block">Tarde</span>
+</div>
+</label>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between ml-1 mb-3">
+<p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Horário Específico</p>
+<span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-[8px] text-[9px] font-bold">4 Vagas</span>
+</div>
+<div class="relative">
+<select class="w-full h-12 px-5 bg-surface-container-low bg-none border-none rounded-[24px] font-semibold text-sm appearance-none cursor-pointer hover:bg-surface-container transition-colors">
+<option>09:00 - 09:30 (Recomendado)</option>
+<option>10:00 - 10:30</option>
+<option>11:00 - 11:30</option>
+<option>11:30 - 12:00</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3.5 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 6: Contactos e Notificações -->
+<section class="bg-white rounded-[32px] p-8 floating-card border border-white relative animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400 fill-mode-both motion-reduce:animate-none">
+<div class="absolute top-8 right-8 w-1.5 h-1.5 rounded-full bg-red-500 shadow-sm"></div>
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-[24px] bg-surface-container-low flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-black">notifications_active</span>
+</div>
+<h3 class="text-xl font-black tracking-tight">6. Contactos e Lembretes</h3>
+</div>
+<button class="flex items-center gap-1.5 text-xs font-bold text-black hover:bg-surface-container-low px-3 py-1.5 rounded-[12px] transition-colors active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[16px]">add</span>
+Novo
+</button>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-[24px] border border-transparent hover:border-black/5 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-green-600 text-[20px]">chat</span>
+</div>
+<div>
+<p class="text-sm font-bold text-black">+244 923 456 789</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">WhatsApp (Principal)</p>
+</div>
+</div>
+<label class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Lembretes</span>
+<div class="relative">
+<input checked="" class="sr-only" type="checkbox"/>
+<div class="block bg-black w-10 h-6 rounded-full transition-colors duration-300"></div>
+<div class="dot absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300"></div>
+</div>
+</label>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-[24px] border border-transparent hover:border-black/5 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-blue-600 text-[20px]">mail</span>
+</div>
+<div>
+<p class="text-sm font-bold text-black">joao.silva@email.com</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Email</p>
+</div>
+</div>
+<label class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Lembretes</span>
+<div class="relative">
+<input class="sr-only" type="checkbox"/>
+<div class="block bg-surface-container-high w-10 h-6 rounded-full transition-colors duration-300"></div>
+<div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300"></div>
+</div>
+</label>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Sticky Sidebar -->
+<div class="w-[340px] shrink-0 animate-in fade-in slide-in-from-right-8 duration-500 delay-300 fill-mode-both motion-reduce:animate-none">
+<div class="sticky top-32 space-y-6 flex flex-col items-center">
+<div class="bg-white rounded-[24px] overflow-hidden floating-card border border-white flex flex-col relative w-full transition-all duration-500" id="resumo-reserva-container">
+<div class="p-8 pb-4 relative z-10">
+<div class="flex justify-between items-center">
+<h4 class="text-[11px] font-extrabold text-on-surface-variant uppercase tracking-[0.25em] font-headline">Resumo da Reserva</h4>
+<div class="hidden items-center gap-1 px-3 py-1 bg-green-100 text-[10px] text-green-700 rounded-full font-black uppercase tracking-widest animate-in fade-in zoom-in duration-300" id="summary-confirm-badge">
+<span class="material-symbols-outlined text-[14px] animate-scale-up">check_circle</span>
+Confirmado
+</div>
+</div>
+</div>
+<div class="px-8 py-2 space-y-6 relative z-10 font-headline">
+<div class="grid grid-cols-2 gap-x-4 gap-y-6">
+<div class="flex flex-col gap-1.5">
+<p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Paciente</p>
+<div>
+<p class="text-sm font-black text-black leading-tight">João Silva</p>
+<p class="text-[10px] font-semibold text-zinc-500 mt-0.5 uppercase">34 Anos • Masc</p>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Especialidade</p>
+<p class="text-sm font-black text-black">Clínica Geral</p>
+</div>
+<div class="flex flex-col gap-1.5">
+<p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Médico</p>
+<div>
+<p class="text-sm font-black text-black">Dr. Augusto Cândido</p>
+<p class="text-[10px] font-semibold text-zinc-500 mt-0.5 uppercase tracking-wider">Consultório 2</p>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Prioridade</p>
+<p class="text-sm font-black text-black">Regular</p>
+</div>
+</div>
+<div class="pt-6 border-t border-zinc-100">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1.5">Data e Horário</p>
+<p class="text-xl font-black text-black tracking-tight">05 Outubro 2026</p>
+<p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mt-1">09:00 — 09:30 <span class="text-zinc-400 font-medium">(Manhã)</span></p>
+</div>
+<div class="hidden text-green-600 animate-in zoom-in duration-300" id="summary-confirm-icon">
+<span class="material-symbols-outlined text-[32px] fill-1">verified</span>
+</div>
+</div>
+</div>
+</div>
+<div class="relative py-6 overflow-hidden">
+<div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 border-t-2 border-dashed border-zinc-200"></div>
+<div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#f3f4f6] shadow-inner"></div>
+<div class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#f3f4f6] shadow-inner"></div>
+</div>
+<div class="px-8 flex flex-col items-center pb-4">
+<div class="hidden w-full flex flex-col items-center animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out" id="summary-senha">
+<div class="w-full flex justify-between items-center mb-6">
+<div class="text-left">
+<p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Ticket de Chamada</p>
+<p class="text-3xl font-black text-black tracking-tighter">A-102</p>
+</div>
+<div class="w-16 h-16 bg-white p-1 border border-zinc-100 rounded-lg flex items-center justify-center hover:scale-105 transition-transform motion-reduce:transition-none motion-reduce:transform-none cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-zinc-200">qr_code_2</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3 w-full relative">
+<button class="w-full bg-black text-white hover:bg-zinc-800 transition-all flex flex-col items-center justify-center gap-0.5 shadow-xl rounded-[24px] group active:scale-95 motion-reduce:transition-none motion-reduce:transform-none py-4" onclick="handlePrimaryAction()">
+<span class="hidden material-symbols-outlined animate-spin text-white" id="submit-loading">progress_activity</span>
+<div class="flex flex-col items-center" id="submit-content">
+<span class="text-lg font-black tracking-tight" id="submit-btn-title">Agendar Consulta</span>
+<span class="text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] group-hover:text-white/60" id="submit-btn-subtitle">Confirmar Reserva</span>
+</div>
+</button>
+<button class="w-full bg-transparent text-zinc-400 hover:text-error hover:bg-error/5 transition-all py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.15em] active:scale-95 motion-reduce:transition-none motion-reduce:transform-none" id="secondary-action-btn" onclick="if(bookingState !== 'initial') location.reload();">
+Cancelar Agendamento
+</button>
+<div class="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 w-72 bg-black text-white px-6 py-4 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-3 opacity-0 translate-y-4 pointer-events-none transition-all duration-500 ease-out z-50" id="print-success-toast">
+<span class="material-symbols-outlined text-green-400">print_connect</span>
+<div>
+<p class="text-sm font-bold">Ticket enviado para a impressora...</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

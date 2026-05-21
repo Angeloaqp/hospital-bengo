@@ -26,6 +26,9 @@ $_navLinks = [];
 if ($_perfil === 'recepcionista') {
     $_navLinks = [
         ['id' => 'dashboard',  'url' => $_baseRecepcao . 'dashboard.php',  'icon' => 'dashboard', 'titulo' => 'Dashboard'],
+        ['id' => 'agenda',     'url' => $_baseRecepcao . 'agenda.php',     'icon' => 'calendar_month', 'titulo' => 'Agenda'],
+        ['id' => 'atendimento_diario', 'url' => $_baseRecepcao . 'atendimento_diario.php', 'icon' => 'today', 'titulo' => 'Atendimento Diário'],
+        ['id' => 'marcacao',   'url' => $_baseRecepcao . 'marcacao.php',   'icon' => 'event_available', 'titulo' => 'Nova Marcação'],
         ['id' => 'registar',   'url' => $_baseRecepcao . 'registar.php',   'icon' => 'person_add', 'titulo' => 'Novo Paciente'],
         ['id' => 'pesquisar',  'url' => $_baseRecepcao . 'pesquisar.php',  'icon' => 'search', 'titulo' => 'Pesquisar'],
         ['id' => 'mensagens',  'url' => $_baseComum . 'mensagens.php',     'icon' => 'mail', 'titulo' => 'Mensagens'],
@@ -33,12 +36,14 @@ if ($_perfil === 'recepcionista') {
 } elseif ($_perfil === 'medico') {
     $_navLinks = [
         ['id' => 'dashboard',  'url' => $_baseMedico . 'dashboard.php',    'icon' => 'dashboard', 'titulo' => 'Dashboard'],
+        ['id' => 'agenda',     'url' => $_baseMedico . 'agenda.php',       'icon' => 'calendar_month', 'titulo' => 'Agenda'],
         ['id' => 'fila_actual', 'url' => $_baseMedico . 'fila_actual.php', 'icon' => 'list_alt', 'titulo' => 'Fila Actual'],
         ['id' => 'mensagens',  'url' => $_baseComum . 'mensagens.php',     'icon' => 'mail', 'titulo' => 'Mensagens'],
     ];
 } elseif ($_perfil === 'admin') {
     $_navLinks = [
         ['id' => 'dashboard',     'url' => $_baseAdmin . 'dashboard.php',     'icon' => 'dashboard', 'titulo' => 'Dashboard'],
+        ['id' => 'configuracao',  'url' => $_baseAdmin . 'configuracao.php',  'icon' => 'settings', 'titulo' => 'Configuração'],
         ['id' => 'utilizadores',  'url' => $_baseAdmin . 'utilizadores.php',  'icon' => 'group', 'titulo' => 'Utilizadores'],
         ['id' => 'auditoria',     'url' => $_baseAdmin . 'auditoria.php',     'icon' => 'history', 'titulo' => 'Auditoria'],
         ['id' => 'relatorios',    'url' => $_baseAdmin . 'relatorios.php',    'icon' => 'bar_chart', 'titulo' => 'Relatórios'],

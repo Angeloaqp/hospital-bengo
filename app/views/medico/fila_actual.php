@@ -93,6 +93,13 @@ $prioridades = [
                     <span class="text-[12px]">🩺</span>
                     <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant"><?= htmlspecialchars($especialidade['nome']) ?></span>
                 </div>
+                <label class="flex items-center gap-2 cursor-pointer bg-surface-container-low px-3 py-1.5 rounded-full border border-black/5 transition-all hover:bg-surface-container" title="Ligar/Desligar para receber pacientes sem marcação (Encaixes)">
+                    <input type="checkbox" id="toggle-walkins" class="peer sr-only" <?= (isset($especialidade['aceitar_walkins']) && $especialidade['aceitar_walkins'] == 1) ? 'checked' : '' ?> onchange="toggleWalkins(this.checked)">
+                    <div class="w-8 h-4 bg-surface-container-highest rounded-full peer-checked:bg-black transition-colors relative">
+                        <div class="w-3 h-3 bg-white rounded-full absolute top-0.5 left-0.5 peer-checked:translate-x-4 transition-transform shadow-sm"></div>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant peer-checked:text-black">Receber Encaixes</span>
+                </label>
             <?php endif; ?>
             
             <div class="px-3 py-1.5 bg-surface-container-low rounded-full flex items-center gap-1.5 border border-black/5">
@@ -378,6 +385,22 @@ $prioridades = [
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
             body: new URLSearchParams(data)
         }).then(res => callback(res)).catch(e => console.error(e));
+    }
+
+    function toggleWalkins(estado) {
+        const formData = new FormData();
+        formData.append('estado', estado);
+        fetch('<?= BASE_URL ?>app/api/toggle_walkins.php', {
+            method: 'POST',
+            body: formData
+        }).then(res => res.json()).then(data => {
+            if(data.status === 'success') {
+                window.location.reload();
+            } else {
+                alert('Erro ao alterar estado: ' + data.mensagem);
+                document.getElementById('toggle-walkins').checked = !estado;
+            }
+        }).catch(err => console.error(err));
     }
 
     function handleDesfazer(senhaId) {

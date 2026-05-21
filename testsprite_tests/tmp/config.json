@@ -4,5 +4,16 @@
   "scope": "codebase",
   "localEndpoint": "http://localhost:80/hospital-bengo/public/index.php",
   "loginUser": "admin",
-  "loginPassword": "miguelpungui23"
+  "loginPassword": "miguelpungui23",
+  "executionArgs": {
+    "projectName": "hospital-bengo",
+    "projectPath": "c:\\xampp\\htdocs\\hospital-bengo",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-T3tK1WJl8p37-JfVFwCSA8TybveqRamjcL412RZQ4utSoTULKXTiCoUU0yuYQeVEIm69_eC2Ld3whqUFBDh-DbO2aWDkCe-Oeldc_ZzSxM1Eosl8c3eGmTRWHNVqldWFUNg"
+    }
+  },
+  "serverPort": 60100
 }

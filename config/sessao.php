@@ -17,6 +17,19 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once __DIR__ . '/seguranca.php';
 
+// Limpeza automática diária de ausências (executada apenas uma vez por dia por sessão)
+if (!isset($_SESSION['ultima_limpeza_ausencias']) || $_SESSION['ultima_limpeza_ausencias'] !== date('Y-m-d')) {
+    require_once __DIR__ . '/../app/models/Marcacao.php';
+    if (class_exists('Marcacao') && method_exists('Marcacao', 'marcarAusenciasAutomaticas')) {
+        try {
+            Marcacao::marcarAusenciasAutomaticas();
+            $_SESSION['ultima_limpeza_ausencias'] = date('Y-m-d');
+        } catch (\Throwable $e) {
+            // Ignorar erro silenciosamente para não quebrar a sessão
+        }
+    }
+}
+
 // ------------------------------------------------
 // Funções de autenticação e controlo de acesso
 // ------------------------------------------------

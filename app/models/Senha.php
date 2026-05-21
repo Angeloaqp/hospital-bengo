@@ -96,7 +96,7 @@ class Senha
      * Gera o próximo código de senha para uma prioridade
      * Formato: U-001, I-001, G-001, N-001
      */
-    public static function gerarCodigo(int $prioridade): string
+    public static function gerarCodigo(int $prioridade, string $dataReferencia = null): string
     {
         $prefixos = [
             1 => 'U',
@@ -105,14 +105,19 @@ class Senha
             4 => 'N'
         ];
         $prefixo = $prefixos[$prioridade] ?? 'N';
+        $data = $dataReferencia ?: date('Y-m-d');
 
         $db = Database::ligar();
         $stmt = $db->prepare(
-            "SELECT COUNT(*) FROM senhas 
-             WHERE codigo LIKE :p
-             AND DATE(criado_em) = CURDATE()"
+            "SELECT COUNT(*) FROM senhas s
+             LEFT JOIN marcacoes m ON s.marcacao_id = m.id
+             WHERE s.codigo LIKE :p
+             AND (
+                 m.data_consulta = :d1
+                 OR (m.id IS NULL AND DATE(s.criado_em) = :d2)
+             )"
         );
-        $stmt->execute([':p' => $prefixo . '-%']);
+        $stmt->execute([':p' => $prefixo . '-%', ':d1' => $data, ':d2' => $data]);
         $total = (int) $stmt->fetchColumn();
 
         return $prefixo . '-' . str_pad($total + 1, 3, '0', STR_PAD_LEFT);
@@ -154,21 +159,43 @@ class Senha
         int $consultorioId
     ): bool {
         $db = Database::ligar();
-        $stmt = $db->prepare(
-            "UPDATE senhas 
-             SET estado         = 'chamada',
-                 atendido_por   = :medico,
-                 consultorio_id = :cons,
-                 hora_chamada   = NOW()
-             WHERE id = :id 
-             AND estado = 'espera'"
-        );
-        $stmt->execute([
-            ':medico' => $medicoId,
-            ':cons' => $consultorioId,
-            ':id' => $senhaId,
-        ]);
-        return $stmt->rowCount() > 0;
+        $db->beginTransaction();
+        try {
+            $stmt = $db->prepare(
+                "UPDATE senhas 
+                 SET estado         = 'chamada',
+                     atendido_por   = :medico,
+                     consultorio_id = :cons,
+                     hora_chamada   = NOW()
+                 WHERE id = :id 
+                 AND estado = 'espera'"
+            );
+            $stmt->execute([
+                ':medico' => $medicoId,
+                ':cons' => $consultorioId,
+                ':id' => $senhaId,
+            ]);
+            
+            if ($stmt->rowCount() === 0) {
+                $db->rollBack();
+                return false;
+            }
+            
+            // Sync com marcacoes se existir
+            $stmt2 = $db->prepare(
+                "UPDATE marcacoes m 
+                 JOIN senhas s ON s.marcacao_id = m.id 
+                 SET m.estado = 'em_atendimento', m.atualizado_em = NOW() 
+                 WHERE s.id = :id AND m.estado = 'confirmada'"
+            );
+            $stmt2->execute([':id' => $senhaId]);
+            
+            $db->commit();
+            return true;
+        } catch (Exception $e) {
+            $db->rollBack();
+            return false;
+        }
     }
 
     /**
@@ -177,15 +204,37 @@ class Senha
     public static function concluir(int $senhaId): bool
     {
         $db = Database::ligar();
-        $stmt = $db->prepare(
-            "UPDATE senhas 
-             SET estado          = 'concluida',
-                 hora_conclusao  = NOW()
-             WHERE id    = :id 
-             AND estado  = 'chamada'"
-        );
-        $stmt->execute([':id' => $senhaId]);
-        return $stmt->rowCount() > 0;
+        $db->beginTransaction();
+        try {
+            $stmt = $db->prepare(
+                "UPDATE senhas 
+                 SET estado          = 'concluida',
+                     hora_conclusao  = NOW()
+                 WHERE id    = :id 
+                 AND estado  = 'chamada'"
+            );
+            $stmt->execute([':id' => $senhaId]);
+            
+            if ($stmt->rowCount() === 0) {
+                $db->rollBack();
+                return false;
+            }
+            
+            // Sync com marcacoes se existir
+            $stmt2 = $db->prepare(
+                "UPDATE marcacoes m 
+                 JOIN senhas s ON s.marcacao_id = m.id 
+                 SET m.estado = 'concluida', m.atualizado_em = NOW() 
+                 WHERE s.id = :id AND m.estado = 'em_atendimento'"
+            );
+            $stmt2->execute([':id' => $senhaId]);
+            
+            $db->commit();
+            return true;
+        } catch (Exception $e) {
+            $db->rollBack();
+            return false;
+        }
     }
 
     /**
@@ -194,15 +243,37 @@ class Senha
     public static function cancelar(int $senhaId): bool
     {
         $db = Database::ligar();
-        $stmt = $db->prepare(
-            "UPDATE senhas 
-             SET estado         = 'cancelada',
-                 hora_conclusao = NOW()
-             WHERE id = :id 
-             AND estado IN ('espera','chamada')"
-        );
-        $stmt->execute([':id' => $senhaId]);
-        return $stmt->rowCount() > 0;
+        $db->beginTransaction();
+        try {
+            $stmt = $db->prepare(
+                "UPDATE senhas 
+                 SET estado         = 'cancelada',
+                     hora_conclusao = NOW()
+                 WHERE id = :id 
+                 AND estado IN ('espera','chamada')"
+            );
+            $stmt->execute([':id' => $senhaId]);
+            
+            if ($stmt->rowCount() === 0) {
+                $db->rollBack();
+                return false;
+            }
+            
+            // Sync com marcacoes se existir
+            $stmt2 = $db->prepare(
+                "UPDATE marcacoes m 
+                 JOIN senhas s ON s.marcacao_id = m.id 
+                 SET m.estado = 'falta', m.atualizado_em = NOW() 
+                 WHERE s.id = :id AND m.estado IN ('confirmada', 'em_atendimento')"
+            );
+            $stmt2->execute([':id' => $senhaId]);
+            
+            $db->commit();
+            return true;
+        } catch (Exception $e) {
+            $db->rollBack();
+            return false;
+        }
     }
 
     /**
@@ -213,18 +284,40 @@ class Senha
         int $senhaId
     ): bool {
         $db = Database::ligar();
-        $stmt = $db->prepare(
-            "UPDATE senhas 
-             SET estado         = 'espera',
-                 atendido_por   = NULL,
-                 consultorio_id = NULL,
-                 hora_chamada   = NULL
-             WHERE id    = :id 
-             AND estado  = 'chamada'
-             AND TIMESTAMPDIFF(SECOND, hora_chamada, NOW()) <= 15"
-        );
-        $stmt->execute([':id' => $senhaId]);
-        return $stmt->rowCount() > 0;
+        $db->beginTransaction();
+        try {
+            $stmt = $db->prepare(
+                "UPDATE senhas 
+                 SET estado         = 'espera',
+                     atendido_por   = NULL,
+                     consultorio_id = NULL,
+                     hora_chamada   = NULL
+                 WHERE id    = :id 
+                 AND estado  = 'chamada'
+                 AND TIMESTAMPDIFF(SECOND, hora_chamada, NOW()) <= 15"
+            );
+            $stmt->execute([':id' => $senhaId]);
+            
+            if ($stmt->rowCount() === 0) {
+                $db->rollBack();
+                return false;
+            }
+            
+            // Sync com marcacoes se existir
+            $stmt2 = $db->prepare(
+                "UPDATE marcacoes m 
+                 JOIN senhas s ON s.marcacao_id = m.id 
+                 SET m.estado = 'confirmada', m.atualizado_em = NOW() 
+                 WHERE s.id = :id AND m.estado = 'em_atendimento'"
+            );
+            $stmt2->execute([':id' => $senhaId]);
+            
+            $db->commit();
+            return true;
+        } catch (Exception $e) {
+            $db->rollBack();
+            return false;
+        }
     }
 
     /**
@@ -406,9 +499,9 @@ class Senha
     ): ?array {
         $db = Database::ligar();
         $stmt = $db->prepare(
-            "SELECT e.id, e.nome
+            "SELECT e.id, e.nome, u.aceitar_walkins
              FROM utilizadores u
-             JOIN especialidades e
+             LEFT JOIN especialidades e
                   ON u.especialidade_id = e.id
              WHERE u.id = :id
              LIMIT 1"
@@ -453,15 +546,16 @@ class Senha
     ): array {
         $db = Database::ligar();
 
-        // Obter especialidade do médico
+        // Obter especialidade do médico (e aceitar_walkins)
         $esp = self::especialidadeDoMedico($medicoId);
+        $aceitaWalkins = $esp ? (int) $esp['aceitar_walkins'] : 1;
 
-        if ($esp) {
+        if ($esp && $esp['id']) {
             // Filtrar: tipos de atendimento que correspondam
-            // à especialidade (via nome similar)
+            // à especialidade (via id)
             $stmt = $db->prepare(
                 "SELECT s.id, s.codigo, s.prioridade,
-                        s.estado, s.criado_em,
+                        s.estado, s.criado_em, s.origem,
                         p.nome AS paciente_nome,
                         p.idade,
                         ta.nome AS tipo_atendimento
@@ -469,22 +563,34 @@ class Senha
                  JOIN pacientes p  ON s.paciente_id = p.id
                  JOIN tipos_atendimento ta
                       ON s.tipo_atendimento_id = ta.id
+                 LEFT JOIN marcacoes m ON s.marcacao_id = m.id
                  WHERE s.estado = 'espera'
                  AND (
-                    ta.nome LIKE :esp
+                     m.data_consulta = CURDATE() 
+                     OR 
+                     (m.id IS NULL AND DATE(s.criado_em) = CURDATE())
+                 )
+                 AND (
+                    ta.especialidade_id = :esp_id
+                    OR s.prioridade = 1
+                 )
+                 AND (
+                    :aceita_walkins = 1
+                    OR s.origem != 'mesmo_dia'
                     OR s.prioridade = 1
                  )
                  ORDER BY s.prioridade ASC,
                           s.criado_em ASC"
             );
             $stmt->execute([
-                ':esp' => '%' . $esp['nome'] . '%'
+                ':esp_id' => $esp['id'],
+                ':aceita_walkins' => $aceitaWalkins
             ]);
         } else {
             // Sem especialidade? Mostra fila global
             $stmt = $db->prepare(
                 "SELECT s.id, s.codigo, s.prioridade,
-                        s.estado, s.criado_em,
+                        s.estado, s.criado_em, s.origem,
                         p.nome AS paciente_nome,
                         p.idade,
                         ta.nome AS tipo_atendimento
@@ -492,11 +598,22 @@ class Senha
                  JOIN pacientes p  ON s.paciente_id = p.id
                  JOIN tipos_atendimento ta
                       ON s.tipo_atendimento_id = ta.id
+                 LEFT JOIN marcacoes m ON s.marcacao_id = m.id
                  WHERE s.estado = 'espera'
+                 AND (
+                     m.data_consulta = CURDATE() 
+                     OR 
+                     (m.id IS NULL AND DATE(s.criado_em) = CURDATE())
+                 )
+                 AND (
+                    :aceita_walkins = 1
+                    OR s.origem != 'mesmo_dia'
+                    OR s.prioridade = 1
+                 )
                  ORDER BY s.prioridade ASC,
                           s.criado_em ASC"
             );
-            $stmt->execute();
+            $stmt->execute([':aceita_walkins' => $aceitaWalkins]);
         }
 
         return $stmt->fetchAll();
