@@ -33,7 +33,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
     <?php include __DIR__ . '/../comum/head_assets.php'; ?>
 
     <!-- Carregar Chart.js para os gráficos de barras -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="<?= BASE_URL ?>public/assets/js/chart.js"></script>
 
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }

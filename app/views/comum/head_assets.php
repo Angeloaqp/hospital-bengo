@@ -1,9 +1,9 @@
 <!-- Tailwind CDN + Plugins -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="<?= BASE_URL ?>public/assets/js/tailwindcss.js"></script>
 <!-- Fontes: Manrope (títulos) + Inter (corpo) -->
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="<?= BASE_URL ?>public/assets/css/google_fonts.css" rel="stylesheet"/>
 <!-- Material Symbols (ícones) -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="<?= BASE_URL ?>public/assets/css/material_symbols.css" rel="stylesheet"/>
 
 <!-- Tactile Editorial CSS -->
 <link rel="stylesheet" href="/hospital-bengo/public/css/tactile.css">

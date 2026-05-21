@@ -40,10 +40,10 @@ unset($_SESSION['mensagem']);
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Dashboard Recepção — <?= APP_NOME ?></title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="<?= BASE_URL ?>public/assets/js/tailwindcss.js"></script>
+<link href="<?= BASE_URL ?>public/assets/css/google_fonts.css" rel="stylesheet"/>
+<link href="<?= BASE_URL ?>public/assets/css/material_symbols.css" rel="stylesheet"/>
+<script src="<?= BASE_URL ?>public/assets/js/chart.js"></script>
 <script>
     tailwind.config = {
         darkMode: "class",

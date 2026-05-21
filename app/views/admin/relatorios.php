@@ -62,7 +62,7 @@ $periodoLabel = date('d M', strtotime($dataInicio)) . ' — ' . date('d M Y', st
     <title>Relatórios — <?= APP_NOME ?></title>
     <?php include __DIR__ . '/../comum/head_assets.php'; ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="<?= BASE_URL ?>public/assets/js/chart.js"></script>
 
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
