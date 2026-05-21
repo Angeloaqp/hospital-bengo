@@ -12,6 +12,9 @@ define('BASE_URL', getenv('HB_BASE_URL') ?: 'http://localhost/hospital-bengo/');
 define('APP_NOME', 'Hospital Geral do Bengo');
 define('APP_VERSAO', '1.1');
 
+// Fuso horário de Angola (WAT — UTC+1)
+date_default_timezone_set('Africa/Luanda');
+
 // ================================================
 // Formatar datas em Português (Angola)
 // Não depende de setlocale — funciona em qualquer SO
