@@ -103,7 +103,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
     ob_start(); ?>
     <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-black/5 shadow-sm">
         <span class="material-symbols-outlined text-[16px] text-on-surface-variant">calendar_today</span>
-        <span class="text-xs font-bold text-black"><?= date('d M, Y') ?></span>
+        <span class="text-xs font-bold text-black"><?= dataFormatoPT(null, 'curto') ?></span>
     </div>
     <?php $accoesPagina = ob_get_clean(); ?>
     

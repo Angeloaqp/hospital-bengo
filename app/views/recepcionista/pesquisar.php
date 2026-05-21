@@ -268,7 +268,7 @@ $tipos = $db->query(
                                             </td>
                                             <td class="px-6 py-4 text-right">
                                                 <span class="text-[11px] font-semibold text-on-surface-variant bg-surface-container-low px-2 py-1 rounded-md whitespace-nowrap">
-                                                    <?= date('d M Y \• H:i', strtotime($h['criado_em'])) ?>
+                                                    <?= dataFormatoPT($h['criado_em'], 'curto') ?> • <?= date('H:i', strtotime($h['criado_em'])) ?>
                                                 </span>
                                             </td>
                                         </tr>

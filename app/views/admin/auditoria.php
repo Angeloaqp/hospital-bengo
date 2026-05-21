@@ -217,7 +217,7 @@ $iconeAccao = [
                                     </td>
                                     <td class="py-4 px-6 text-right">
                                         <div class="flex flex-col items-end">
-                                            <span class="text-sm font-bold text-gray-800"><?= date('d, M Y', strtotime($l['criado_em'])) ?></span>
+                                            <span class="text-sm font-bold text-gray-800"><?= dataFormatoPT($l['criado_em'], 'curto') ?></span>
                                             <span class="text-[11px] font-bold text-gray-400"><?= date('H:i:s', strtotime($l['criado_em'])) ?></span>
                                         </div>
                                     </td>

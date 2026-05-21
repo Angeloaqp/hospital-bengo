@@ -181,7 +181,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                                             <?= $h['duracao'] !== null ? $h['duracao'] . ' <span class="text-xs text-gray-300">m</span>' : '<span class="text-gray-300">—</span>' ?>
                                         </td>
                                         <td class="py-4 px-8 text-right">
-                                            <div class="text-sm font-bold text-gray-800"><?= date('d, M', strtotime($h['hora_chamada'])) ?></div>
+                                            <div class="text-sm font-bold text-gray-800"><?= dataFormatoPT($h['hora_chamada'], 'dia_mes') ?></div>
                                             <div class="text-[11px] font-extrabold text-gray-400"><?= date('H:i', strtotime($h['hora_chamada'])) ?></div>
                                         </td>
                                     </tr>
@@ -211,7 +211,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                                             <span class="text-xs font-extrabold uppercase tracking-widest text-gray-400"><?= htmlspecialchars($h['estado']) ?></span>
                                         </td>
                                         <td class="py-4 px-8 text-right">
-                                            <div class="text-sm font-bold text-gray-800"><?= date('d, M', strtotime($h['criado_em'])) ?></div>
+                                            <div class="text-sm font-bold text-gray-800"><?= dataFormatoPT($h['criado_em'], 'dia_mes') ?></div>
                                             <div class="text-[11px] font-extrabold text-gray-400"><?= date('H:i', strtotime($h['criado_em'])) ?></div>
                                         </td>
                                     </tr>
@@ -243,7 +243,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                                             <?= htmlspecialchars($h['ip']) ?>
                                         </td>
                                         <td class="py-4 px-8 text-right">
-                                            <div class="text-sm font-bold text-black"><?= date('d, M Y', strtotime($h['criado_em'])) ?></div>
+                                            <div class="text-sm font-bold text-black"><?= dataFormatoPT($h['criado_em'], 'curto') ?></div>
                                             <div class="text-[11px] font-extrabold text-gray-400"><?= date('H:i:s', strtotime($h['criado_em'])) ?></div>
                                         </td>
                                     </tr>

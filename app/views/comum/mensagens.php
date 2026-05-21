@@ -306,7 +306,7 @@ function tempoRelativo($data)
                                     </div>
                                     <div class="mt-4 md:mt-0 text-right shrink-0">
                                         <div class="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">
-                                            <?= date('d M Y, H:i', strtotime($msgSelecionada['criado_em'])) ?>
+                                            <?= dataFormatoPT($msgSelecionada['criado_em'], 'curto') ?>, <?= date('H:i', strtotime($msgSelecionada['criado_em'])) ?>
                                         </div>
                                     </div>
                                 </div>

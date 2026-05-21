@@ -73,7 +73,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <div>
         <h2 class="text-3xl font-extrabold text-black tracking-tight">Agenda do Dia</h2>
-        <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= date('l, d \d\e F \d\e Y', strtotime($dataFiltro)) ?></p>
+        <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= dataFormatoPT($dataFiltro) ?></p>
     </div>
     <div class="flex gap-3">
         <a href="marcacao.php" class="bg-black text-white px-6 py-2.5 rounded-full font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">

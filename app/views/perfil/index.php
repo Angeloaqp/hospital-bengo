@@ -35,7 +35,7 @@ if ($meuPerfil === 'medico') {
     $iconeCargo = 'admin_panel_settings';
 }
 
-$criadoA = isset($dados['criado_em']) ? date('d, M Y', strtotime($dados['criado_em'])) : '—';
+$criadoA = isset($dados['criado_em']) ? dataFormatoPT($dados['criado_em'], 'curto') : '—';
 $ultimoAcesso = isset($dados['ultimo_acesso']) ? date('d/m/Y H:i', strtotime($dados['ultimo_acesso'])) : 'Agora mesmo';
 $_username = $dados['nome_utilizador'] ?? $dados['username'] ?? sessao('nome_utilizador') ?? 'admin';
 $_fotoPath = $dados['foto_path'] ?? '';

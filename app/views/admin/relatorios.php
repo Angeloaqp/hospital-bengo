@@ -51,7 +51,7 @@ $totalCancelados = array_sum($dadosGraficoPeriodo['cancelados']);
 $taxaSucesso = $totalPeriodo > 0 ? round(($totalConcluidos / $totalPeriodo) * 100) : 0;
 
 // Formatação do período para exibição
-$periodoLabel = date('d M', strtotime($dataInicio)) . ' — ' . date('d M Y', strtotime($dataFim));
+$periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT($dataFim, 'curto');
 ?>
 <!DOCTYPE html>
 <html lang="pt">

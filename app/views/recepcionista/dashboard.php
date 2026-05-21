@@ -129,7 +129,7 @@ include __DIR__ . '/../comum/header.php';
     <!-- Welcome Header -->
     <div class="mb-6">
         <h2 class="text-3xl font-extrabold text-black tracking-tight">Visão Geral do Dia</h2>
-        <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= date('l, d \d\e F \d\e Y') ?> — Recepção Principal</p>
+        <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= dataFormatoPT() ?> — Recepção Principal</p>
     </div>
 
     <!-- Hidden Initial Alerts Data for ux.js -->
