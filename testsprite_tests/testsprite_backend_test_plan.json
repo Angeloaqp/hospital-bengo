@@ -1,0 +1,635 @@
+[
+  {
+    "id": "TC001",
+    "title": "Review the dashboard overview",
+    "description": "As an administrador hospitalar, the user can open the administrative dashboard and quickly review KPIs, charts, and recent attendances.",
+    "category": "Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /painel_admin.php"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify administrative KPIs are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify trend charts are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify recent attendances are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "View the administrative dashboard overview",
+    "description": "Verifies that an administrator can open the dashboard and review the key performance summary, trend charts, and recent attendances needed for daily oversight.",
+    "category": "Dashboard Administrativo",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /painel_admin.php"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify KPI summaries are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify trend charts are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify recent attendances are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Create a user with required profile details",
+    "description": "As an administrador hospitalar, the user can create a new account by choosing the correct profile, filling conditional fields, and submitting a valid form.",
+    "category": "User Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /painel_admin.php"
+      },
+      {
+        "type": "action",
+        "description": "Open the user creation form"
+      },
+      {
+        "type": "action",
+        "description": "Select a user profile"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the required user fields"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the profile-specific conditional fields"
+      },
+      {
+        "type": "action",
+        "description": "Submit the user creation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new user appears in the user list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the created user details are available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Activate or deactivate a user account",
+    "description": "As an administrador hospitalar, the user can open a user's quick details and change the account status when needed.",
+    "category": "User Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /painel_admin.php"
+      },
+      {
+        "type": "action",
+        "description": "Search for a user"
+      },
+      {
+        "type": "action",
+        "description": "Open the quick details drawer for the matching user"
+      },
+      {
+        "type": "action",
+        "description": "Deactivate the account"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the account is shown as inactive"
+      },
+      {
+        "type": "action",
+        "description": "Activate the account"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the account is shown as active"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Activate or deactivate a user account from the details drawer",
+    "description": "Verifies that an administrator can open a user's quick details and change the account status successfully from the user management screen.",
+    "category": "User Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/utilizadores.php"
+      },
+      {
+        "type": "action",
+        "description": "Open quick details for a user in the list"
+      },
+      {
+        "type": "action",
+        "description": "Change the account status of the selected user"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the account status changes in the user details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated status is reflected in the user list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Search and inspect a user",
+    "description": "As an administrador hospitalar, the user can search and filter users, open quick details, and inspect the selected user's summary.",
+    "category": "User Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /painel_admin.php"
+      },
+      {
+        "type": "action",
+        "description": "Search for a user"
+      },
+      {
+        "type": "action",
+        "description": "Apply a user filter"
+      },
+      {
+        "type": "action",
+        "description": "Open the quick details drawer for the matching user"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected user's quick details are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the filtered user list is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Filter a report by date range and refresh the indicators",
+    "description": "As a gestor operacional, the user can choose a date range, refresh the report, and see updated KPIs and charts for that period.",
+    "category": "Reports",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/relatorios.php"
+      },
+      {
+        "type": "action",
+        "description": "Choose a date range"
+      },
+      {
+        "type": "action",
+        "description": "Refresh the report view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the report KPIs are updated"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the report charts are updated"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Search and filter users before opening quick details",
+    "description": "Verifies that a manager can search for a user, narrow the list with a filter, and open quick details for the selected account.",
+    "category": "User Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/utilizadores.php"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the search field with a user identifier"
+      },
+      {
+        "type": "action",
+        "description": "Apply a user list filter"
+      },
+      {
+        "type": "action",
+        "description": "Open quick details for a user in the list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user list is filtered"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the quick details drawer is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Export a report as CSV",
+    "description": "As an administrador hospitalar, the user can generate a report for a selected period and export the resulting data as CSV.",
+    "category": "Reports",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/relatorios.php"
+      },
+      {
+        "type": "action",
+        "description": "Choose a date range"
+      },
+      {
+        "type": "action",
+        "description": "Refresh the report view"
+      },
+      {
+        "type": "action",
+        "description": "Export the report as CSV"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the CSV export is initiated"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the exported report data is available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Create a user with profile-specific fields",
+    "description": "Verifies that selecting a profile with conditional inputs reveals the additional fields and allows the user to be created with those details.",
+    "category": "User Creation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/criar_utilizador.php"
+      },
+      {
+        "type": "action",
+        "description": "Select a user profile with conditional fields"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the profile-specific fields are displayed"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the required user details"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the profile-specific details"
+      },
+      {
+        "type": "action",
+        "description": "Submit the creation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new user is registered"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Review the operational configuration tabs",
+    "description": "As a gestor operacional, the user can open the operational configuration area, switch between tabs, and see the current settings for each section.",
+    "category": "Operational Config",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/configuracao.php"
+      },
+      {
+        "type": "action",
+        "description": "Open a configuration tab"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the current settings for that section are displayed"
+      },
+      {
+        "type": "action",
+        "description": "Open another configuration tab"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the settings for the newly selected section are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Review the dashboard after returning later",
+    "description": "Verifies that the dashboard remains usable for a later check by showing the same operational overview after revisiting the page.",
+    "category": "Dashboard Administrativo",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /painel_admin.php"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify KPI summaries are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify recent attendances are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Update an operational setting",
+    "description": "As a gestor operacional, the user can change an operational setting and see the updated value reflected in the configuration section.",
+    "category": "Operational Config",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/configuracao.php"
+      },
+      {
+        "type": "action",
+        "description": "Open a configuration tab"
+      },
+      {
+        "type": "action",
+        "description": "Add or update an operational setting"
+      },
+      {
+        "type": "action",
+        "description": "Submit the configuration change"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated configuration is displayed in the section"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "Adjust availability capacity",
+    "description": "As a gestor operacional, the user can review availability, adjust a schedule or capacity, and confirm the updated availability is shown.",
+    "category": "Operational Config",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/configuracao.php"
+      },
+      {
+        "type": "action",
+        "description": "Open the availability section"
+      },
+      {
+        "type": "action",
+        "description": "Review the available schedules"
+      },
+      {
+        "type": "action",
+        "description": "Adjust a schedule or capacity"
+      },
+      {
+        "type": "action",
+        "description": "Save the availability changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated availability is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "Open quick details from the user list and review account information",
+    "description": "Verifies that an operator can browse the user list, open the quick details drawer, and inspect account information without changing data.",
+    "category": "User Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/utilizadores.php"
+      },
+      {
+        "type": "action",
+        "description": "Browse the user list"
+      },
+      {
+        "type": "action",
+        "description": "Open quick details for a user in the list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify account information is displayed in the quick details drawer"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC016",
+    "title": "Review login audit events",
+    "description": "As an auditor de conformidade, the user can filter audit logs for login events and review the matching entries in the table.",
+    "category": "Audit Logs",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/auditoria.php"
+      },
+      {
+        "type": "action",
+        "description": "Select the login audit filter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify matching login events are displayed in the audit table"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC017",
+    "title": "Review user creation audit events",
+    "description": "As an auditor de conformidade, the user can filter audit logs for user creation events and review the matching entries in the table.",
+    "category": "Audit Logs",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/auditoria.php"
+      },
+      {
+        "type": "action",
+        "description": "Select the user creation audit filter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify matching user creation events are displayed in the audit table"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC018",
+    "title": "Add and remove a block",
+    "description": "As a gestor operacional, the user can view active blocks, add or remove a block, and see the block list update accordingly.",
+    "category": "Operational Config",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/configuracao.php"
+      },
+      {
+        "type": "action",
+        "description": "Open the blocks section"
+      },
+      {
+        "type": "action",
+        "description": "Review the active blocks"
+      },
+      {
+        "type": "action",
+        "description": "Add a block"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new block is displayed in the active block list"
+      },
+      {
+        "type": "action",
+        "description": "Remove a block"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the block is no longer displayed in the block list"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC019",
+    "title": "See validation feedback when required user fields are missing",
+    "description": "Verifies that leaving a required field empty prevents submission and shows validation feedback on the create user form.",
+    "category": "User Creation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/criar_utilizador.php"
+      },
+      {
+        "type": "action",
+        "description": "Select a user profile"
+      },
+      {
+        "type": "action",
+        "description": "Leave a required field empty"
+      },
+      {
+        "type": "action",
+        "description": "Submit the creation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is not registered"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC020",
+    "title": "Validate missing required fields when creating a user",
+    "description": "As an administrador hospitalar, the user sees validation feedback when submitting the create-user form without the required information.",
+    "category": "User Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /painel_admin.php"
+      },
+      {
+        "type": "action",
+        "description": "Open the user creation form"
+      },
+      {
+        "type": "action",
+        "description": "Leave a required field empty"
+      },
+      {
+        "type": "action",
+        "description": "Submit the user creation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is not created"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC021",
+    "title": "Handle an empty audit filter result",
+    "description": "As an auditor de conformidade, the user can apply a restrictive audit filter and see an empty state when no matching events are available.",
+    "category": "Audit Logs",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/auditoria.php"
+      },
+      {
+        "type": "action",
+        "description": "Select an audit filter"
+      },
+      {
+        "type": "action",
+        "description": "Apply a restrictive date or event filter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty state message is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no matching audit rows are displayed"
+      }
+    ],
+    "priority": "Low"
+  }
+]

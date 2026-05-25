@@ -107,7 +107,14 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
 <form method="GET" class="bg-white rounded-[1.5rem] p-5 floating-card border border-white mb-6">
 <div class="flex flex-wrap gap-3 items-end">
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Data</label>
-    <input type="date" name="data" value="<?= $dataFiltro ?>" class="rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold" onchange="this.form.submit()"></div>
+    <?php 
+        $cal_id = 'cal-agenda-filtro';
+        $cal_name = 'data';
+        $cal_value = $dataFiltro;
+        $cal_onchange = 'this.form.submit()';
+        include __DIR__ . '/../comum/calendario_dropdown.php';
+    ?>
+    </div>
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Turno</label>
     <select name="turno" class="rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold" onchange="this.form.submit()">
         <option value="">Todos</option>
@@ -311,4 +318,5 @@ function fecharTriagem(){document.getElementById('modal-triagem').classList.add(
 function abrirRemarcar(id){document.getElementById('remarcar-marcacao-id').value=id;document.getElementById('modal-remarcar').classList.remove('hidden')}
 </script>
 <script src="<?= BASE_URL ?>public/assets/js/fila.js"></script>
+<script src="<?= BASE_URL ?>public/js/custom_select.js"></script>
 </body></html>

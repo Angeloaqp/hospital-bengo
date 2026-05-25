@@ -21,7 +21,7 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
 ?>
 
 <!-- Header Wrapper with Shield -->
-<div class="fixed top-0 right-0 left-56 z-50 h-28 bg-gradient-to-b from-[#f3f4f6] to-transparent font-['Manrope'] antialiased">
+<div id="header-wrapper" class="fixed top-0 right-0 left-56 z-50 h-28 bg-gradient-to-b from-[#f3f4f6] to-transparent font-['Manrope'] antialiased transition-all duration-300">
     <header class="h-16 mt-6 px-8 max-w-[1500px] mx-auto">
         <div class="rounded-2xl h-full px-6 flex items-center justify-between floating-card border border-white/50 bg-white">
             <div class="flex items-center gap-3">

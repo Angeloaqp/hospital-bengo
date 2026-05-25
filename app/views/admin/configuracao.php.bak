@@ -1,0 +1,540 @@
+<?php
+// ================================================
+// Hospital Geral do Bengo — Admin: Configuração Operacional
+// Consultórios, Especialidades, Tipos, Disponibilidade, Bloqueios
+// ================================================
+require_once __DIR__ . '/../../../config/base_url.php';
+require_once __DIR__ . '/../../../config/sessao.php';
+require_once __DIR__ . '/../../../config/database.php';
+require_once __DIR__ . '/../../../app/models/Disponibilidade.php';
+require_once __DIR__ . '/../../../app/models/Utilizador.php';
+
+exigirPerfil(['admin']);
+$meuPerfilObject = Utilizador::obter((int) sessao('utilizador_id'));
+
+$tab = trim($_GET['tab'] ?? 'consultorios');
+$consultorios = Disponibilidade::listarConsultorios(true);
+$especialidades = Disponibilidade::listarEspecialidades(true);
+$tipos = Disponibilidade::listarTiposAtendimento(true);
+$disponibilidades = Disponibilidade::listarTodas(true);
+$bloqueios = Disponibilidade::listarBloqueios();
+$medicos = Disponibilidade::listarMedicos();
+
+$mensagem = $_SESSION['mensagem'] ?? '';
+$erro = $_SESSION['erro'] ?? '';
+unset($_SESSION['mensagem'], $_SESSION['erro']);
+
+$diasSemana = [1=>'Segunda',2=>'Terça',3=>'Quarta',4=>'Quinta',5=>'Sexta',6=>'Sábado',7=>'Domingo'];
+$tabs = [
+    'consultorios'=>'Consultórios','especialidades'=>'Especialidades',
+    'tipos'=>'Tipos Atend.','disponibilidade'=>'Disponibilidade','vinculos'=>'Vínculos', 'bloqueios'=>'Bloqueios'
+];
+?>
+<!DOCTYPE html>
+<html lang="pt"><head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Configuração — <?= APP_NOME ?></title>
+<script src="<?= BASE_URL ?>public/assets/js/tailwindcss.js"></script>
+<link href="<?= BASE_URL ?>public/assets/css/google_fonts.css" rel="stylesheet"/>
+<link href="<?= BASE_URL ?>public/assets/css/material_symbols.css" rel="stylesheet"/>
+<script>
+tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#f9f9f9","surface-container-highest":"#e2e2e2","on-primary":"#e5e2e1","surface-container-high":"#e8e8e8",outline:"#777777","surface-dim":"#dadada","surface-container":"#eeeeee","on-error":"#ffffff",primary:"#000000","primary-container":"#3c3b3b",secondary:"#5e5e5e","outline-variant":"#c6c6c6","on-secondary":"#ffffff","surface-variant":"#e2e2e2",surface:"#f9f9f9","on-background":"#1a1c1c","on-surface":"#1a1c1c","surface-container-low":"#f3f3f3","surface-container-lowest":"#ffffff","inverse-surface":"#2f3131","surface-bright":"#f9f9f9","on-surface-variant":"#474747",error:"#ba1a1a"},borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"},fontFamily:{headline:["Manrope"],body:["Inter"],label:["Inter"]}}}}
+</script>
+<style>
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+body{font-family:'Inter',sans-serif;background-color:#f3f4f6}
+h1,h2,h3{font-family:'Manrope',sans-serif}
+.floating-card{box-shadow:0 4px 20px -2px rgba(0,0,0,.05),0 2px 10px -2px rgba(0,0,0,.03)}
+</style>
+</head>
+<body class="text-on-surface">
+<?php $paginaActual='configuracao'; include __DIR__.'/../comum/sidebar.php'; ?>
+<?php $tituloPagina='Configuração'; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
+
+<div id="alertas-iniciais" style="display:none" data-mensagem="<?= htmlspecialchars($mensagem) ?>" data-erro="<?= htmlspecialchars($erro) ?>"></div>
+
+<div class="ml-56 mt-28 p-8 flex justify-center">
+<main class="w-full max-w-[1200px]">
+
+<h2 class="text-3xl font-extrabold text-black tracking-tight mb-6">Configuração Operacional</h2>
+
+<!-- Tabs -->
+<div class="flex gap-2 mb-6 flex-wrap">
+<?php foreach($tabs as $k=>$v): ?>
+    <a href="?tab=<?= $k ?>" class="px-5 py-2 rounded-full text-xs font-black transition-all <?= $tab===$k ? 'bg-black text-white shadow-md' : 'bg-white text-on-surface-variant hover:bg-surface-container-low border border-white floating-card' ?>"><?= $v ?></a>
+<?php endforeach; ?>
+</div>
+
+<?php if($mensagem): ?><div class="bg-green-50 border border-green-200 rounded-2xl p-4 mb-4"><p class="text-green-700 text-sm font-bold">✓ <?= htmlspecialchars($mensagem) ?></p></div><?php endif; ?>
+<?php if($erro): ?><div class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-4"><p class="text-red-600 text-sm font-bold"><?= htmlspecialchars($erro) ?></p></div><?php endif; ?>
+
+<!-- ===== CONSULTÓRIOS ===== -->
+<?php if($tab === 'consultorios'): ?>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Consultórios Activos</h3>
+<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Nome</th><th class="pb-3">Responsável</th><th class="pb-3 text-right">Acções</th></tr></thead>
+<tbody class="divide-y divide-surface-container-low/50">
+<?php foreach($consultorios as $c): ?>
+<tr class="hover:bg-surface-container-low/30 <?= $c['activo'] == 0 ? 'opacity-50' : '' ?>">
+<td class="py-3 font-bold text-sm"><?= htmlspecialchars($c['nome']) ?> <?= $c['activo'] == 0 ? '<span class="text-[10px] bg-red-100 text-red-600 px-1 rounded">Inactivo</span>' : '' ?></td>
+<td class="py-3 text-xs text-on-surface-variant"><?= htmlspecialchars($c['responsavel'] ?? '—') ?></td>
+<td class="py-3 text-right">
+    <button onclick="abrirModalEditConsultorio(<?= $c['id'] ?>, '<?= htmlspecialchars(addslashes($c['nome'])) ?>', '<?= htmlspecialchars(addslashes($c['responsavel'] ?? '')) ?>')" class="text-blue-500 text-[10px] font-bold hover:underline mr-2">Editar</button>
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
+    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+    <input type="hidden" name="acao" value="editar_consultorio">
+    <input type="hidden" name="id" value="<?= $c['id'] ?>">
+    <input type="hidden" name="nome" value="<?= htmlspecialchars($c['nome']) ?>">
+    <input type="hidden" name="responsavel" value="<?= htmlspecialchars($c['responsavel']??'') ?>">
+    <input type="hidden" name="activo" value="<?= $c['activo'] == 1 ? '0' : '1' ?>">
+    <button class="<?= $c['activo'] == 1 ? 'text-red-500' : 'text-green-500' ?> text-[10px] font-bold hover:underline">
+        <?= $c['activo'] == 1 ? 'Desactivar' : 'Activar' ?>
+    </button>
+    </form>
+</td>
+</tr>
+<?php endforeach; ?>
+</tbody></table>
+</div>
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Novo Consultório</h3>
+<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="criar_consultorio">
+<div class="space-y-3">
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nome</label>
+<input type="text" name="nome" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1" placeholder="Consultório 5"></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Responsável</label>
+<input type="text" name="responsavel" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1" placeholder="Opcional"></div>
+<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Criar</button>
+</div></form>
+</div>
+</div>
+<?php endif; ?>
+
+<!-- ===== ESPECIALIDADES ===== -->
+<?php if($tab === 'especialidades'): ?>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Especialidades</h3>
+<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Nome</th><th class="pb-3">Descrição</th><th class="pb-3 text-right">Acções</th></tr></thead>
+<tbody class="divide-y divide-surface-container-low/50">
+<?php foreach($especialidades as $e): ?>
+<tr class="hover:bg-surface-container-low/30 <?= $e['activo'] == 0 ? 'opacity-50' : '' ?>">
+<td class="py-3 font-bold text-sm"><?= htmlspecialchars($e['nome']) ?> <?= $e['activo'] == 0 ? '<span class="text-[10px] bg-red-100 text-red-600 px-1 rounded">Inactiva</span>' : '' ?></td>
+<td class="py-3 text-xs text-on-surface-variant"><?= htmlspecialchars($e['descricao'] ?? '') ?></td>
+<td class="py-3 text-right">
+    <button onclick="abrirModalEditEspecialidade(<?= $e['id'] ?>, '<?= htmlspecialchars(addslashes($e['nome'])) ?>', '<?= htmlspecialchars(addslashes($e['descricao'] ?? '')) ?>')" class="text-blue-500 text-[10px] font-bold hover:underline mr-2">Editar</button>
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
+    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+    <input type="hidden" name="acao" value="editar_especialidade">
+    <input type="hidden" name="id" value="<?= $e['id'] ?>">
+    <input type="hidden" name="nome" value="<?= htmlspecialchars($e['nome']) ?>">
+    <input type="hidden" name="descricao" value="<?= htmlspecialchars($e['descricao']??'') ?>">
+    <input type="hidden" name="activo" value="<?= $e['activo'] == 1 ? '0' : '1' ?>">
+    <button class="<?= $e['activo'] == 1 ? 'text-red-500' : 'text-green-500' ?> text-[10px] font-bold hover:underline">
+        <?= $e['activo'] == 1 ? 'Desactivar' : 'Activar' ?>
+    </button>
+    </form>
+</td>
+</tr>
+<?php endforeach; ?>
+</tbody></table>
+</div>
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Nova Especialidade</h3>
+<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="criar_especialidade">
+<div class="space-y-3">
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nome</label>
+<input type="text" name="nome" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Descrição</label>
+<input type="text" name="descricao" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1"></div>
+<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Criar</button>
+</div></form>
+</div>
+</div>
+<?php endif; ?>
+
+<!-- ===== TIPOS DE ATENDIMENTO ===== -->
+<?php if($tab === 'tipos'): ?>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Tipos de Atendimento</h3>
+<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Nome</th><th class="pb-3">Prefixo</th><th class="pb-3">Especialidade</th><th class="pb-3 text-right">Acções</th></tr></thead>
+<tbody class="divide-y divide-surface-container-low/50">
+<?php foreach($tipos as $t): ?>
+<tr class="hover:bg-surface-container-low/30 <?= $t['activo'] == 0 ? 'opacity-50' : '' ?>">
+<td class="py-3 font-bold text-sm"><?= htmlspecialchars($t['nome']) ?> <?= $t['activo'] == 0 ? '<span class="text-[10px] bg-red-100 text-red-600 px-1 rounded">Inactivo</span>' : '' ?></td>
+<td class="py-3 text-xs font-mono font-bold"><?= htmlspecialchars($t['prefixo']) ?></td>
+<td class="py-3 text-xs text-on-surface-variant"><?= htmlspecialchars($t['especialidade_nome'] ?? '—') ?></td>
+<td class="py-3 text-right">
+    <button onclick="abrirModalEditTipo(<?= $t['id'] ?>, '<?= htmlspecialchars(addslashes($t['nome'])) ?>', '<?= htmlspecialchars(addslashes($t['prefixo'])) ?>', '<?= $t['especialidade_id'] ?? '' ?>')" class="text-blue-500 text-[10px] font-bold hover:underline mr-2">Editar</button>
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
+    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+    <input type="hidden" name="acao" value="editar_tipo">
+    <input type="hidden" name="id" value="<?= $t['id'] ?>">
+    <input type="hidden" name="nome" value="<?= htmlspecialchars($t['nome']) ?>">
+    <input type="hidden" name="prefixo" value="<?= htmlspecialchars($t['prefixo']) ?>">
+    <input type="hidden" name="especialidade_id" value="<?= htmlspecialchars($t['especialidade_id']??'') ?>">
+    <input type="hidden" name="activo" value="<?= $t['activo'] == 1 ? '0' : '1' ?>">
+    <button class="<?= $t['activo'] == 1 ? 'text-red-500' : 'text-green-500' ?> text-[10px] font-bold hover:underline">
+        <?= $t['activo'] == 1 ? 'Desactivar' : 'Activar' ?>
+    </button>
+    </form>
+</td>
+</tr>
+<?php endforeach; ?>
+</tbody></table>
+</div>
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Novo Tipo</h3>
+<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="criar_tipo">
+<div class="space-y-3">
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nome</label>
+<input type="text" name="nome" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Prefixo (1-2 letras)</label>
+<input type="text" name="prefixo" maxlength="2" value="N" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Especialidade</label>
+<select name="especialidade_id" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"><option value="">Nenhuma</option>
+<?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
+</select></div>
+<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Criar</button>
+</div></form>
+</div>
+</div>
+<?php endif; ?>
+
+<!-- ===== DISPONIBILIDADE MÉDICA ===== -->
+<?php if($tab === 'disponibilidade'): ?>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Horários Configurados</h3>
+<?php if(empty($disponibilidades)): ?>
+<p class="text-on-surface-variant text-sm font-semibold py-8 text-center">Nenhuma disponibilidade configurada.</p>
+<?php else: ?>
+<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Médico</th><th class="pb-3">Data</th><th class="pb-3">Turno</th><th class="pb-3">Capacidade</th><th class="pb-3 text-right">Acção</th></tr></thead>
+<tbody class="divide-y divide-surface-container-low/50">
+<?php foreach($disponibilidades as $d): ?>
+<tr class="hover:bg-surface-container-low/30 <?= $d['activo'] == 0 ? 'opacity-50' : '' ?>">
+<td class="py-3 font-bold text-sm"><?= htmlspecialchars($d['medico_nome']) ?> <?= $d['activo'] == 0 ? '<span class="text-[10px] bg-red-100 text-red-600 px-1 rounded">Inactiva</span>' : '' ?></td>
+<td class="py-3 text-xs font-semibold text-black"><?= date('d/m/Y', strtotime($d['data_disponibilidade'])) ?></td>
+<td class="py-3 text-xs font-bold"><?= $d['turno']==='manha'?'Manhã':'Tarde' ?></td>
+<td class="py-3 text-xs font-bold"><?= $d['capacidade'] ?> pac.</td>
+<td class="py-3 text-right">
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
+    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+    <input type="hidden" name="acao" value="remover_disponibilidade">
+    <input type="hidden" name="id" value="<?= $d['id'] ?>">
+    <button class="text-red-500 text-[10px] font-bold hover:underline">Eliminar</button>
+    </form>
+</td>
+</tr>
+<?php endforeach; ?>
+</tbody></table>
+<?php endif; ?>
+</div>
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Adicionar Horário</h3>
+<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="guardar_disponibilidade">
+<div class="space-y-3">
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Médico</label>
+<select name="medico_id" id="disp_medico_id" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1" onchange="carregarVinculos()">
+<option value="">Seleccionar...</option>
+<?php foreach($medicos as $m): ?><option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nome']) ?></option><?php endforeach; ?>
+</select></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Especialidade</label>
+<select name="especialidade_id" id="disp_especialidade_id" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+<option value="">Selecione um médico primeiro...</option>
+</select></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Consultório</label>
+<select name="consultorio_id" id="disp_consultorio_id" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+<option value="">Nenhum</option>
+</select></div>
+<div class="grid grid-cols-2 gap-2">
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Data</label>
+<input type="date" name="data_disponibilidade" required min="<?= date('Y-m-d') ?>" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+</div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Turno</label>
+<select name="turno" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+<option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="ambos">Ambos</option>
+</select></div>
+</div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Capacidade (pacientes)</label>
+<input type="number" name="capacidade" value="10" min="1" max="50" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
+<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Guardar</button>
+</div></form>
+</div>
+</div>
+</div>
+<?php endif; ?>
+
+<!-- ===== VÍNCULOS ===== -->
+<?php if($tab === 'vinculos'): ?>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Gerir Vínculos do Médico</h3>
+<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="sincronizar_vinculos">
+<div class="space-y-4">
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Médico</label>
+<select name="medico_id" id="vinculos_medico_id" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1" onchange="carregarVinculosEdicao()">
+<option value="">Seleccionar Médico...</option>
+<?php foreach($medicos as $m): ?><option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nome']) ?></option><?php endforeach; ?>
+</select></div>
+
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Especialidades Atribuídas (Ctrl/Cmd para seleccionar várias)</label>
+<select name="especialidades[]" id="vinculos_especialidades" multiple size="5" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1">
+<?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
+</select></div>
+
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Consultórios Atribuídos (Ctrl/Cmd para seleccionar vários)</label>
+<select name="consultorios[]" id="vinculos_consultorios" multiple size="5" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1">
+<?php foreach($consultorios as $c): ?><option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['nome']) ?></option><?php endforeach; ?>
+</select></div>
+
+<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Sincronizar Vínculos</button>
+</div></form>
+</div>
+<div class="bg-surface-container-low rounded-[1.5rem] p-6 border border-white">
+<h3 class="text-base font-black mb-2">Instruções</h3>
+<p class="text-xs text-on-surface-variant mb-3">
+Ao atribuir múltiplas especialidades ou consultórios a um médico, estas opções ficarão disponíveis para a sua Agenda (Disponibilidade).
+O médico poderá atender em diferentes consultórios ou como diferentes especialidades ao longo da semana.
+</p>
+<p class="text-xs text-on-surface-variant">
+<b>Dica:</b> Prima `Ctrl` (Windows) ou `Cmd` (Mac) ao clicar para seleccionar múltiplos itens nas listas.
+</p>
+</div>
+</div>
+<?php endif; ?>
+
+<!-- ===== BLOQUEIOS ===== -->
+<?php if($tab === 'bloqueios'): ?>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Bloqueios Activos</h3>
+<?php if(empty($bloqueios)): ?>
+<p class="text-on-surface-variant text-sm font-semibold py-8 text-center">Nenhum bloqueio activo.</p>
+<?php else: ?>
+<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Data</th><th class="pb-3">Turno</th><th class="pb-3">Médico</th><th class="pb-3">Motivo</th><th class="pb-3 text-right">Acção</th></tr></thead>
+<tbody class="divide-y divide-surface-container-low/50">
+<?php foreach($bloqueios as $b): ?>
+<tr><td class="py-3 text-sm font-bold"><?= date('d/m/Y', strtotime($b['data_bloqueio'])) ?></td>
+<td class="py-3 text-xs font-bold"><?= $b['turno']==='manha'?'Manhã':'Tarde' ?></td>
+<td class="py-3 text-xs"><?= htmlspecialchars($b['medico_nome'] ?? 'Geral') ?></td>
+<td class="py-3 text-xs text-on-surface-variant"><?= htmlspecialchars($b['motivo']) ?></td>
+<td class="py-3 text-right"><form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
+<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="remover_bloqueio"><input type="hidden" name="id" value="<?= $b['id'] ?>">
+<button class="text-red-500 text-[10px] font-bold hover:underline">Remover</button></form></td></tr>
+<?php endforeach; ?>
+</tbody></table>
+<?php endif; ?>
+</div>
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
+<h3 class="text-base font-black mb-4">Novo Bloqueio</h3>
+<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="criar_bloqueio">
+<div class="space-y-3">
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Médico (vazio = geral)</label>
+<select name="medico_id" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+<option value="">Bloqueio Geral</option>
+<?php foreach($medicos as $m): ?><option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nome']) ?></option><?php endforeach; ?>
+</select></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Data</label>
+<input type="date" name="data_bloqueio" required min="<?= date('Y-m-d') ?>" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Turno</label>
+<select name="turno" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+<option value="manha">Manhã</option><option value="tarde">Tarde</option>
+</select></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Motivo</label>
+<input type="text" name="motivo" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1" placeholder="Feriado, formação, etc."></div>
+<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Criar Bloqueio</button>
+</div></form>
+</div>
+</div>
+<?php endif; ?>
+
+</main>
+</div>
+
+<script>
+function carregarVinculos() {
+    const medicoId = document.getElementById('disp_medico_id').value;
+    const espSelect = document.getElementById('disp_especialidade_id');
+    const consSelect = document.getElementById('disp_consultorio_id');
+
+    if (!medicoId) {
+        espSelect.innerHTML = '<option value="">Selecione um médico primeiro...</option>';
+        consSelect.innerHTML = '<option value="">Nenhum</option>';
+        return;
+    }
+
+    fetch(`<?= BASE_URL ?>app/controllers/api_vinculos_medico.php?medico_id=${medicoId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.erro) { alert(data.erro); return; }
+
+            // Renderizar especialidades
+            espSelect.innerHTML = '';
+            if (data.especialidades.length === 0) {
+                espSelect.innerHTML = '<option value="">(Nenhuma especialidade vinculada)</option>';
+            } else {
+                data.especialidades.forEach((e, index) => {
+                    const opt = document.createElement('option');
+                    opt.value = e.id;
+                    opt.textContent = e.nome;
+                    if (index === 0) opt.selected = true;
+                    espSelect.appendChild(opt);
+                });
+            }
+
+            // Renderizar consultorios
+            consSelect.innerHTML = '';
+            if (data.consultorios.length === 0) {
+                consSelect.innerHTML = '<option value="">Nenhum</option>';
+            } else {
+                data.consultorios.forEach((c, index) => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = c.nome;
+                    if (index === 0) opt.selected = true;
+                    consSelect.appendChild(opt);
+                });
+            }
+        })
+        .catch(err => console.error("Erro na API:", err));
+}
+
+function carregarVinculosEdicao() {
+    const medicoId = document.getElementById('vinculos_medico_id').value;
+    const espSelect = document.getElementById('vinculos_especialidades');
+    const consSelect = document.getElementById('vinculos_consultorios');
+
+    if (!medicoId) {
+        Array.from(espSelect.options).forEach(o => o.selected = false);
+        Array.from(consSelect.options).forEach(o => o.selected = false);
+        return;
+    }
+
+    fetch(`<?= BASE_URL ?>app/controllers/api_vinculos_medico.php?medico_id=${medicoId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.erro) return;
+            const espIds = data.especialidades.map(e => e.id.toString());
+            const consIds = data.consultorios.map(c => c.id.toString());
+
+            Array.from(espSelect.options).forEach(o => {
+                o.selected = espIds.includes(o.value);
+            });
+
+            Array.from(consSelect.options).forEach(o => {
+                o.selected = consIds.includes(o.value);
+            });
+        });
+}
+</script>
+<!-- MODAIS DE EDIÇÃO -->
+<dialog id="modalEditConsultorio" class="bg-white rounded-[1.5rem] p-6 backdrop:bg-black/50 shadow-2xl w-full max-w-md m-auto">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-base font-black">Editar Consultório</h3>
+        <button onclick="document.getElementById('modalEditConsultorio').close()" class="text-on-surface-variant hover:text-black font-bold">X</button>
+    </div>
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+        <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+        <input type="hidden" name="acao" value="editar_consultorio">
+        <input type="hidden" name="id" id="editConsId">
+        <input type="hidden" name="activo" value="1">
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nome</label>
+                <input type="text" name="nome" id="editConsNome" required class="w-full rounded-xl border border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+            </div>
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Responsável</label>
+                <input type="text" name="responsavel" id="editConsResp" class="w-full rounded-xl border border-surface-container-high px-3 py-2 text-sm mt-1">
+            </div>
+            <button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Guardar Alterações</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="modalEditEspecialidade" class="bg-white rounded-[1.5rem] p-6 backdrop:bg-black/50 shadow-2xl w-full max-w-md m-auto">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-base font-black">Editar Especialidade</h3>
+        <button onclick="document.getElementById('modalEditEspecialidade').close()" class="text-on-surface-variant hover:text-black font-bold">X</button>
+    </div>
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+        <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+        <input type="hidden" name="acao" value="editar_especialidade">
+        <input type="hidden" name="id" id="editEspId">
+        <input type="hidden" name="activo" value="1">
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nome</label>
+                <input type="text" name="nome" id="editEspNome" required class="w-full rounded-xl border border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+            </div>
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Descrição</label>
+                <input type="text" name="descricao" id="editEspDesc" class="w-full rounded-xl border border-surface-container-high px-3 py-2 text-sm mt-1">
+            </div>
+            <button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Guardar Alterações</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="modalEditTipo" class="bg-white rounded-[1.5rem] p-6 backdrop:bg-black/50 shadow-2xl w-full max-w-md m-auto">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-base font-black">Editar Tipo de Atendimento</h3>
+        <button onclick="document.getElementById('modalEditTipo').close()" class="text-on-surface-variant hover:text-black font-bold">X</button>
+    </div>
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+        <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+        <input type="hidden" name="acao" value="editar_tipo">
+        <input type="hidden" name="id" id="editTipoId">
+        <input type="hidden" name="activo" value="1">
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nome</label>
+                <input type="text" name="nome" id="editTipoNome" required class="w-full rounded-xl border border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+            </div>
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Prefixo (1-2 letras)</label>
+                <input type="text" name="prefixo" id="editTipoPrefixo" maxlength="2" required class="w-full rounded-xl border border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+            </div>
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Especialidade</label>
+                <select name="especialidade_id" id="editTipoEsp" class="w-full rounded-xl border border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
+                    <option value="">Nenhuma</option>
+                    <?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Guardar Alterações</button>
+        </div>
+    </form>
+</dialog>
+
+<script>
+function abrirModalEditConsultorio(id, nome, resp) {
+    document.getElementById('editConsId').value = id;
+    document.getElementById('editConsNome').value = nome;
+    document.getElementById('editConsResp').value = resp;
+    document.getElementById('modalEditConsultorio').showModal();
+}
+function abrirModalEditEspecialidade(id, nome, desc) {
+    document.getElementById('editEspId').value = id;
+    document.getElementById('editEspNome').value = nome;
+    document.getElementById('editEspDesc').value = desc;
+    document.getElementById('modalEditEspecialidade').showModal();
+}
+function abrirModalEditTipo(id, nome, prefixo, espId) {
+    document.getElementById('editTipoId').value = id;
+    document.getElementById('editTipoNome').value = nome;
+    document.getElementById('editTipoPrefixo').value = prefixo;
+    document.getElementById('editTipoEsp').value = espId;
+    document.getElementById('modalEditTipo').showModal();
+}
+</script>
+</body></html>

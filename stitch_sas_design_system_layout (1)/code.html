@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HGB - Minha Agenda</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "tertiary-fixed-dim": "#c8c6c5",
+                "inverse-on-surface": "#313030",
+                "secondary-fixed-dim": "#c7c6c6",
+                "primary-fixed-dim": "#c6c6c7",
+                "on-error": "#690005",
+                "tertiary": "#ffffff",
+                "surface-container": "#201f1f",
+                "on-primary": "#2f3131",
+                "on-background": "#e5e2e1",
+                "surface-dim": "#131313",
+                "on-surface": "#e5e2e1",
+                "tertiary-container": "#e4e2e1",
+                "surface": "#131313",
+                "on-tertiary": "#303030",
+                "surface-tint": "#c6c6c7",
+                "on-primary-fixed-variant": "#454747",
+                "surface-container-lowest": "#0e0e0e",
+                "surface-bright": "#393939",
+                "tertiary-fixed": "#e4e2e1",
+                "error": "#ffb4ab",
+                "surface-container-high": "#2a2a2a",
+                "on-error-container": "#ffdad6",
+                "outline-variant": "#444748",
+                "on-secondary-container": "#b8b8b8",
+                "surface-container-highest": "#353534",
+                "primary-fixed": "#e2e2e2",
+                "background": "#131313",
+                "on-primary-container": "#636565",
+                "secondary-fixed": "#e3e2e2",
+                "primary": "#ffffff",
+                "on-tertiary-fixed": "#1b1c1c",
+                "inverse-primary": "#5d5f5f",
+                "secondary-container": "#484949",
+                "primary-container": "#e2e2e2",
+                "outline": "#8e9192",
+                "on-tertiary-container": "#656464",
+                "secondary": "#c7c6c6",
+                "on-surface-variant": "#c4c7c8",
+                "on-secondary": "#2f3131",
+                "on-secondary-fixed": "#1a1c1c",
+                "inverse-surface": "#e5e2e1",
+                "error-container": "#93000a",
+                "on-secondary-fixed-variant": "#464747",
+                "surface-variant": "#353534",
+                "on-primary-fixed": "#1a1c1c",
+                "on-tertiary-fixed-variant": "#474746",
+                "surface-container-low": "#1c1b1b"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "container-padding-mobile": "20px",
+                "stack-lg": "48px",
+                "base": "8px",
+                "container-padding-desktop": "40px",
+                "stack-md": "24px",
+                "stack-sm": "12px",
+                "gutter": "24px"
+        },
+        "fontFamily": {
+                "headline-lg": [
+                        "Newsreader"
+                ],
+                "label-md": [
+                        "Be Vietnam Pro"
+                ],
+                "headline-lg-mobile": [
+                        "Newsreader"
+                ],
+                "body-md": [
+                        "Be Vietnam Pro"
+                ],
+                "body-lg": [
+                        "Be Vietnam Pro"
+                ],
+                "display-lg": [
+                        "Newsreader"
+                ],
+                "headline-md": [
+                        "Newsreader"
+                ],
+                "label-sm": [
+                        "Be Vietnam Pro"
+                ]
+        },
+        "fontSize": {
+                "headline-lg": [
+                        "40px",
+                        {
+                                "lineHeight": "48px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "display-lg": [
+                        "64px",
+                        {
+                                "lineHeight": "72px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-md": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .floating-card {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Custom scrollbar for columns if needed */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="text-on-surface bg-background">
+<!-- Floating Sidebar -->
+<aside class="fixed left-6 top-6 bottom-6 flex flex-col py-8 z-[60] w-[280px] rounded-[32px] bg-surface-container shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-white/5 font-['Manrope'] antialiased">
+<div class="mb-10 px-8 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+<span class="text-on-primary font-black text-xl">H</span>
+</div>
+<span class="text-[22px] font-black tracking-tighter text-on-surface">HGB</span>
+</div>
+<nav class="flex flex-col gap-1 px-4 flex-1">
+<button class="flex items-center gap-4 px-5 py-3.5 w-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[24px]">dashboard</span>
+<span class="text-sm font-semibold tracking-tight">Dashboard</span>
+</button>
+<button class="flex items-center gap-4 px-5 py-3.5 w-full bg-primary text-on-primary rounded-2xl transition-all shadow-lg">
+<span class="material-symbols-outlined text-[24px] icon-fill">calendar_month</span>
+<span class="text-sm font-bold tracking-tight">Agenda</span>
+</button>
+<button class="flex items-center gap-4 px-5 py-3.5 w-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[24px]">list_alt</span>
+<span class="text-sm font-semibold tracking-tight">Atendimento Diário</span>
+</button>
+<button class="flex items-center gap-4 px-5 py-3.5 w-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[24px]">add_circle</span>
+<span class="text-sm font-semibold tracking-tight">Nova Marcação</span>
+</button>
+<button class="flex items-center gap-4 px-5 py-3.5 w-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[24px]">person_add</span>
+<span class="text-sm font-semibold tracking-tight">Novo Paciente</span>
+</button>
+<button class="flex items-center gap-4 px-5 py-3.5 w-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[24px]">search</span>
+<span class="text-sm font-semibold tracking-tight">Pesquisa</span>
+</button>
+<button class="flex items-center gap-4 px-5 py-3.5 w-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[24px]">mail</span>
+<span class="text-sm font-semibold tracking-tight">Mensagens</span>
+</button>
+</nav>
+<div class="mt-auto flex flex-col gap-1 px-4">
+<div class="px-4 py-4">
+<div class="h-[1px] bg-white/5 w-full"></div>
+</div>
+<button class="flex items-center gap-4 px-5 py-3 w-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-2xl transition-all">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/5 shrink-0">
+<img alt="Afonso Diallo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4OLzjBtDsdOtAr-WaOVoT9eoCzw-DXR2bHqs_9gCs3a1G7o7d19LLm2u5jz85IYOWLKARMaL4xH36Y3KYFI26tGmNXxrImLmHtnVupEepeTESuGylYtb-4XtXs_VdB9G0AI7r2bmIEXDYq0jVUfKFg6ZkqHRW6pQxkMuiEnPPv9YsH465hs6_gy0e2sGuu3nH46IfNG15K47rhrbMnB1iXjOScZ1SAjsyij30zC0MG8eLZky-cWZMnc818pCFzxjWWF3GIeyR8HwY"/>
+</div>
+<span class="text-sm font-semibold tracking-tight">Meu Perfil</span>
+</button>
+<button class="flex items-center gap-4 px-5 py-3 w-full text-on-surface-variant hover:text-error hover:bg-error/10 rounded-2xl transition-all">
+<span class="material-symbols-outlined text-[24px]">logout</span>
+<span class="text-sm font-semibold tracking-tight">Sair</span>
+</button>
+</div>
+</aside>
+<!-- Header Wrapper with Shield -->
+<div class="fixed top-6 right-10 left-[320px] z-50 flex justify-center pointer-events-none">
+<header class="w-full max-w-[1400px] h-20 bg-surface-container/80 backdrop-blur-xl border border-white/5 shadow-lg rounded-[24px] px-8 flex items-center justify-between pointer-events-auto">
+<div class="flex items-center gap-6 flex-1">
+<div class="flex items-center gap-3 bg-surface-container-high px-5 py-2.5 rounded-2xl w-full max-w-md border border-white/5">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-medium w-full p-0 placeholder:text-on-surface-variant/50 text-on-surface" placeholder="Pesquisar pacientes, consultas..." type="text"/>
+</div>
+<div class="hidden xl:flex items-center gap-2 text-on-surface-variant font-bold text-xs uppercase tracking-widest">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span>14:32</span>
+</div>
+</div>
+<div class="flex items-center gap-6 ml-6">
+<button class="p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors relative">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full border-2 border-surface-container"></span>
+</button>
+<div class="h-8 w-[1px] bg-white/10"></div>
+<div class="flex items-center gap-4">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-on-surface leading-none mb-1">Afonso Diallo</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-black opacity-60">Recepção Principal</p>
+</div>
+<div class="w-11 h-11 rounded-full overflow-hidden bg-surface-container-highest ring-2 ring-surface-container-high ring-offset-2 ring-offset-surface-container">
+<img alt="Perfil do Usuário" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ5nuWcSrvrYEacZgpyvSBZBI__QsLxZ_L5jRXDQ7E09fKDLq2r1_H3977K4uUJPC4MlIZ8CgxMrSE-5wzvjt-SVdwIHQC8YQ9VxUadUgXkgoTMpUEHbYAYVaHN-boAQikbL2sKMCFWOQD5uLnpU7XP4SBo_rDVkR5XogMgOvI8PEHpMHUIJshznKh0oS_suB-MpE_ps_sQ5N6MduIyG7alR_gSRRS4NLE5Xnc6qt55qLLaLYtivJH4LL6Dw7odX2BWC6L804nJp1i"/>
+</div>
+</div>
+</div>
+</header>
+</div>
+<!-- Main Content Area -->
+<div class="ml-[320px] mr-10 mt-32 flex justify-center pb-24">
+<main class="w-full max-w-[1400px] space-y-10">
+<!-- Date Header & Filters -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+<section class="">
+<h2 class="font-headline font-black text-4xl text-on-surface tracking-tight mb-2">25 a 29 de Outubro de 2026</h2>
+<p class="font-body text-sm font-bold text-on-surface-variant uppercase tracking-widest">Clínica Geral • Consultório 4</p>
+</section>
+<!-- Filters Row -->
+<section class="flex flex-wrap gap-4 items-center">
+<!-- Date Navigation -->
+<div class="flex items-center bg-surface-container rounded-full p-1.5 shadow-sm border border-white/5">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="px-5 py-2 font-body text-xs font-black text-on-surface uppercase tracking-wider hover:bg-surface-container-high rounded-full transition-colors">
+                            Esta Semana
+                        </button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<!-- Date Picker Mock -->
+<button class="flex items-center gap-2 bg-surface-container border border-white/5 px-6 py-3.5 rounded-full hover:bg-surface-container-high transition-colors text-xs font-black text-on-surface uppercase tracking-wider shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+                        25-29 Out
+                    </button>
+<!-- Turno Dropdown -->
+<div class="relative">
+<select class="appearance-none bg-surface-container border border-white/5 px-6 py-3.5 pr-12 rounded-full text-xs font-black text-on-surface uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm cursor-pointer">
+<option>Todos os Turnos</option>
+<option>Manhã</option>
+<option>Tarde</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[18px]" data-icon="expand_more">expand_more</span>
+</div>
+</section>
+</div>
+<!-- Next Appointment Highlight (New) -->
+<section class="bg-surface-container-highest text-on-surface rounded-[32px] p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden border border-white/5">
+<!-- Decorative background elements -->
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+<div class="absolute right-40 -bottom-20 w-48 h-48 bg-primary/20 rounded-full blur-2xl"></div>
+<div class="flex items-center gap-8 relative z-10 w-full md:w-auto">
+<div class="flex flex-col gap-1 items-center justify-center bg-white/5 rounded-2xl p-4 min-w-[100px]">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Agora</span>
+<span class="text-3xl font-black font-headline text-on-surface">08:00</span>
+</div>
+<div>
+<span class="inline-flex items-center gap-1.5 bg-[#FF8F00]/20 text-[#FF8F00] text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full mb-3">
+<span class="material-symbols-outlined text-[14px]">elderly</span> Próximo Atendimento
+            </span>
+<h3 class="text-3xl font-black font-headline mb-1 text-on-surface">Maria Almeida</h3>
+<p class="text-sm text-on-surface-variant font-semibold tracking-wide">64 anos • Consulta de Rotina</p>
+</div>
+</div>
+<div class="flex gap-4 relative z-10 w-full md:w-auto justify-end">
+<button class="bg-white/5 hover:bg-white/10 text-on-surface px-6 py-3 rounded-full font-bold text-sm transition-colors backdrop-blur-sm border border-white/10">
+            Ver Ficha
+        </button>
+<button class="bg-primary text-on-primary hover:bg-primary-fixed px-8 py-3 rounded-full font-bold text-sm transition-colors shadow-lg">
+            Iniciar Check-in
+        </button>
+</div>
+</section>
+<!-- KPI Cards -->
+<section class="grid grid-cols-2 md:grid-cols-5 gap-6">
+<div class="bg-surface-container rounded-[24px] p-6 shadow-sm border border-white/5 flex flex-col justify-between h-32">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Total Pacientes</span>
+<div class="flex items-end justify-between mt-auto">
+<span class="font-headline font-black text-4xl text-on-surface leading-none">42</span>
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant opacity-50" data-icon="groups">groups</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-[24px] p-6 shadow-sm border border-white/5 flex flex-col justify-between h-32">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Marcados</span>
+<div class="flex items-end justify-between mt-auto">
+<span class="font-headline font-black text-4xl text-on-surface leading-none">38</span>
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant opacity-50" data-icon="event_available">event_available</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-[24px] p-6 shadow-sm border border-white/5 flex flex-col justify-between h-32">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Check-in</span>
+<div class="flex items-end justify-between mt-auto">
+<span class="font-headline font-black text-4xl text-on-surface leading-none">12</span>
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant opacity-50" data-icon="how_to_reg">how_to_reg</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-[24px] p-6 shadow-sm border border-white/5 flex flex-col justify-between h-32">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Concluídas</span>
+<div class="flex items-end justify-between mt-auto">
+<span class="font-headline font-black text-4xl text-on-surface leading-none">8</span>
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant opacity-50" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-[24px] p-6 shadow-sm border border-error/20 flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-error/10 rounded-bl-full"></div>
+<span class="text-xs font-bold text-error uppercase tracking-widest">Faltas</span>
+<div class="flex items-end justify-between mt-auto relative z-10">
+<span class="font-headline font-black text-4xl text-error leading-none">2</span>
+<span class="material-symbols-outlined text-[28px] text-error opacity-50" data-icon="person_cancel">person_cancel</span>
+</div>
+</div>
+</section>
+<!-- Calendar Grid -->
+<section class="grid grid-cols-1 md:grid-cols-5 gap-6">
+<!-- Seg 25 -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between pb-3 border-b-2 border-white/10">
+<h3 class="font-headline font-black text-xl text-on-surface">Seg 25</h3>
+<span class="text-[10px] font-black text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full tracking-wider uppercase">4 marc</span>
+</div>
+<div class="flex flex-col gap-6">
+<!-- Manhã -->
+<div class="flex flex-col gap-3">
+<h4 class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Manhã</h4>
+<!-- Card Idoso (Next) -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#FF8F00]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] opacity-50 grayscale pointer-events-none">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#FF8F00]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">08:00</span>
+<span class="material-symbols-outlined text-[16px] text-[#FF8F00]" data-icon="elderly">elderly</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">Maria Almeida</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">64 anos</p>
+</div>
+</div>
+<!-- Card Normal -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#1976D2]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] hover:bg-surface-container-highest hover:-translate-y-1 transition-all cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#1976D2]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">08:30</span>
+<span class="material-symbols-outlined text-[16px] text-[#1976D2]" data-icon="person">person</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">João Santos</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">42 anos</p>
+</div>
+</div>
+<!-- Card Grávida -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#7B1FA2]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] hover:bg-surface-container-highest hover:-translate-y-1 transition-all cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#7B1FA2]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">09:00</span>
+<span class="material-symbols-outlined text-[16px] text-[#7B1FA2]" data-icon="pregnant_woman">pregnant_woman</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">Ana Costa</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">28 anos</p>
+</div>
+</div>
+<!-- Card Urgente -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#D32F2F]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] hover:bg-surface-container-highest hover:-translate-y-1 transition-all cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#D32F2F]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">09:15</span>
+<span class="material-symbols-outlined text-[16px] text-[#D32F2F]" data-icon="warning">warning</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">Carlos Ferreira</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">55 anos</p>
+</div>
+</div>
+</div>
+<!-- Tarde (Empty for this day) -->
+<div class="flex flex-col gap-3">
+<h4 class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Tarde</h4>
+<div class="border-2 border-dashed border-white/10 rounded-2xl p-4 flex items-center justify-center h-24 bg-surface-container/50">
+<span class="text-xs font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Sem marcações</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Ter 26 -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between pb-3 border-b-2 border-white/10">
+<h3 class="font-headline font-black text-xl text-on-surface">Ter 26</h3>
+<span class="text-[10px] font-black text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full tracking-wider uppercase">3 marc</span>
+</div>
+<div class="flex flex-col gap-6">
+<!-- Manhã -->
+<div class="flex flex-col gap-3">
+<h4 class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Manhã</h4>
+<!-- Card Normal -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#1976D2]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] hover:bg-surface-container-highest hover:-translate-y-1 transition-all cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#1976D2]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">10:00</span>
+<span class="material-symbols-outlined text-[16px] text-[#1976D2]" data-icon="person">person</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">Rui Silva</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">34 anos</p>
+</div>
+</div>
+<!-- Card Grávida -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#7B1FA2]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] hover:bg-surface-container-highest hover:-translate-y-1 transition-all cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#7B1FA2]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">11:00</span>
+<span class="material-symbols-outlined text-[16px] text-[#7B1FA2]" data-icon="pregnant_woman">pregnant_woman</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">Sofia Marques</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">31 anos</p>
+</div>
+</div>
+</div>
+<!-- Tarde -->
+<div class="flex flex-col gap-3">
+<h4 class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Tarde</h4>
+<!-- Card Normal -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#1976D2]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] hover:bg-surface-container-highest hover:-translate-y-1 transition-all cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#1976D2]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">14:00</span>
+<span class="material-symbols-outlined text-[16px] text-[#1976D2]" data-icon="person">person</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">Pedro Sousa</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">45 anos</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Qua 27 -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between pb-3 border-b-2 border-white/10">
+<h3 class="font-headline font-black text-xl text-on-surface">Qua 27</h3>
+<span class="text-[10px] font-black text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full tracking-wider uppercase">2 marc</span>
+</div>
+<div class="flex flex-col gap-6">
+<!-- Manhã -->
+<div class="flex flex-col gap-3">
+<h4 class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Manhã</h4>
+<!-- Card Normal -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#1976D2]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] hover:bg-surface-container-highest hover:-translate-y-1 transition-all cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#1976D2]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">09:00</span>
+<span class="material-symbols-outlined text-[16px] text-[#1976D2]" data-icon="person">person</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">Marta Pinto</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">29 anos</p>
+</div>
+</div>
+<!-- Card Idoso -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#FF8F00]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] hover:bg-surface-container-highest hover:-translate-y-1 transition-all cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#FF8F00]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">10:30</span>
+<span class="material-symbols-outlined text-[16px] text-[#FF8F00]" data-icon="elderly">elderly</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">António Lima</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">72 anos</p>
+</div>
+</div>
+</div>
+<!-- Tarde -->
+<div class="flex flex-col gap-3">
+<h4 class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Tarde</h4>
+<div class="border-2 border-dashed border-white/10 rounded-2xl p-4 flex items-center justify-center h-24 bg-surface-container/50">
+<span class="text-xs font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Sem marcações</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Qui 28 -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between pb-3 border-b-2 border-white/10">
+<h3 class="font-headline font-black text-xl text-on-surface">Qui 28</h3>
+<span class="text-[10px] font-black text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full tracking-wider uppercase">1 marc</span>
+</div>
+<div class="flex flex-col gap-6">
+<!-- Manhã -->
+<div class="flex flex-col gap-3">
+<h4 class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Manhã</h4>
+<div class="border-2 border-dashed border-white/10 rounded-2xl p-4 flex items-center justify-center h-24 bg-surface-container/50">
+<span class="text-xs font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Sem marcações</span>
+</div>
+</div>
+<!-- Tarde -->
+<div class="flex flex-col gap-3">
+<h4 class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Tarde</h4>
+<!-- Card Normal -->
+<div class="bg-surface-container-high rounded-2xl p-4 relative overflow-hidden flex flex-col gap-2 border border-[#1976D2]/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.2)] hover:bg-surface-container-highest hover:-translate-y-1 transition-all cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#1976D2]"></div>
+<div class="flex justify-between items-start pl-2">
+<span class="text-xs font-black text-on-surface-variant">15:00</span>
+<span class="material-symbols-outlined text-[16px] text-[#1976D2]" data-icon="person">person</span>
+</div>
+<div class="pl-2">
+<h4 class="font-headline font-black text-on-surface text-base leading-tight">Bruno Dias</h4>
+<p class="font-body text-[10px] font-bold text-on-surface-variant uppercase mt-1 tracking-wider">38 anos</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sex 29 -->
+<div class="flex flex-col gap-4 h-full">
+<div class="flex items-center justify-between pb-3 border-b-2 border-white/10">
+<h3 class="font-headline font-black text-xl text-on-surface">Sex 29</h3>
+<span class="text-[10px] font-black text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full tracking-wider uppercase opacity-50">0 marc</span>
+</div>
+<div class="flex flex-col gap-2 flex-1 justify-center items-center py-16 bg-surface-container/40 rounded-3xl border border-white/5 shadow-sm mt-2">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant opacity-70" data-icon="event_busy">event_busy</span>
+</div>
+<p class="text-sm font-black text-on-surface">Dia Livre</p>
+<p class="text-xs font-bold text-on-surface-variant mt-1 text-center px-4">Nenhuma marcação agendada</p>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>
