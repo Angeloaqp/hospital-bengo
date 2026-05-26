@@ -19,20 +19,28 @@ $acao = trim($_GET['acao'] ?? '');
 // ------------------------------------------------
 if ($acao === 'pesquisar_paciente') {
     $termo = trim($_GET['q'] ?? '');
-    if (mb_strlen($termo) < 2) {
-        echo json_encode(['resultados' => []]);
-        exit;
-    }
 
     $db = Database::ligar();
-    $stmt = $db->prepare(
-        "SELECT id, nome, bi_nif, idade, telefone, email
-         FROM pacientes
-         WHERE nome LIKE :q OR bi_nif LIKE :q2
-         ORDER BY nome ASC
-         LIMIT 10"
-    );
-    $stmt->execute([':q' => "%{$termo}%", ':q2' => "%{$termo}%"]);
+    
+    if (empty($termo)) {
+        $stmt = $db->prepare(
+            "SELECT id, nome, bi_nif, idade, telefone, email, numero_processo
+             FROM pacientes
+             ORDER BY id DESC
+             LIMIT 10"
+        );
+        $stmt->execute();
+    } else {
+        $stmt = $db->prepare(
+            "SELECT id, nome, bi_nif, idade, telefone, email, numero_processo
+             FROM pacientes
+             WHERE nome LIKE :q OR bi_nif LIKE :q2 OR numero_processo LIKE :q3
+             ORDER BY nome ASC
+             LIMIT 10"
+        );
+        $stmt->execute([':q' => "%{$termo}%", ':q2' => "%{$termo}%", ':q3' => "%{$termo}%"]);
+    }
+    
     echo json_encode(['resultados' => $stmt->fetchAll()]);
     exit;
 }
@@ -116,7 +124,7 @@ if ($acao === 'obter_paciente') {
 
     $db = Database::ligar();
     $stmt = $db->prepare(
-        "SELECT id, nome, bi_nif, idade, telefone, email
+        "SELECT id, nome, bi_nif, idade, telefone, email, numero_processo
          FROM pacientes
          WHERE id = :id
          LIMIT 1"

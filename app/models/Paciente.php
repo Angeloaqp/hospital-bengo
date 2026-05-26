@@ -20,7 +20,7 @@ class Paciente
     public static function registarComSenha(
         array $dados,
         int $registadoPor
-    ): string {
+    ): array {
         $db = Database::ligar();
 
         // Inicia transacção — ambos os INSERTs 
@@ -31,21 +31,24 @@ class Paciente
             // 1. Insere o paciente
             $stmt = $db->prepare(
                 "INSERT INTO pacientes 
-                    (nome, idade, morada, peso, registado_por)
+                    (nome, idade, morada, registado_por)
                  VALUES 
-                    (:nome, :idade, :morada, :peso, :reg_por)"
+                    (:nome, :idade, :morada, :reg_por)"
             );
             $stmt->execute([
                 ':nome' => $dados['nome'],
                 ':idade' => (int) $dados['idade'],
                 ':morada' => $dados['morada'],
-                ':peso' => !empty($dados['peso'])
-                    ? (float) $dados['peso']
-                    : null,
+
                 ':reg_por' => $registadoPor,
             ]);
 
             $pacienteId = (int) $db->lastInsertId();
+            
+            // Gera o Número de Processo (ex: PAC-00005)
+            $numProcesso = 'PAC-' . str_pad($pacienteId, 5, '0', STR_PAD_LEFT);
+            $stmtUpdate = $db->prepare("UPDATE pacientes SET numero_processo = :num WHERE id = :id");
+            $stmtUpdate->execute([':num' => $numProcesso, ':id' => $pacienteId]);
 
             // 2. Gera o código da senha
             $prioridade = (int) $dados['prioridade'];
@@ -69,7 +72,10 @@ class Paciente
             ]);
 
             $db->commit();
-            return $codigo;
+            return [
+                'codigo' => $codigo,
+                'numero_processo' => $numProcesso
+            ];
 
         } catch (PDOException $e) {
             $db->rollBack();
@@ -90,15 +96,15 @@ class Paciente
     public static function registarApenas(
         array $dados,
         int $registadoPor
-    ): int {
+    ): array {
         $db = Database::ligar();
 
         try {
             $stmt = $db->prepare(
                 "INSERT INTO pacientes 
-                    (nome, bi_nif, idade, sexo, morada, peso, registado_por)
+                    (nome, bi_nif, idade, sexo, morada, registado_por)
                  VALUES 
-                    (:nome, :bi_nif, :idade, :sexo, :morada, :peso, :reg_por)"
+                    (:nome, :bi_nif, :idade, :sexo, :morada, :reg_por)"
             );
             $stmt->execute([
                 ':nome' => $dados['nome'],
@@ -106,13 +112,21 @@ class Paciente
                 ':idade' => (int) $dados['idade'],
                 ':sexo' => !empty($dados['sexo']) ? $dados['sexo'] : null,
                 ':morada' => $dados['morada'],
-                ':peso' => !empty($dados['peso'])
-                    ? (float) $dados['peso']
-                    : null,
+
                 ':reg_por' => $registadoPor,
             ]);
 
-            return (int) $db->lastInsertId();
+            $pacienteId = (int) $db->lastInsertId();
+            
+            // Gera o Número de Processo (ex: PAC-00005)
+            $numProcesso = 'PAC-' . str_pad($pacienteId, 5, '0', STR_PAD_LEFT);
+            $stmtUpdate = $db->prepare("UPDATE pacientes SET numero_processo = :num WHERE id = :id");
+            $stmtUpdate->execute([':num' => $numProcesso, ':id' => $pacienteId]);
+
+            return [
+                'id' => $pacienteId,
+                'numero_processo' => $numProcesso
+            ];
 
         } catch (PDOException $e) {
             throw new RuntimeException(
@@ -150,8 +164,7 @@ class Paciente
                     bi_nif = :bi_nif,
                     idade = :idade,
                     sexo = :sexo,
-                    morada = :morada,
-                    peso = :peso
+                    morada = :morada
                  WHERE id = :id"
             );
             return $stmt->execute([
@@ -160,7 +173,7 @@ class Paciente
                 ':idade' => (int) $dados['idade'],
                 ':sexo' => !empty($dados['sexo']) ? $dados['sexo'] : null,
                 ':morada' => $dados['morada'],
-                ':peso' => !empty($dados['peso']) ? (float) $dados['peso'] : null,
+
                 ':id' => $pacienteId
             ]);
 

@@ -57,7 +57,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
 .floating-card{box-shadow:0 4px 20px -2px rgba(0,0,0,.05),0 2px 10px -2px rgba(0,0,0,.03)}
 </style>
 </head>
-<body class="text-on-surface">
+<body class="text-on-surface bg-[#f3f4f6]">
 <?php $paginaActual='agenda'; include __DIR__.'/../comum/sidebar.php'; ?>
 <?php $tituloPagina='Agenda'; $subtituloPagina=''; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
 
@@ -66,8 +66,8 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
     data-erro="<?= htmlspecialchars($erro) ?>"
     data-senha="<?= htmlspecialchars($ultimaSenha) ?>"></div>
 
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<main class="w-full max-w-[1500px]">
+<div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
 
 <!-- Header + Ações -->
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
@@ -104,40 +104,68 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
 </div>
 
 <!-- Filtros -->
-<form method="GET" class="bg-white rounded-[1.5rem] p-5 floating-card border border-white mb-6">
+<form method="GET" class="bg-white rounded-[1.5rem] p-5 floating-card border border-white mb-6 relative z-50">
 <div class="flex flex-wrap gap-3 items-end">
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Data</label>
     <?php 
-        $cal_id = 'cal-agenda-filtro';
-        $cal_name = 'data';
-        $cal_value = $dataFiltro;
-        $cal_onchange = 'this.form.submit()';
-        include __DIR__ . '/../comum/calendario_dropdown.php';
+    $cal_id = 'cal-filtro';
+    $cal_name = 'data';
+    $cal_value = $dataFiltro;
+    $cal_onchange = 'this.form.submit()';
+    require __DIR__ . '/../comum/calendario_dropdown.php'; 
     ?>
     </div>
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Turno</label>
-    <select name="turno" class="rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold" onchange="this.form.submit()">
-        <option value="">Todos</option>
-        <option value="manha" <?= $turnoFiltro==='manha'?'selected':'' ?>>Manhã</option>
-        <option value="tarde" <?= $turnoFiltro==='tarde'?'selected':'' ?>>Tarde</option>
-    </select></div>
+    <?php
+    $sel_id = 'cs-turno';
+    $sel_name = 'turno';
+    $sel_icon = 'schedule';
+    $sel_placeholder = 'Todos';
+    $sel_value = $turnoFiltro;
+    $sel_onchange = 'this.form.submit()';
+    $sel_size = 'sm';
+    $sel_options = [
+        '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
+        'manha' => ['label' => 'Manhã', 'icon' => 'light_mode', 'color' => 'text-amber-500'],
+        'tarde' => ['label' => 'Tarde', 'icon' => 'routine', 'color' => 'text-orange-500'],
+    ];
+    include __DIR__ . '/../comum/custom_select.php';
+    ?></div>
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Médico</label>
-    <select name="medico_id" class="rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold" onchange="this.form.submit()">
-        <option value="">Todos</option>
-        <?php foreach($medicos as $med): ?>
-        <option value="<?= $med['id'] ?>" <?= $medicoFiltro==(int)$med['id']?'selected':'' ?>><?= htmlspecialchars($med['nome']) ?></option>
-        <?php endforeach; ?>
-    </select></div>
+    <?php
+    $sel_id = 'cs-medico';
+    $sel_name = 'medico_id';
+    $sel_icon = 'person';
+    $sel_placeholder = 'Todos';
+    $sel_value = (string)$medicoFiltro;
+    $sel_onchange = 'this.form.submit()';
+    $sel_size = 'sm';
+    $sel_options = ['' => ['label' => 'Todos', 'icon' => 'groups', 'color' => 'text-on-surface-variant']];
+    foreach($medicos as $med) {
+        $sel_options[(string)$med['id']] = ['label' => htmlspecialchars($med['nome']), 'icon' => 'person', 'color' => 'text-blue-600'];
+    }
+    include __DIR__ . '/../comum/custom_select.php';
+    ?></div>
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Estado</label>
-    <select name="estado" class="rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold" onchange="this.form.submit()">
-        <option value="">Todos</option>
-        <option value="marcada" <?= $estadoFiltro==='marcada'?'selected':'' ?>>Marcada</option>
-        <option value="confirmada" <?= $estadoFiltro==='confirmada'?'selected':'' ?>>Confirmada</option>
-        <option value="em_atendimento" <?= $estadoFiltro==='em_atendimento'?'selected':'' ?>>Em Atendimento</option>
-        <option value="concluida" <?= $estadoFiltro==='concluida'?'selected':'' ?>>Concluída</option>
-        <option value="cancelada" <?= $estadoFiltro==='cancelada'?'selected':'' ?>>Cancelada</option>
-        <option value="falta" <?= $estadoFiltro==='falta'?'selected':'' ?>>Falta</option>
-    </select></div>
+    <?php
+    $sel_id = 'cs-estado';
+    $sel_name = 'estado';
+    $sel_icon = 'info';
+    $sel_placeholder = 'Todos';
+    $sel_value = $estadoFiltro;
+    $sel_onchange = 'this.form.submit()';
+    $sel_size = 'sm';
+    $sel_options = [
+        '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
+        'marcada' => ['label' => 'Marcada', 'icon' => 'event', 'color' => 'text-blue-600'],
+        'confirmada' => ['label' => 'Confirmada', 'icon' => 'check_circle', 'color' => 'text-green-600'],
+        'em_atendimento' => ['label' => 'Em Atendimento', 'icon' => 'pending', 'color' => 'text-yellow-600'],
+        'concluida' => ['label' => 'Concluída', 'icon' => 'task_alt', 'color' => 'text-gray-500'],
+        'cancelada' => ['label' => 'Cancelada', 'icon' => 'cancel', 'color' => 'text-red-600'],
+        'falta' => ['label' => 'Falta', 'icon' => 'person_off', 'color' => 'text-orange-600'],
+    ];
+    include __DIR__ . '/../comum/custom_select.php';
+    ?></div>
     <div class="flex gap-2">
         <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' -1 day')) ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">← Anterior</a>
         <a href="?data=<?= date('Y-m-d') ?>" class="bg-black text-white px-3 py-2 rounded-xl text-sm font-bold hover:scale-105 transition-transform">Hoje</a>
@@ -253,7 +281,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
 <h3 class="text-xl font-black mb-6 flex items-center gap-2"><span class="material-symbols-outlined text-blue-600">vital_signs</span> Triagem Clínica</h3>
 <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" id="form-triagem">
     <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
-    <input type="hidden" name="acao" value="checkin">
+    <input type="hidden" name="acao" value="triagem">
     <input type="hidden" name="marcacao_id" id="triagem-marcacao-id" value="">
     <div class="space-y-4">
         <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Sintomas / Queixa</label>
@@ -273,10 +301,21 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
         <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Observações da Triagem</label>
         <textarea name="observacoes_triagem" rows="2" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1"></textarea></div>
         <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Prioridade Clínica</label>
-        <select name="prioridade_clinica" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
-            <option value="4">Normal</option><option value="3">Moderada</option>
-            <option value="2">Alta (Idoso/Grávida)</option><option value="1">Urgente</option>
-        </select></div>
+        <div class="mt-1"><?php
+        $sel_id = 'cs-prioridade-triagem';
+        $sel_name = 'prioridade_clinica';
+        $sel_icon = 'check_circle';
+        $sel_placeholder = 'Normal';
+        $sel_value = '4';
+        $sel_size = 'sm';
+        $sel_options = [
+            '4' => ['label' => 'Normal', 'icon' => 'check_circle', 'color' => 'text-blue-600'],
+            '3' => ['label' => 'Moderada', 'icon' => 'warning', 'color' => 'text-amber-500'],
+            '2' => ['label' => 'Alta (Idoso/Grávida)', 'icon' => 'elderly', 'color' => 'text-orange-500'],
+            '1' => ['label' => 'Urgente', 'icon' => 'notification_important', 'color' => 'text-red-600'],
+        ];
+        include __DIR__ . '/../comum/custom_select.php';
+        ?></div></div>
     </div>
     <div class="flex gap-3 mt-6">
         <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-full font-black text-sm hover:scale-[1.02] transition-transform shadow-md flex items-center justify-center gap-2">
@@ -298,11 +337,29 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
     <input type="hidden" name="marcacao_id" id="remarcar-marcacao-id" value="">
     <div class="space-y-4">
         <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nova Data</label>
-        <input type="date" name="nova_data" required min="<?= date('Y-m-d') ?>" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
+        <?php 
+        $cal_id = 'cal-reagendar';
+        $cal_name = 'nova_data';
+        $cal_value = '';
+        $cal_min = date('Y-m-d');
+        $cal_label = 'Seleccione a nova data...';
+        require __DIR__ . '/../comum/calendario_dropdown.php'; 
+        ?></div>
         <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Novo Turno</label>
-        <select name="novo_turno" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
-            <option value="manha">Manhã</option><option value="tarde">Tarde</option>
-        </select></div>
+        <div class="mt-1"><?php
+        $sel_id = 'cs-novo-turno';
+        $sel_name = 'novo_turno';
+        $sel_icon = 'light_mode';
+        $sel_placeholder = 'Manhã';
+        $sel_value = 'manha';
+        $sel_required = true;
+        $sel_size = 'sm';
+        $sel_options = [
+            'manha' => ['label' => 'Manhã', 'icon' => 'light_mode', 'color' => 'text-amber-500'],
+            'tarde' => ['label' => 'Tarde', 'icon' => 'routine', 'color' => 'text-orange-500'],
+        ];
+        include __DIR__ . '/../comum/custom_select.php';
+        ?></div></div>
     </div>
     <div class="flex gap-3 mt-6">
         <button type="submit" class="flex-1 bg-black text-white py-3 rounded-full font-black text-sm">Remarcar</button>
@@ -318,5 +375,4 @@ function fecharTriagem(){document.getElementById('modal-triagem').classList.add(
 function abrirRemarcar(id){document.getElementById('remarcar-marcacao-id').value=id;document.getElementById('modal-remarcar').classList.remove('hidden')}
 </script>
 <script src="<?= BASE_URL ?>public/assets/js/fila.js"></script>
-<script src="<?= BASE_URL ?>public/js/custom_select.js"></script>
 </body></html>

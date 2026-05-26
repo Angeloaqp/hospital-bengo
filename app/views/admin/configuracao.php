@@ -13,10 +13,10 @@ exigirPerfil(['admin']);
 $meuPerfilObject = Utilizador::obter((int) sessao('utilizador_id'));
 
 $tab = trim($_GET['tab'] ?? 'consultorios');
-$consultorios = Disponibilidade::listarConsultorios();
-$especialidades = Disponibilidade::listarEspecialidades();
-$tipos = Disponibilidade::listarTiposAtendimento();
-$disponibilidades = Disponibilidade::listarTodas();
+$consultorios = Disponibilidade::listarConsultorios(true);
+$especialidades = Disponibilidade::listarEspecialidades(true);
+$tipos = Disponibilidade::listarTiposAtendimento(true);
+$disponibilidades = Disponibilidade::listarTodas(true);
 $bloqueios = Disponibilidade::listarBloqueios();
 $medicos = Disponibilidade::listarMedicos();
 
@@ -24,245 +24,881 @@ $mensagem = $_SESSION['mensagem'] ?? '';
 $erro = $_SESSION['erro'] ?? '';
 unset($_SESSION['mensagem'], $_SESSION['erro']);
 
-$diasSemana = [1=>'Segunda',2=>'Terça',3=>'Quarta',4=>'Quinta',5=>'Sexta',6=>'Sábado',7=>'Domingo'];
 $tabs = [
-    'consultorios'=>'Consultórios','especialidades'=>'Especialidades',
-    'tipos'=>'Tipos Atend.','disponibilidade'=>'Disponibilidade','bloqueios'=>'Bloqueios'
+    'consultorios'=>'Consultórios', 'especialidades'=>'Especialidades',
+    'tipos'=>'Tipos Atend.', 'disponibilidade'=>'Disponibilidade', 'vinculos'=>'Vínculos', 'bloqueios'=>'Bloqueios'
 ];
 ?>
 <!DOCTYPE html>
 <html lang="pt"><head>
-<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Configuração — <?= APP_NOME ?></title>
 <script src="<?= BASE_URL ?>public/assets/js/tailwindcss.js"></script>
 <link href="<?= BASE_URL ?>public/assets/css/google_fonts.css" rel="stylesheet"/>
 <link href="<?= BASE_URL ?>public/assets/css/material_symbols.css" rel="stylesheet"/>
 <script>
-tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#f9f9f9","surface-container-highest":"#e2e2e2","on-primary":"#e5e2e1","surface-container-high":"#e8e8e8",outline:"#777777","surface-dim":"#dadada","surface-container":"#eeeeee","on-error":"#ffffff",primary:"#000000","primary-container":"#3c3b3b",secondary:"#5e5e5e","outline-variant":"#c6c6c6","on-secondary":"#ffffff","surface-variant":"#e2e2e2",surface:"#f9f9f9","on-background":"#1a1c1c","on-surface":"#1a1c1c","surface-container-low":"#f3f3f3","surface-container-lowest":"#ffffff","inverse-surface":"#2f3131","surface-bright":"#f9f9f9","on-surface-variant":"#474747",error:"#ba1a1a"},borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"},fontFamily:{headline:["Manrope"],body:["Inter"],label:["Inter"]}}}}
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                "colors": {
+                    "primary-fixed-dim": "#c8c6c5",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2f3131",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#f2f2f2",
+                    "outline": "#74777a",
+                    "on-surface": "#1a1c1c",
+                    "on-primary-container": "#6f6d6d",
+                    "on-primary-fixed-variant": "#474746",
+                    "on-secondary-fixed-variant": "#464747",
+                    "surface-dim": "#dadada",
+                    "primary-container": "#f4f1f1",
+                    "surface-tint": "#5f5e5e",
+                    "surface-container-high": "#e8e8e8",
+                    "on-primary-fixed": "#1c1b1b",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#c8c6c5",
+                    "on-tertiary-fixed-variant": "#454747",
+                    "on-tertiary-fixed": "#1a1c1c",
+                    "surface-bright": "#f9f9f9",
+                    "outline-variant": "#c4c7c9",
+                    "on-tertiary-container": "#6d6e6e",
+                    "surface-container": "#eeeeee",
+                    "surface-container-highest": "#e2e2e2",
+                    "secondary-fixed": "#e3e2e2",
+                    "tertiary": "#5d5f5f",
+                    "primary": "#5f5e5e",
+                    "on-background": "#1a1c1c",
+                    "inverse-on-surface": "#f1f1f1",
+                    "surface-variant": "#e2e2e2",
+                    "on-secondary-fixed": "#1b1c1c",
+                    "secondary-fixed-dim": "#c7c6c6",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#e3e2e2",
+                    "surface-container-low": "#f3f3f3",
+                    "tertiary-fixed": "#e2e2e2",
+                    "secondary": "#5e5e5e",
+                    "on-surface-variant": "#44474a",
+                    "on-secondary-container": "#646464",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#e5e2e1",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#c6c6c6",
+                    "background": "#f9f9f9",
+                    "surface": "#f9f9f9"
+                },
+                "borderRadius": {
+                    "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"
+                },
+                "fontFamily": {
+                    "headline": ["Manrope"], "display": ["Manrope"], "body": ["Inter"], "label": ["Inter"]
+                }
+            }
+        }
+    }
 </script>
 <style>
-.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
-body{font-family:'Inter',sans-serif;background-color:#f3f4f6}
-h1,h2,h3{font-family:'Manrope',sans-serif}
-.floating-card{box-shadow:0 4px 20px -2px rgba(0,0,0,.05),0 2px 10px -2px rgba(0,0,0,.03)}
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+    h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Manrope', sans-serif; }
+    .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    .bento-card { background: #ffffff; border-radius: 2rem; padding: 1.5rem; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 30px rgba(0,0,0,0.04); border: 1px solid rgba(226, 226, 226, 0.5); }
+    .bento-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.12); border-color: rgba(196, 199, 201, 0.8); }
+    .bento-card:hover .icon-shift { transform: translateY(-2px); }
+    .input-recessed { background-color: #f3f3f3; border: 1px solid transparent; transition: all 0.2s; }
+    .input-recessed:focus { background-color: #ffffff; border-color: transparent; outline: none; box-shadow: 0 0 0 4px rgba(95, 94, 94, 0.1); }
+    .floating-card { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03); }
+    
+    @keyframes fade-slide-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+    .stagger-1 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.1s; }
+    .stagger-2 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.2s; }
+    .stagger-3 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.3s; }
+    .panel-enter { animation: fade-slide-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.2s; }
+
+    @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+    .status-pulse { animation: pulse-glow 2s infinite; }
 </style>
 </head>
-<body class="text-on-surface">
+<body class="text-on-surface bg-[#f3f4f6]">
 <?php $paginaActual='configuracao'; include __DIR__.'/../comum/sidebar.php'; ?>
 <?php $tituloPagina='Configuração'; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
 
-<div id="alertas-iniciais" style="display:none" data-mensagem="<?= htmlspecialchars($mensagem) ?>" data-erro="<?= htmlspecialchars($erro) ?>"></div>
+<!-- Toast Notifications Removed as requested -->
 
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<main class="w-full max-w-[1200px]">
+<div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
+<div class="w-full pb-24 space-y-8">
 
-<h2 class="text-3xl font-extrabold text-black tracking-tight mb-6">Configuração Operacional</h2>
 
-<!-- Tabs -->
-<div class="flex gap-2 mb-6 flex-wrap">
-<?php foreach($tabs as $k=>$v): ?>
-    <a href="?tab=<?= $k ?>" class="px-5 py-2 rounded-full text-xs font-black transition-all <?= $tab===$k ? 'bg-black text-white shadow-md' : 'bg-white text-on-surface-variant hover:bg-surface-container-low border border-white floating-card' ?>"><?= $v ?></a>
-<?php endforeach; ?>
-</div>
 
-<?php if($mensagem): ?><div class="bg-green-50 border border-green-200 rounded-2xl p-4 mb-4"><p class="text-green-700 text-sm font-bold">✓ <?= htmlspecialchars($mensagem) ?></p></div><?php endif; ?>
-<?php if($erro): ?><div class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-4"><p class="text-red-600 text-sm font-bold"><?= htmlspecialchars($erro) ?></p></div><?php endif; ?>
+    <!-- Navigation Tabs -->
+    <div class="overflow-x-auto pb-2 hide-scrollbar relative w-full ">
+        <div class="flex gap-2 p-1.5 bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-surface-container rounded-full w-max relative z-10 mx-auto" id="tabs-container">
+            <?php foreach($tabs as $k=>$v): ?>
+                <button onclick="switchTab('<?= $k ?>')" id="tab-btn-<?= $k ?>" class="tab-btn px-6 py-2.5 rounded-full font-bold text-sm transition-all relative z-10 <?= $tab===$k ? 'text-on-primary bg-on-surface shadow-md' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low' ?>"><?= $v ?></button>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
-<!-- ===== CONSULTÓRIOS ===== -->
-<?php if($tab === 'consultorios'): ?>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Consultórios Activos</h3>
-<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Nome</th><th class="pb-3">Responsável</th><th class="pb-3 text-right">Acções</th></tr></thead>
-<tbody class="divide-y divide-surface-container-low/50">
-<?php foreach($consultorios as $c): ?>
-<tr class="hover:bg-surface-container-low/30"><td class="py-3 font-bold text-sm"><?= htmlspecialchars($c['nome']) ?></td><td class="py-3 text-xs text-on-surface-variant"><?= htmlspecialchars($c['responsavel'] ?? '—') ?></td>
-<td class="py-3 text-right"><form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
-<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="editar_consultorio">
-<input type="hidden" name="id" value="<?= $c['id'] ?>"><input type="hidden" name="nome" value="<?= htmlspecialchars($c['nome']) ?>">
-<input type="hidden" name="responsavel" value="<?= htmlspecialchars($c['responsavel']??'') ?>"><input type="hidden" name="activo" value="0">
-<button class="text-red-500 text-[10px] font-bold hover:underline">Desactivar</button></form></td></tr>
-<?php endforeach; ?>
-</tbody></table>
-</div>
-<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Novo Consultório</h3>
-<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
-<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="criar_consultorio">
-<div class="space-y-3">
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nome</label>
-<input type="text" name="nome" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1" placeholder="Consultório 5"></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Responsável</label>
-<input type="text" name="responsavel" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1" placeholder="Opcional"></div>
-<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Criar</button>
-</div></form>
-</div>
-</div>
-<?php endif; ?>
+    <!-- Bento Grid Layout -->
 
-<!-- ===== ESPECIALIDADES ===== -->
-<?php if($tab === 'especialidades'): ?>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Especialidades</h3>
-<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Nome</th><th class="pb-3">Descrição</th></tr></thead>
-<tbody class="divide-y divide-surface-container-low/50">
-<?php foreach($especialidades as $e): ?>
-<tr><td class="py-3 font-bold text-sm"><?= htmlspecialchars($e['nome']) ?></td><td class="py-3 text-xs text-on-surface-variant"><?= htmlspecialchars($e['descricao'] ?? '') ?></td></tr>
-<?php endforeach; ?>
-</tbody></table>
-</div>
-<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Nova Especialidade</h3>
-<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
-<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="criar_especialidade">
-<div class="space-y-3">
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nome</label>
-<input type="text" name="nome" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Descrição</label>
-<input type="text" name="descricao" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1"></div>
-<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Criar</button>
-</div></form>
-</div>
-</div>
-<?php endif; ?>
+        <!-- TAB: CONSULTÓRIOS -->
+        <div id="tab-content-consultorios" class="tab-content" style="<?= $tab === 'consultorios' ? '' : 'display:none;' ?>">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        <div class="xl:col-span-8 space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="font-headline font-extrabold text-2xl text-on-surface">Consultórios Activos</h3>
+                <span class="text-sm font-bold text-on-surface bg-white shadow-sm border border-surface-container-high px-4 py-1.5 rounded-full"><span id="total-count"><?= count($consultorios) ?></span> Total</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="consultorios-grid">
+                <?php foreach($consultorios as $index => $c): ?>
+                    <div class="bento-card group relative overflow-hidden bg-white stagger-<?= ($index % 3) + 1 ?> <?= $c['activo'] == 0 ? 'opacity-60' : '' ?>">
+                        <div class="flex justify-between items-start mb-6 relative z-10">
+                            <div class="bg-surface-container-low p-3.5 rounded-2xl group-hover:bg-primary-container transition-colors duration-300 icon-shift">
+                                <span class="material-symbols-outlined text-on-surface text-[28px]">door_front</span>
+                            </div>
+                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                                <button onclick="abrirModalEditConsultorio(<?= $c['id'] ?>, '<?= htmlspecialchars(addslashes($c['nome'])) ?>', '<?= htmlspecialchars(addslashes($c['responsavel'] ?? '')) ?>')" class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                                <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
+                                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                                    <input type="hidden" name="acao" value="editar_consultorio">
+                                    <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                                    <input type="hidden" name="nome" value="<?= htmlspecialchars($c['nome']) ?>">
+                                    <input type="hidden" name="responsavel" value="<?= htmlspecialchars($c['responsavel']??'') ?>">
+                                    <input type="hidden" name="activo" value="<?= $c['activo'] == 1 ? '0' : '1' ?>">
+                                    <button class="p-2 <?= $c['activo'] == 1 ? 'text-red-500 hover:bg-error-container' : 'text-green-500 hover:bg-green-100' ?> rounded-full" title="<?= $c['activo'] == 1 ? 'Desactivar' : 'Activar' ?>">
+                                        <span class="material-symbols-outlined text-[20px]"><?= $c['activo'] == 1 ? 'power_settings_new' : 'check_circle' ?></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <h4 class="font-extrabold text-xl text-on-surface mb-1.5"><?= htmlspecialchars($c['nome']) ?></h4>
+                            <p class="text-sm text-on-surface-variant flex items-center gap-2 mb-6 font-medium">
+                                <span class="material-symbols-outlined text-[18px]">person</span> <?= htmlspecialchars($c['responsavel'] ?: 'Sem Responsável') ?>
+                            </p>
+                            <div class="flex items-center justify-between pt-5 border-t border-surface-container-highest/50">
+                                <?php if($c['activo'] == 1): ?>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#ecfdf5] text-[#059669]">
+                                        <span class="w-2 h-2 rounded-full bg-[#10b981] status-pulse"></span> Operacional
+                                    </span>
+                                <?php else: ?>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#f3f4f6] text-[#4b5563]">
+                                        <span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Inactivo
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <!-- Formulário Direito -->
+        <div class="xl:col-span-4 self-start sticky top-32 z-10">
+            <div class="bg-white rounded-[2.5rem] p-8 shadow-[0_12px_40px_rgb(0,0,0,0.06)] border border-surface-container-high panel-enter">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="font-headline font-extrabold text-2xl text-on-surface">Novo Consultório</h3>
+                        <p class="text-sm text-on-surface-variant mt-1.5 font-medium">Insira os dados estruturais.</p>
+                    </div>
+                    <div class="bg-surface-container-low p-3 rounded-2xl"><span class="material-symbols-outlined text-on-surface text-2xl">add_business</span></div>
+                </div>
+                <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-6">
+                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                    <input type="hidden" name="acao" value="criar_consultorio">
+                    
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Nome da Sala</label>
+                        <input name="nome" required type="text" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface focus:ring-2 focus:ring-primary/20" placeholder="Ex: Consultório 5">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Responsável (Opcional)</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">person</span>
+                            <input name="responsavel" type="text" class="input-recessed w-full rounded-2xl pl-12 pr-5 py-4 text-sm font-medium text-on-surface focus:ring-2 focus:ring-primary/20" placeholder="Nome...">
+                        </div>
+                    </div>
+                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                        <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">add</span>
+                        <span class="btn-text">Criar Consultório</span>
+                        <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+        </div>
+        </div>
 
-<!-- ===== TIPOS DE ATENDIMENTO ===== -->
-<?php if($tab === 'tipos'): ?>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Tipos de Atendimento</h3>
-<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Nome</th><th class="pb-3">Prefixo</th><th class="pb-3">Especialidade</th></tr></thead>
-<tbody class="divide-y divide-surface-container-low/50">
-<?php foreach($tipos as $t): ?>
-<tr><td class="py-3 font-bold text-sm"><?= htmlspecialchars($t['nome']) ?></td><td class="py-3 text-xs font-mono font-bold"><?= htmlspecialchars($t['prefixo']) ?></td><td class="py-3 text-xs text-on-surface-variant"><?= htmlspecialchars($t['especialidade_nome'] ?? '—') ?></td></tr>
-<?php endforeach; ?>
-</tbody></table>
-</div>
-<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Novo Tipo</h3>
-<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
-<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="criar_tipo">
-<div class="space-y-3">
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Nome</label>
-<input type="text" name="nome" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Prefixo (1-2 letras)</label>
-<input type="text" name="prefixo" maxlength="2" value="N" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Especialidade</label>
-<select name="especialidade_id" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"><option value="">Nenhuma</option>
-<?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
-</select></div>
-<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Criar</button>
-</div></form>
-</div>
-</div>
-<?php endif; ?>
+        <!-- TAB: ESPECIALIDADES -->
+        <div id="tab-content-especialidades" class="tab-content" style="<?= $tab === 'especialidades' ? '' : 'display:none;' ?>">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        <div class="xl:col-span-8 space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="font-headline font-extrabold text-2xl text-on-surface">Especialidades</h3>
+                <span class="text-sm font-bold text-on-surface bg-white shadow-sm border border-surface-container-high px-4 py-1.5 rounded-full"><?= count($especialidades) ?> Total</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <?php foreach($especialidades as $index => $e): ?>
+                    <div class="bento-card group relative overflow-hidden bg-white stagger-<?= ($index % 3) + 1 ?> <?= $e['activo'] == 0 ? 'opacity-60' : '' ?>">
+                        <div class="flex justify-between items-start mb-6 relative z-10">
+                            <div class="bg-surface-container-low p-3.5 rounded-2xl group-hover:bg-primary-container transition-colors duration-300 icon-shift">
+                                <span class="material-symbols-outlined text-on-surface text-[28px]">medical_services</span>
+                            </div>
+                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                                <button onclick="abrirModalEditEspecialidade(<?= $e['id'] ?>, '<?= htmlspecialchars(addslashes($e['nome'])) ?>', '<?= htmlspecialchars(addslashes($e['descricao'] ?? '')) ?>')" class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                                <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
+                                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                                    <input type="hidden" name="acao" value="editar_especialidade">
+                                    <input type="hidden" name="id" value="<?= $e['id'] ?>">
+                                    <input type="hidden" name="nome" value="<?= htmlspecialchars($e['nome']) ?>">
+                                    <input type="hidden" name="descricao" value="<?= htmlspecialchars($e['descricao']??'') ?>">
+                                    <input type="hidden" name="activo" value="<?= $e['activo'] == 1 ? '0' : '1' ?>">
+                                    <button class="p-2 <?= $e['activo'] == 1 ? 'text-red-500 hover:bg-error-container' : 'text-green-500 hover:bg-green-100' ?> rounded-full" title="<?= $e['activo'] == 1 ? 'Desactivar' : 'Activar' ?>">
+                                        <span class="material-symbols-outlined text-[20px]"><?= $e['activo'] == 1 ? 'power_settings_new' : 'check_circle' ?></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <h4 class="font-extrabold text-xl text-on-surface mb-1.5"><?= htmlspecialchars($e['nome']) ?></h4>
+                            <p class="text-sm text-on-surface-variant font-medium line-clamp-2 min-h-[40px]">
+                                <?= htmlspecialchars($e['descricao'] ?: 'Sem descrição.') ?>
+                            </p>
+                            <div class="flex items-center justify-between pt-5 mt-4 border-t border-surface-container-highest/50">
+                                <?php if($e['activo'] == 1): ?>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#ecfdf5] text-[#059669]"><span class="w-2 h-2 rounded-full bg-[#10b981] status-pulse"></span> Activa</span>
+                                <?php else: ?>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#f3f4f6] text-[#4b5563]"><span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Inactiva</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <!-- Formulário -->
+        <div class="xl:col-span-4 self-start sticky top-32 z-10">
+            <div class="bg-white rounded-[2.5rem] p-8 shadow-[0_12px_40px_rgb(0,0,0,0.06)] border border-surface-container-high panel-enter">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="font-headline font-extrabold text-2xl text-on-surface">Nova Especialidade</h3>
+                    </div>
+                    <div class="bg-surface-container-low p-3 rounded-2xl"><span class="material-symbols-outlined text-on-surface text-2xl">post_add</span></div>
+                </div>
+                <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-6">
+                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                    <input type="hidden" name="acao" value="criar_especialidade">
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Nome</label>
+                        <input name="nome" required type="text" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface focus:ring-2 focus:ring-primary/20" placeholder="Ex: Cardiologia">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Descrição</label>
+                        <input name="descricao" type="text" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface focus:ring-2 focus:ring-primary/20" placeholder="Descrição rápida...">
+                    </div>
+                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                        <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">add</span>
+                        <span class="btn-text">Criar Especialidade</span>
+                        <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+        </div>
+        </div>
 
-<!-- ===== DISPONIBILIDADE MÉDICA ===== -->
-<?php if($tab === 'disponibilidade'): ?>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Horários Configurados</h3>
-<?php if(empty($disponibilidades)): ?>
-<p class="text-on-surface-variant text-sm font-semibold py-8 text-center">Nenhuma disponibilidade configurada.</p>
-<?php else: ?>
-<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Médico</th><th class="pb-3">Dia</th><th class="pb-3">Turno</th><th class="pb-3">Capacidade</th><th class="pb-3 text-right">Acção</th></tr></thead>
-<tbody class="divide-y divide-surface-container-low/50">
-<?php foreach($disponibilidades as $d): ?>
-<tr><td class="py-3 font-bold text-sm"><?= htmlspecialchars($d['medico_nome']) ?></td>
-<td class="py-3 text-xs"><?= $diasSemana[$d['dia_semana']] ?? $d['dia_semana'] ?></td>
-<td class="py-3 text-xs font-bold"><?= $d['turno']==='manha'?'Manhã':'Tarde' ?></td>
-<td class="py-3 text-xs font-bold"><?= $d['capacidade'] ?> pac.</td>
-<td class="py-3 text-right"><form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
-<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="remover_disponibilidade"><input type="hidden" name="id" value="<?= $d['id'] ?>">
-<button class="text-red-500 text-[10px] font-bold hover:underline">Remover</button></form></td></tr>
-<?php endforeach; ?>
-</tbody></table>
-<?php endif; ?>
-</div>
-<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Adicionar Horário</h3>
-<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
-<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="guardar_disponibilidade">
-<div class="space-y-3">
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Médico</label>
-<select name="medico_id" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
-<option value="">Seleccionar...</option>
-<?php foreach($medicos as $m): ?><option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nome']) ?></option><?php endforeach; ?>
-</select></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Especialidade</label>
-<select name="especialidade_id" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
-<?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
-</select></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Consultório</label>
-<select name="consultorio_id" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
-<option value="">Nenhum</option>
-<?php foreach($consultorios as $c): ?><option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['nome']) ?></option><?php endforeach; ?>
-</select></div>
-<div class="grid grid-cols-2 gap-2">
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Dia</label>
-<select name="dia_semana" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
-<?php foreach($diasSemana as $n=>$d): ?><option value="<?= $n ?>"><?= $d ?></option><?php endforeach; ?>
-</select></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Turno</label>
-<select name="turno" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
-<option value="manha">Manhã</option><option value="tarde">Tarde</option>
-</select></div>
-</div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Capacidade (pacientes)</label>
-<input type="number" name="capacidade" value="10" min="1" max="50" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
-<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Guardar</button>
-</div></form>
-</div>
-</div>
-<?php endif; ?>
+        <!-- TAB: TIPOS -->
+        <div id="tab-content-tipos" class="tab-content" style="<?= $tab === 'tipos' ? '' : 'display:none;' ?>">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        <div class="xl:col-span-8 space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="font-headline font-extrabold text-2xl text-on-surface">Tipos de Atendimento</h3>
+                <span class="text-sm font-bold text-on-surface bg-white shadow-sm border border-surface-container-high px-4 py-1.5 rounded-full"><?= count($tipos) ?> Total</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <?php foreach($tipos as $index => $t): ?>
+                    <div class="bento-card group relative overflow-hidden bg-white stagger-<?= ($index % 3) + 1 ?> <?= $t['activo'] == 0 ? 'opacity-60' : '' ?>">
+                        <div class="flex justify-between items-start mb-6 relative z-10">
+                            <div class="bg-surface-container-low p-3.5 rounded-2xl font-mono text-2xl font-black text-on-surface group-hover:bg-primary-container transition-colors duration-300 icon-shift">
+                                <?= htmlspecialchars($t['prefixo']) ?>
+                            </div>
+                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                                <button onclick="abrirModalEditTipo(<?= $t['id'] ?>, '<?= htmlspecialchars(addslashes($t['nome'])) ?>', '<?= htmlspecialchars(addslashes($t['prefixo'])) ?>', '<?= $t['especialidade_id'] ?? '' ?>')" class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                                <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
+                                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                                    <input type="hidden" name="acao" value="editar_tipo">
+                                    <input type="hidden" name="id" value="<?= $t['id'] ?>">
+                                    <input type="hidden" name="nome" value="<?= htmlspecialchars($t['nome']) ?>">
+                                    <input type="hidden" name="prefixo" value="<?= htmlspecialchars($t['prefixo']) ?>">
+                                    <input type="hidden" name="especialidade_id" value="<?= htmlspecialchars($t['especialidade_id']??'') ?>">
+                                    <input type="hidden" name="activo" value="<?= $t['activo'] == 1 ? '0' : '1' ?>">
+                                    <button class="p-2 <?= $t['activo'] == 1 ? 'text-red-500 hover:bg-error-container' : 'text-green-500 hover:bg-green-100' ?> rounded-full" title="<?= $t['activo'] == 1 ? 'Desactivar' : 'Activar' ?>">
+                                        <span class="material-symbols-outlined text-[20px]"><?= $t['activo'] == 1 ? 'power_settings_new' : 'check_circle' ?></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <h4 class="font-extrabold text-xl text-on-surface mb-1.5"><?= htmlspecialchars($t['nome']) ?></h4>
+                            <p class="text-sm text-on-surface-variant flex items-center gap-2 mb-2 font-medium">
+                                <span class="material-symbols-outlined text-[18px]">medical_services</span> Especialidade: <?= htmlspecialchars($t['especialidade_nome'] ?: 'Nenhuma') ?>
+                            </p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <!-- Formulário -->
+        <div class="xl:col-span-4 self-start sticky top-32 z-10">
+            <div class="bg-white rounded-[2.5rem] p-8 shadow-[0_12px_40px_rgb(0,0,0,0.06)] border border-surface-container-high panel-enter">
+                <div class="flex justify-between items-start mb-8">
+                    <div><h3 class="font-headline font-extrabold text-2xl text-on-surface">Novo Tipo</h3></div>
+                    <div class="bg-surface-container-low p-3 rounded-2xl"><span class="material-symbols-outlined text-on-surface text-2xl">category</span></div>
+                </div>
+                <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-6">
+                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                    <input type="hidden" name="acao" value="criar_tipo">
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Nome</label>
+                        <input name="nome" required type="text" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20" placeholder="Urgência">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Prefixo (1-2 letras)</label>
+                        <input name="prefixo" maxlength="2" required type="text" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-bold uppercase focus:ring-2 focus:ring-primary/20" placeholder="UR">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Especialidade Vinculada</label>
+                        <select name="especialidade_id" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20">
+                            <option value="">Nenhuma</option>
+                            <?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                        <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">add</span>
+                        <span class="btn-text">Criar Tipo</span>
+                        <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+        </div>
+        </div>
 
-<!-- ===== BLOQUEIOS ===== -->
-<?php if($tab === 'bloqueios'): ?>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-<div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Bloqueios Activos</h3>
-<?php if(empty($bloqueios)): ?>
-<p class="text-on-surface-variant text-sm font-semibold py-8 text-center">Nenhum bloqueio activo.</p>
-<?php else: ?>
-<table class="w-full text-left"><thead><tr class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant border-b"><th class="pb-3">Data</th><th class="pb-3">Turno</th><th class="pb-3">Médico</th><th class="pb-3">Motivo</th><th class="pb-3 text-right">Acção</th></tr></thead>
-<tbody class="divide-y divide-surface-container-low/50">
-<?php foreach($bloqueios as $b): ?>
-<tr><td class="py-3 text-sm font-bold"><?= date('d/m/Y', strtotime($b['data_bloqueio'])) ?></td>
-<td class="py-3 text-xs font-bold"><?= $b['turno']==='manha'?'Manhã':'Tarde' ?></td>
-<td class="py-3 text-xs"><?= htmlspecialchars($b['medico_nome'] ?? 'Geral') ?></td>
-<td class="py-3 text-xs text-on-surface-variant"><?= htmlspecialchars($b['motivo']) ?></td>
-<td class="py-3 text-right"><form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="inline m-0">
-<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="remover_bloqueio"><input type="hidden" name="id" value="<?= $b['id'] ?>">
-<button class="text-red-500 text-[10px] font-bold hover:underline">Remover</button></form></td></tr>
-<?php endforeach; ?>
-</tbody></table>
-<?php endif; ?>
-</div>
-<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
-<h3 class="text-base font-black mb-4">Novo Bloqueio</h3>
-<form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
-<input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>"><input type="hidden" name="acao" value="criar_bloqueio">
-<div class="space-y-3">
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Médico (vazio = geral)</label>
-<select name="medico_id" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
-<option value="">Bloqueio Geral</option>
-<?php foreach($medicos as $m): ?><option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nome']) ?></option><?php endforeach; ?>
-</select></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Data</label>
-<input type="date" name="data_bloqueio" required min="<?= date('Y-m-d') ?>" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1"></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Turno</label>
-<select name="turno" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1">
-<option value="manha">Manhã</option><option value="tarde">Tarde</option>
-</select></div>
-<div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Motivo</label>
-<input type="text" name="motivo" required class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold mt-1" placeholder="Feriado, formação, etc."></div>
-<button type="submit" class="w-full bg-black text-white py-2.5 rounded-full font-black text-xs">Criar Bloqueio</button>
-</div></form>
-</div>
-</div>
-<?php endif; ?>
+        <!-- TAB: DISPONIBILIDADE -->
+        <div id="tab-content-disponibilidade" class="tab-content" style="<?= $tab === 'disponibilidade' ? '' : 'display:none;' ?>">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        <div class="xl:col-span-8 space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="font-headline font-extrabold text-2xl text-on-surface">Agendas Futuras</h3>
+            </div>
+            <?php if(empty($disponibilidades)): ?>
+                <div class="bento-card bg-white flex flex-col items-center justify-center min-h-[250px] text-center">
+                    <span class="material-symbols-outlined text-4xl text-outline-variant mb-4">event_busy</span>
+                    <h4 class="font-bold text-lg text-on-surface">Sem Agendas</h4>
+                    <p class="text-sm text-on-surface-variant">Nenhuma disponibilidade futura configurada.</p>
+                </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <?php foreach($disponibilidades as $index => $d): ?>
+                    <div class="bento-card group relative bg-white stagger-<?= ($index % 3) + 1 ?>">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-extrabold text-lg text-on-surface"><?= htmlspecialchars($d['medico_nome']) ?></h4>
+                                <span class="text-[11px] uppercase font-bold tracking-widest text-on-surface-variant bg-surface-container-low px-2 py-1 rounded-md"><?= date('d/m/Y', strtotime($d['data_disponibilidade'])) ?></span>
+                            </div>
+                            <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+                                <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                                <input type="hidden" name="acao" value="remover_disponibilidade">
+                                <input type="hidden" name="id" value="<?= $d['id'] ?>">
+                                <button class="text-error bg-error-container/20 p-2 rounded-full hover:bg-error-container transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                            </form>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-surface-container-highest/50">
+                            <div><p class="text-[10px] text-on-surface-variant uppercase font-bold">Turno</p><p class="text-sm font-bold text-on-surface capitalize"><?= $d['turno'] ?></p></div>
+                            <div><p class="text-[10px] text-on-surface-variant uppercase font-bold">Capacidade</p><p class="text-sm font-bold text-on-surface"><?= $d['capacidade'] ?> pac.</p></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <!-- Formulário -->
+        <div class="xl:col-span-4 self-start sticky top-32 z-10">
+            <div class="bg-white rounded-[2.5rem] p-8 shadow-[0_12px_40px_rgb(0,0,0,0.06)] border border-surface-container-high panel-enter relative z-50">
+                <div class="flex justify-between items-start mb-8">
+                    <div><h3 class="font-headline font-extrabold text-2xl text-on-surface">Novo Horário</h3></div>
+                    <div class="bg-surface-container-low p-3 rounded-2xl"><span class="material-symbols-outlined text-on-surface text-2xl">event_available</span></div>
+                </div>
+                <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-4">
+                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                    <input type="hidden" name="acao" value="guardar_disponibilidade">
+                    
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Médico</label>
+                        <select name="medico_id" id="disp_medico_id" required onchange="carregarVinculos()" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20">
+                            <option value="">Seleccionar...</option>
+                            <?php foreach($medicos as $m): ?><option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nome']) ?></option><?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Especialidade</label>
+                        <select name="especialidade_id" id="disp_especialidade_id" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20">
+                            <option value="">Selecione médico primeiro...</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Consultório</label>
+                        <select name="consultorio_id" id="disp_consultorio_id" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20">
+                            <option value="">Nenhum</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-3 mt-1">
+                        <div class="w-full">
+                            <label class="text-[10px] uppercase font-black tracking-widest text-on-surface-variant ml-1 mb-1 block">Data</label>
+                            <?php 
+                            $cal_id = 'cal-disponibilidade';
+                            $cal_name = 'data_disponibilidade';
+                            $cal_value = '';
+                            $cal_min = date('Y-m-d');
+                            $cal_right = true;
+                            $cal_class = 'w-full';
+                            $cal_label = 'Seleccione a data...';
+                            require __DIR__ . '/../comum/calendario_dropdown.php'; 
+                            ?>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Turno</label>
+                            <select name="turno" required class="input-recessed w-full rounded-2xl px-4 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20">
+                                <option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="ambos">Ambos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Capacidade (Qtd.)</label>
+                        <input type="number" name="capacidade" value="10" min="1" max="50" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20">
+                    </div>
+                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-6 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                        <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">event_available</span>
+                        <span class="btn-text">Guardar Horário</span>
+                        <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+        </div>
+        </div>
 
+        <!-- TAB: VÍNCULOS -->
+        <div id="tab-content-vinculos" class="tab-content" style="<?= $tab === 'vinculos' ? '' : 'display:none;' ?>">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        <div class="lg:col-span-12 stagger-1 bg-white rounded-[2.5rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-surface-container-high">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="font-headline font-extrabold text-3xl text-on-surface">Vínculos Operacionais</h3>
+                        <p class="text-on-surface-variant font-medium mt-2">Associe médicos às suas especialidades e locais de atendimento para libertá-los no módulo de agendas.</p>
+                    </div>
+                    <div class="bg-primary-container p-4 rounded-2xl"><span class="material-symbols-outlined text-primary text-3xl">link</span></div>
+                </div>
+                
+                <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                    <input type="hidden" name="acao" value="sincronizar_vinculos">
+                    
+                    <div class="space-y-4 md:col-span-1">
+                        <div class="p-6 bg-surface-container-low rounded-[2rem]">
+                            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block mb-3">Seleccione o Médico</label>
+                            <select name="medico_id" id="vinculos_medico_id" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20" onchange="carregarVinculosEdicao()">
+                                <option value="">Escolher Médico...</option>
+                                <?php foreach($medicos as $m): ?><option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nome']) ?></option><?php endforeach; ?>
+                            </select>
+                            <div class="mt-8 text-xs text-on-surface-variant">
+                                <b>Dica:</b> Prima `Ctrl` (Win) ou `Cmd` (Mac) para seleccionar múltiplos itens nas listas à direita.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4 md:col-span-1">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block">Especialidades (Múltipla escolha)</label>
+                        <select name="especialidades[]" id="vinculos_especialidades" multiple size="8" class="input-recessed w-full rounded-[2rem] px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20 bg-white border border-surface-container-high">
+                            <?php foreach($especialidades as $e): ?><option class="p-2 rounded hover:bg-surface-container-low" value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="space-y-4 md:col-span-1">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block">Consultórios (Múltipla escolha)</label>
+                        <select name="consultorios[]" id="vinculos_consultorios" multiple size="8" class="input-recessed w-full rounded-[2rem] px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20 bg-white border border-surface-container-high">
+                            <?php foreach($consultorios as $c): ?><option class="p-2 rounded hover:bg-surface-container-low" value="<?= $c['id'] ?>"><?= htmlspecialchars($c['nome']) ?></option><?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="md:col-span-3 pt-6 border-t border-surface-container flex justify-end">
+                        <button type="button" class="form-submit-btn bg-on-surface text-on-primary font-extrabold px-8 py-4 rounded-full hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                            <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-180 btn-icon">sync</span>
+                            <span class="btn-text">Sincronizar Vínculos</span>
+                            <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+
+        <!-- TAB: BLOQUEIOS -->
+        <div id="tab-content-bloqueios" class="tab-content" style="<?= $tab === 'bloqueios' ? '' : 'display:none;' ?>">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        <div class="xl:col-span-8 space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="font-headline font-extrabold text-2xl text-on-surface">Bloqueios de Agenda</h3>
+            </div>
+            <?php if(empty($bloqueios)): ?>
+                <div class="bento-card bg-white flex flex-col items-center justify-center min-h-[250px] text-center">
+                    <span class="material-symbols-outlined text-4xl text-outline-variant mb-4">check_circle</span>
+                    <h4 class="font-bold text-lg text-on-surface">Tudo Operacional</h4>
+                    <p class="text-sm text-on-surface-variant">Nenhum bloqueio ou feriado configurado no momento.</p>
+                </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <?php foreach($bloqueios as $index => $b): ?>
+                    <div class="bento-card group relative bg-[#fff1f2] border-[#ffe4e6] stagger-<?= ($index % 3) + 1 ?>">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-[#fecdd3] p-2 rounded-xl text-[#be123c]">
+                                <span class="material-symbols-outlined">block</span>
+                            </div>
+                            <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
+                                <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                                <input type="hidden" name="acao" value="remover_bloqueio">
+                                <input type="hidden" name="id" value="<?= $b['id'] ?>">
+                                <button class="text-error bg-white/50 p-2 rounded-full hover:bg-white transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                            </form>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-lg text-[#be123c] mb-1"><?= htmlspecialchars($b['motivo']) ?></h4>
+                            <p class="text-xs font-bold text-[#e11d48] uppercase tracking-wider mb-4">
+                                <?= date('d/m/Y', strtotime($b['data_bloqueio'])) ?> — <?= $b['turno']==='manha'?'Manhã':'Tarde' ?>
+                            </p>
+                            <div class="pt-4 border-t border-[#fecdd3]/50 text-sm font-semibold text-[#881337]">
+                                Alvo: <?= htmlspecialchars($b['medico_nome'] ?? 'Bloqueio Geral (Todo o Hospital)') ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <!-- Formulário -->
+        <div class="xl:col-span-4 self-start sticky top-32 z-10">
+            <div class="bg-white rounded-[2.5rem] p-8 shadow-[0_12px_40px_rgb(0,0,0,0.06)] border border-surface-container-high panel-enter relative z-50">
+                <div class="flex justify-between items-start mb-8">
+                    <div><h3 class="font-headline font-extrabold text-2xl text-on-surface">Novo Bloqueio</h3></div>
+                    <div class="bg-error-container text-error p-3 rounded-2xl"><span class="material-symbols-outlined text-2xl">block</span></div>
+                </div>
+                <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-4">
+                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                    <input type="hidden" name="acao" value="criar_bloqueio">
+                    
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Alvo (Deixe vazio para Geral)</label>
+                        <select name="medico_id" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-error/20">
+                            <option value="">Bloqueio Geral (Todos)</option>
+                            <?php foreach($medicos as $m): ?><option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nome']) ?></option><?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="space-y-2">
+                            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Data</label>
+                            <?php 
+                            $cal_id = 'cal-bloqueio';
+                            $cal_name = 'data_bloqueio';
+                            $cal_value = '';
+                            $cal_min = date('Y-m-d');
+                            $cal_right = true;
+                            $cal_class = 'w-full';
+                            $cal_label = 'Seleccione a data...';
+                            require __DIR__ . '/../comum/calendario_dropdown.php'; 
+                            ?>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Turno</label>
+                            <select name="turno" required class="input-recessed w-full rounded-2xl px-4 py-4 text-sm font-medium focus:ring-2 focus:ring-error/20">
+                                <option value="manha">Manhã</option><option value="tarde">Tarde</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Motivo</label>
+                        <input name="motivo" required type="text" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-error/20" placeholder="Feriado, Reunião, Obras...">
+                    </div>
+                    <button type="button" class="form-submit-btn w-full bg-error text-white font-extrabold py-4 rounded-full mt-6 hover:bg-[#93000a] transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                        <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">block</span>
+                        <span class="btn-text">Criar Bloqueio</span>
+                        <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+        </div>
+        </div>
+
+</div>
 </main>
-</div>
+</div> <!-- End Main Content Area -->
+
+<!-- Modais de Edição com UI Adaptada (Bento style) -->
+<dialog id="modalEditConsultorio" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-black/40 shadow-2xl w-full max-w-md m-auto border border-surface-container-high">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="font-headline font-extrabold text-2xl text-on-surface">Editar Consultório</h3>
+        <button onclick="document.getElementById('modalEditConsultorio').close()" class="text-on-surface-variant hover:text-black font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
+    </div>
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-4">
+        <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+        <input type="hidden" name="acao" value="editar_consultorio">
+        <input type="hidden" name="id" id="editConsId">
+        <input type="hidden" name="activo" value="1">
+        <div class="space-y-2">
+            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Nome</label>
+            <input type="text" name="nome" id="editConsNome" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface">
+        </div>
+        <div class="space-y-2">
+            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Responsável</label>
+            <input type="text" name="responsavel" id="editConsResp" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface">
+        </div>
+        <button type="submit" class="w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all">Guardar Alterações</button>
+    </form>
+</dialog>
+
+<dialog id="modalEditEspecialidade" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-black/40 shadow-2xl w-full max-w-md m-auto border border-surface-container-high">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="font-headline font-extrabold text-2xl text-on-surface">Editar Especialidade</h3>
+        <button onclick="document.getElementById('modalEditEspecialidade').close()" class="text-on-surface-variant hover:text-black font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
+    </div>
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-4">
+        <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+        <input type="hidden" name="acao" value="editar_especialidade">
+        <input type="hidden" name="id" id="editEspId">
+        <input type="hidden" name="activo" value="1">
+        <div class="space-y-2">
+            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Nome</label>
+            <input type="text" name="nome" id="editEspNome" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface">
+        </div>
+        <div class="space-y-2">
+            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Descrição</label>
+            <input type="text" name="descricao" id="editEspDesc" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface">
+        </div>
+        <button type="submit" class="w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all">Guardar Alterações</button>
+    </form>
+</dialog>
+
+<dialog id="modalEditTipo" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-black/40 shadow-2xl w-full max-w-md m-auto border border-surface-container-high">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="font-headline font-extrabold text-2xl text-on-surface">Editar Tipo</h3>
+        <button onclick="document.getElementById('modalEditTipo').close()" class="text-on-surface-variant hover:text-black font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
+    </div>
+    <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-4">
+        <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+        <input type="hidden" name="acao" value="editar_tipo">
+        <input type="hidden" name="id" id="editTipoId">
+        <input type="hidden" name="activo" value="1">
+        <div class="space-y-2">
+            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Nome</label>
+            <input type="text" name="nome" id="editTipoNome" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium">
+        </div>
+        <div class="space-y-2">
+            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Prefixo</label>
+            <input type="text" name="prefixo" id="editTipoPrefixo" maxlength="2" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium">
+        </div>
+        <div class="space-y-2">
+            <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Especialidade</label>
+            <select name="especialidade_id" id="editTipoEsp" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium">
+                <option value="">Nenhuma</option>
+                <?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
+            </select>
+        </div>
+        <button type="submit" class="w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all">Guardar Alterações</button>
+    </form>
+</dialog>
+
+<script>
+// Tab switching
+function switchTab(tabId) {
+    // Esconder todos
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('text-on-primary', 'bg-on-surface', 'shadow-md');
+        btn.classList.add('text-on-surface-variant', 'hover:text-on-surface', 'hover:bg-surface-container-low');
+    });
+
+    // Mostrar activo
+    document.getElementById('tab-content-' + tabId).style.display = 'block';
+    const activeBtn = document.getElementById('tab-btn-' + tabId);
+    if(activeBtn) {
+        activeBtn.classList.add('text-on-primary', 'bg-on-surface', 'shadow-md');
+        activeBtn.classList.remove('text-on-surface-variant', 'hover:text-on-surface', 'hover:bg-surface-container-low');
+    }
+    
+    // Atualizar URL sem recarregar a página para manter o histórico correto
+    const url = new URL(window.location);
+    url.searchParams.set('tab', tabId);
+    window.history.pushState({}, '', url);
+}
+
+// Interação botões submit usando Fetch
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.form-submit-btn').forEach(submitBtn => {
+        submitBtn.addEventListener('click', async () => {
+            const btnIcon = submitBtn.querySelector('.btn-icon');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoader = submitBtn.querySelector('.btn-loader');
+            const form = submitBtn.closest('form');
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const originalText = btnText.textContent;
+            const originalIcon = btnIcon.textContent;
+
+            submitBtn.classList.add('cursor-not-allowed', 'opacity-90');
+            btnIcon.classList.add('hidden');
+            btnText.classList.add('invisible');
+            btnLoader.classList.remove('hidden');
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    redirect: 'follow'
+                });
+                
+                // Atualizar UI sem recarregar a página
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Atualizar as grelhas e contadores de todas as abas normais (substitui a coluna da esquerda)
+                const tabsComGrid = ['consultorios', 'especialidades', 'tipos', 'disponibilidade', 'bloqueios'];
+                tabsComGrid.forEach(t => {
+                    const selector = '#tab-content-' + t + ' > div.grid > div:first-child';
+                    const newGrid = doc.querySelector(selector);
+                    const oldGrid = document.querySelector(selector);
+                    if (newGrid && oldGrid) {
+                        oldGrid.innerHTML = newGrid.innerHTML;
+                    }
+                });
+                
+                // Atualizar a tabela de vínculos
+                const newTable = doc.querySelector('#tab-content-vinculos table');
+                const oldTable = document.querySelector('#tab-content-vinculos table');
+                if (newTable && oldTable) {
+                    oldTable.innerHTML = newTable.innerHTML;
+                }
+                
+            } catch (error) {
+                console.error("Erro ao submeter:", error);
+            }
+
+            setTimeout(() => {
+                btnLoader.classList.add('hidden');
+                btnIcon.classList.remove('hidden', 'group-hover:rotate-90', 'group-hover:rotate-180');
+                btnIcon.textContent = 'check';
+                submitBtn.classList.add('!bg-[#10b981]');
+                btnText.classList.remove('invisible');
+                btnText.textContent = 'Sucesso!';
+
+                // Voltar ao estado original após 2 segundos
+                setTimeout(() => {
+                    form.reset();
+                    btnIcon.textContent = originalIcon;
+                    if(originalIcon === 'sync') {
+                        btnIcon.classList.add('group-hover:rotate-180');
+                    } else {
+                        btnIcon.classList.add('group-hover:rotate-90');
+                    }
+                    submitBtn.classList.remove('!bg-[#10b981]', 'cursor-not-allowed', 'opacity-90');
+                    btnText.textContent = originalText;
+                }, 2000);
+            }, 600);
+        });
+    });
+});
+
+// API Functions
+function carregarVinculos() {
+    const medicoId = document.getElementById('disp_medico_id').value;
+    const espSelect = document.getElementById('disp_especialidade_id');
+    const consSelect = document.getElementById('disp_consultorio_id');
+
+    if (!medicoId) {
+        espSelect.innerHTML = '<option value="">Selecione um médico primeiro...</option>';
+        consSelect.innerHTML = '<option value="">Nenhum</option>';
+        return;
+    }
+
+    fetch(`<?= BASE_URL ?>app/controllers/api_vinculos_medico.php?medico_id=${medicoId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.erro) { alert(data.erro); return; }
+            espSelect.innerHTML = '';
+            if (data.especialidades.length === 0) {
+                espSelect.innerHTML = '<option value="">(Nenhuma especialidade vinculada)</option>';
+            } else {
+                data.especialidades.forEach((e, i) => {
+                    espSelect.insertAdjacentHTML('beforeend', `<option value="${e.id}" ${i===0?'selected':''}>${e.nome}</option>`);
+                });
+            }
+            consSelect.innerHTML = '';
+            if (data.consultorios.length === 0) {
+                consSelect.innerHTML = '<option value="">Nenhum</option>';
+            } else {
+                data.consultorios.forEach((c, i) => {
+                    consSelect.insertAdjacentHTML('beforeend', `<option value="${c.id}" ${i===0?'selected':''}>${c.nome}</option>`);
+                });
+            }
+        }).catch(err => console.error("Erro na API:", err));
+}
+
+function carregarVinculosEdicao() {
+    const medicoId = document.getElementById('vinculos_medico_id').value;
+    const espSelect = document.getElementById('vinculos_especialidades');
+    const consSelect = document.getElementById('vinculos_consultorios');
+    if (!medicoId) {
+        Array.from(espSelect.options).forEach(o => o.selected = false);
+        Array.from(consSelect.options).forEach(o => o.selected = false);
+        return;
+    }
+    fetch(`<?= BASE_URL ?>app/controllers/api_vinculos_medico.php?medico_id=${medicoId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.erro) return;
+            const espIds = data.especialidades.map(e => e.id.toString());
+            const consIds = data.consultorios.map(c => c.id.toString());
+            Array.from(espSelect.options).forEach(o => o.selected = espIds.includes(o.value));
+            Array.from(consSelect.options).forEach(o => o.selected = consIds.includes(o.value));
+        });
+}
+
+// Modal actions
+function abrirModalEditConsultorio(id, nome, resp) {
+    document.getElementById('editConsId').value = id;
+    document.getElementById('editConsNome').value = nome;
+    document.getElementById('editConsResp').value = resp;
+    document.getElementById('modalEditConsultorio').showModal();
+}
+function abrirModalEditEspecialidade(id, nome, desc) {
+    document.getElementById('editEspId').value = id;
+    document.getElementById('editEspNome').value = nome;
+    document.getElementById('editEspDesc').value = desc;
+    document.getElementById('modalEditEspecialidade').showModal();
+}
+function abrirModalEditTipo(id, nome, prefixo, espId) {
+    document.getElementById('editTipoId').value = id;
+    document.getElementById('editTipoNome').value = nome;
+    document.getElementById('editTipoPrefixo').value = prefixo;
+    document.getElementById('editTipoEsp').value = espId;
+    document.getElementById('modalEditTipo').showModal();
+}
+</script>
 </body></html>

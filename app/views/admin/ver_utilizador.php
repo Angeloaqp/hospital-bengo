@@ -56,7 +56,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
         .floating-card { box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 10px -2px rgba(0,0,0,0.03); }
     </style>
 </head>
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface bg-[#f3f4f6]">
 
     <?php $paginaActual = 'utilizadores'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -70,9 +70,10 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
     <?php $tituloPagina = 'Perfil: ' . htmlspecialchars($primeiroNome); ?>
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
-    <div class="ml-56 mt-28 h-[calc(100vh-7rem)] flex flex-col">
+    <div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
         <div class="flex-1 overflow-y-auto custom-scrollbar">
-            <main class="w-full max-w-[1500px] mx-auto px-8 pb-24 pt-4">
+            <main class="w-full pb-24 pt-4">
 
                 <!-- Header do Perfil -->
                 <header class="mb-8 flex items-center justify-between fade-in bg-white rounded-[2.5rem] p-8 floating-card border border-white">
@@ -300,7 +301,8 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
 
             </main>
         </div>
-    </div>
+    </main>
+</div>
 
     <script>
         const DADOS_CHART = <?= json_encode($grafico) ?>;

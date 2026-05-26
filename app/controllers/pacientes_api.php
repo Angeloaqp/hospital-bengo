@@ -26,7 +26,6 @@ if ($acao === 'registar_apenas') {
     $idade = trim($_POST['idade'] ?? '');
     $sexo = trim($_POST['sexo'] ?? '');
     $morada = trim($_POST['morada'] ?? '');
-    $peso = trim($_POST['peso'] ?? '');
 
     $erros = [];
 
@@ -46,9 +45,7 @@ if ($acao === 'registar_apenas') {
         $erros[] = 'Morada é obrigatória.';
     }
 
-    if ((int) $idade < 18 && empty($peso)) {
-        $erros[] = 'Peso é obrigatório para menores de 18 anos.';
-    }
+
 
     if (!empty($erros)) {
         header('Content-Type: application/json');
@@ -64,17 +61,19 @@ if ($acao === 'registar_apenas') {
             'idade' => $idade,
             'sexo' => $sexo,
             'morada' => $morada,
-            'peso' => $peso ?: null,
         ];
         
+        $numero_processo = null;
         if ($pacienteId > 0) {
             Paciente::atualizarApenas($pacienteId, $dados);
         } else {
-            $pacienteId = Paciente::registarApenas($dados, (int) sessao('utilizador_id'));
+            $resultReg = Paciente::registarApenas($dados, (int) sessao('utilizador_id'));
+            $pacienteId = $resultReg['id'];
+            $numero_processo = $resultReg['numero_processo'] ?? null;
         }
 
         header('Content-Type: application/json');
-        echo json_encode(['status' => 'success', 'paciente_id' => $pacienteId]);
+        echo json_encode(['status' => 'success', 'paciente_id' => $pacienteId, 'numero_processo' => $numero_processo]);
         exit;
     } catch (Exception $e) {
         header('Content-Type: application/json');

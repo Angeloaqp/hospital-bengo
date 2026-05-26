@@ -83,7 +83,7 @@ $iconeAccao = [
     </style>
 </head>
 
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface bg-[#f3f4f6]">
     <?php $paginaActual = 'auditoria'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
     
@@ -98,8 +98,9 @@ $iconeAccao = [
 
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
-    <main class="ml-64 pt-24 h-screen overflow-y-auto custom-scrollbar">
-        <div class="p-8 max-w-[1400px] mx-auto min-h-full pb-24">
+    <div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
+        <div class="pb-24">
             
             <div class="mb-10 flex justify-between items-end glide-in">
                 <div>
@@ -113,26 +114,38 @@ $iconeAccao = [
                 <form method="GET" class="flex flex-wrap items-end gap-4">
                     <div class="flex flex-col gap-2">
                         <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest pl-2">Acção</label>
-                        <select name="accao" class="filter-input w-48 appearance-none cursor-pointer">
-                            <option value="">Todas as acções</option>
-                            <?php foreach ($iconeAccao as $k => $ic): ?>
-                                <option value="<?= $k ?>" <?= $filtroAccao === $k ? 'selected' : '' ?>>
-                                    <?= ucfirst(str_replace('_', ' ', $k)) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <?php
+                        $sel_id = 'cs-accao';
+                        $sel_name = 'accao';
+                        $sel_icon = 'history';
+                        $sel_placeholder = 'Todas as acções';
+                        $sel_value = $filtroAccao;
+                        $sel_size = 'sm';
+                        $sel_class = 'w-48';
+                        $sel_options = ['' => ['label' => 'Todas as acções', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant']];
+                        foreach ($iconeAccao as $k => $ic) {
+                            $sel_options[$k] = ['label' => ucfirst(str_replace('_', ' ', $k)), 'icon' => $ic, 'color' => 'text-black'];
+                        }
+                        include __DIR__ . '/../comum/custom_select.php';
+                        ?>
                     </div>
                     
                     <div class="flex flex-col gap-2">
                         <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest pl-2">Utilizador</label>
-                        <select name="user" class="filter-input w-48 appearance-none cursor-pointer">
-                            <option value="0">Todos os utilizadores</option>
-                            <?php foreach ($utilizadores as $u): ?>
-                                <option value="<?= $u['id'] ?>" <?= $filtroUser == $u['id'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($u['nome']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <?php
+                        $sel_id = 'cs-user';
+                        $sel_name = 'user';
+                        $sel_icon = 'person';
+                        $sel_placeholder = 'Todos os utilizadores';
+                        $sel_value = (string)$filtroUser;
+                        $sel_size = 'sm';
+                        $sel_class = 'w-48';
+                        $sel_options = ['0' => ['label' => 'Todos os utilizadores', 'icon' => 'groups', 'color' => 'text-on-surface-variant']];
+                        foreach ($utilizadores as $u) {
+                            $sel_options[(string)$u['id']] = ['label' => htmlspecialchars($u['nome']), 'icon' => 'person', 'color' => 'text-blue-600'];
+                        }
+                        include __DIR__ . '/../comum/custom_select.php';
+                        ?>
                     </div>
 
                     <div class="flex flex-col gap-2">
@@ -231,5 +244,6 @@ $iconeAccao = [
             
         </div>
     </main>
+</div>
 </body>
 </html>

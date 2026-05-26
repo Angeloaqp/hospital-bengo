@@ -43,7 +43,8 @@ class Disponibilidade
              JOIN especialidades e ON d.especialidade_id = e.id
              LEFT JOIN consultorios c ON d.consultorio_id = c.id
              WHERE d.activo = 1
-             ORDER BY u.nome ASC, d.dia_semana ASC, d.turno ASC"
+             AND (d.data_disponibilidade >= CURDATE() OR d.data_disponibilidade IS NULL)
+             ORDER BY d.data_disponibilidade ASC, u.nome ASC, d.turno ASC"
         )->fetchAll();
     }
 
@@ -54,17 +55,34 @@ class Disponibilidade
     {
         $db = Database::ligar();
 
-        // Verificar se já existe para este médico/dia/turno
-        $stmt = $db->prepare(
-            "SELECT id FROM disponibilidades_medicas
-             WHERE medico_id = :med AND dia_semana = :dia AND turno = :turno
-             LIMIT 1"
-        );
-        $stmt->execute([
-            ':med'  => (int) $dados['medico_id'],
-            ':dia'  => (int) $dados['dia_semana'],
-            ':turno'=> $dados['turno'],
-        ]);
+        $dataDisp = $dados['data_disponibilidade'] ?? null;
+
+        if ($dataDisp) {
+            // Check by concrete date + medico + turno
+            $stmt = $db->prepare(
+                "SELECT id FROM disponibilidades_medicas
+                 WHERE medico_id = :med AND data_disponibilidade = :data AND turno = :turno
+                 LIMIT 1"
+            );
+            $stmt->execute([
+                ':med'  => (int) $dados['medico_id'],
+                ':data' => $dataDisp,
+                ':turno'=> $dados['turno'],
+            ]);
+        } else {
+            // Fallback: check by dia_semana
+            $stmt = $db->prepare(
+                "SELECT id FROM disponibilidades_medicas
+                 WHERE medico_id = :med AND dia_semana = :dia AND turno = :turno
+                 AND data_disponibilidade IS NULL
+                 LIMIT 1"
+            );
+            $stmt->execute([
+                ':med'  => (int) $dados['medico_id'],
+                ':dia'  => (int) $dados['dia_semana'],
+                ':turno'=> $dados['turno'],
+            ]);
+        }
         $existente = $stmt->fetch();
 
         if ($existente) {
@@ -73,6 +91,7 @@ class Disponibilidade
                     especialidade_id = :esp,
                     consultorio_id = :cons,
                     capacidade = :cap,
+                    data_disponibilidade = :data,
                     activo = 1
                  WHERE id = :id"
             );
@@ -80,6 +99,7 @@ class Disponibilidade
                 ':esp'  => (int) $dados['especialidade_id'],
                 ':cons' => !empty($dados['consultorio_id']) ? (int) $dados['consultorio_id'] : null,
                 ':cap'  => (int) ($dados['capacidade'] ?? 10),
+                ':data' => $dataDisp,
                 ':id'   => (int) $existente['id'],
             ]);
             return (int) $existente['id'];
@@ -88,9 +108,9 @@ class Disponibilidade
         $stmt3 = $db->prepare(
             "INSERT INTO disponibilidades_medicas
                 (medico_id, especialidade_id, consultorio_id,
-                 dia_semana, turno, capacidade)
+                 dia_semana, turno, data_disponibilidade, capacidade)
              VALUES
-                (:med, :esp, :cons, :dia, :turno, :cap)"
+                (:med, :esp, :cons, :dia, :turno, :data, :cap)"
         );
         $stmt3->execute([
             ':med'  => (int) $dados['medico_id'],
@@ -98,6 +118,7 @@ class Disponibilidade
             ':cons' => !empty($dados['consultorio_id']) ? (int) $dados['consultorio_id'] : null,
             ':dia'  => (int) $dados['dia_semana'],
             ':turno'=> $dados['turno'],
+            ':data' => $dataDisp,
             ':cap'  => (int) ($dados['capacidade'] ?? 10),
         ]);
         return (int) $db->lastInsertId();
@@ -228,6 +249,44 @@ class Disponibilidade
              WHERE u.perfil = 'medico' AND u.estado = 1
              ORDER BY u.nome"
         )->fetchAll();
+    }
+
+    // ------------------------------------------------
+    // Obter vínculos (especialidades e consultórios) do médico
+    // ------------------------------------------------
+    public static function obterVinculosMedico(int $medicoId): array
+    {
+        $db = Database::ligar();
+        
+        $esp = [];
+        $stmtEsp = $db->prepare("SELECT especialidade_id FROM medico_especialidades WHERE medico_id = :m");
+        $stmtEsp->execute([':m' => $medicoId]);
+        foreach ($stmtEsp->fetchAll() as $row) {
+            $esp[] = (int) $row['especialidade_id'];
+        }
+        
+        $cons = [];
+        $stmtCons = $db->prepare("SELECT consultorio_id FROM medico_consultorios_adicionais WHERE medico_id = :m");
+        $stmtCons->execute([':m' => $medicoId]);
+        foreach ($stmtCons->fetchAll() as $row) {
+            $cons[] = (int) $row['consultorio_id'];
+        }
+        
+        $stmtUser = $db->prepare("SELECT especialidade_id, consultorio_id FROM utilizadores WHERE id = :m");
+        $stmtUser->execute([':m' => $medicoId]);
+        if ($user = $stmtUser->fetch()) {
+            if (!empty($user['especialidade_id']) && !in_array($user['especialidade_id'], $esp)) {
+                $esp[] = (int) $user['especialidade_id'];
+            }
+            if (!empty($user['consultorio_id']) && !in_array($user['consultorio_id'], $cons)) {
+                $cons[] = (int) $user['consultorio_id'];
+            }
+        }
+        
+        return [
+            'especialidades' => $esp,
+            'consultorios' => $cons
+        ];
     }
 
     // ------------------------------------------------

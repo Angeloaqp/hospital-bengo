@@ -1,9 +1,9 @@
 [
   {
     "id": "TC001",
-    "title": "Authenticate with valid credentials and enter the system",
-    "description": "Verifies that a staff user can sign in with valid credentials and reach the authenticated area successfully.",
-    "category": "User Login",
+    "title": "Log in and reach the authenticated area",
+    "description": "An authenticated staff member can submit valid credentials from the login page and reach the protected area.",
+    "category": "Login por perfil",
     "steps": [
       {
         "type": "action",
@@ -23,10 +23,6 @@
       },
       {
         "type": "assertion",
-        "description": "Verify access to the system is granted"
-      },
-      {
-        "type": "assertion",
         "description": "Verify the authenticated area is displayed"
       }
     ],
@@ -34,9 +30,9 @@
   },
   {
     "id": "TC002",
-    "title": "Reject invalid credentials without granting access",
-    "description": "Verifies that an invalid username and password combination shows a clear error and does not grant system access.",
-    "category": "User Login",
+    "title": "Open the configuration page as an authenticated admin",
+    "description": "An authenticated admin can open the system configuration page from the protected area and see the configuration form.",
+    "category": "System Configuration",
     "steps": [
       {
         "type": "action",
@@ -44,74 +40,32 @@
       },
       {
         "type": "action",
-        "description": "Fill in the username field with invalid-user"
+        "description": "Fill in the username field with {{LOGIN_USER}}"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with invalid-password"
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
       },
       {
         "type": "action",
         "description": "Submit the login form"
       },
       {
-        "type": "assertion",
-        "description": "Verify a login error message is visible"
+        "type": "action",
+        "description": "Click the link to open system configuration"
       },
       {
         "type": "assertion",
-        "description": "Verify access to the system is not granted"
+        "description": "Verify the configuration form is displayed"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC003",
-    "title": "Display the currently called ticket and upcoming queue",
-    "description": "Verifies that the public panel shows the ticket currently being called along with the next tickets in the queue.",
-    "category": "Public Waiting Room Panel",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Navigate to /hospital-bengo/public/painel.php"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify the currently called ticket is displayed"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify upcoming queue tickets are displayed"
-      }
-    ],
-    "priority": "High"
-  },
-  {
-    "id": "TC004",
-    "title": "Allow the public waiting room panel to be viewed without login",
-    "description": "Verifies that any visitor can open the public panel page and see the waiting room display without authenticating.",
-    "category": "Public Waiting Room Panel",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Navigate to /hospital-bengo/public/painel.php"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify the public waiting room panel is displayed"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify the panel is accessible without authentication"
-      }
-    ],
-    "priority": "High"
-  },
-  {
-    "id": "TC005",
-    "title": "Show validation when login fields are left empty",
-    "description": "Verifies that submitting the login form without credentials shows validation feedback instead of proceeding.",
-    "category": "User Login",
+    "title": "Update and save hospital settings",
+    "description": "An authenticated admin can change the hospital name, update the logo, toggle modules, and save the configuration successfully.",
+    "category": "System Configuration",
     "steps": [
       {
         "type": "action",
@@ -119,57 +73,273 @@
       },
       {
         "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
         "description": "Submit the login form"
       },
       {
-        "type": "assertion",
-        "description": "Verify login validation feedback is visible"
+        "type": "action",
+        "description": "Click the link to open system configuration"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the hospital name field with a unique hospital name"
+      },
+      {
+        "type": "action",
+        "description": "Upload a valid logo image"
+      },
+      {
+        "type": "action",
+        "description": "Toggle the system feature switches as needed"
+      },
+      {
+        "type": "action",
+        "description": "Save the changes"
       },
       {
         "type": "assertion",
-        "description": "Verify access to the system is not granted"
+        "description": "Verify a success confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated configuration values are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Keep saved settings when revisiting configuration",
+    "description": "An authenticated admin can revisit the configuration page after saving and see the previously saved hospital settings loaded again.",
+    "category": "System Configuration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/index.php"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open system configuration"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the hospital name field with a unique hospital name"
+      },
+      {
+        "type": "action",
+        "description": "Upload a valid logo image"
+      },
+      {
+        "type": "action",
+        "description": "Toggle the system feature switches as needed"
+      },
+      {
+        "type": "action",
+        "description": "Save the changes"
+      },
+      {
+        "type": "action",
+        "description": "Open the system configuration page again"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved hospital name is loaded"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved module states are loaded"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Block saving an empty hospital name",
+    "description": "An authenticated admin cannot save configuration changes when the hospital name is empty.",
+    "category": "System Configuration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/index.php"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open system configuration"
+      },
+      {
+        "type": "action",
+        "description": "Clear the hospital name field"
+      },
+      {
+        "type": "action",
+        "description": "Save the changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a hospital name validation error is visible"
       }
     ],
     "priority": "Medium"
   },
   {
     "id": "TC006",
-    "title": "Keep the public queue display readable on desktop",
-    "description": "Verifies that the public waiting room panel remains usable on a standard internal desktop viewport without layout breakage or truncated queue information.",
-    "category": "Public Waiting Room Panel",
+    "title": "Reject an unsupported logo file",
+    "description": "An authenticated admin is prevented from saving a logo upload when the selected file type is unsupported.",
+    "category": "System Configuration",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to /hospital-bengo/public/painel.php"
+        "description": "Navigate to /hospital-bengo/public/index.php"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open system configuration"
+      },
+      {
+        "type": "action",
+        "description": "Upload an unsupported logo file type"
+      },
+      {
+        "type": "action",
+        "description": "Save the changes"
       },
       {
         "type": "assertion",
-        "description": "Verify the public panel layout is displayed correctly on desktop"
+        "description": "Verify a logo validation error is visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC007",
+    "title": "Show the default module states on first load",
+    "description": "An authenticated admin sees the current default feature switch states when opening the configuration page.",
+    "category": "System Configuration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/public/index.php"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open system configuration"
       },
       {
         "type": "assertion",
-        "description": "Verify queue information is readable"
+        "description": "Verify the feature switches are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the current switch states are visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC008",
+    "title": "Require authentication for the configuration page",
+    "description": "A user without an active session cannot access the protected configuration page directly.",
+    "category": "System Configuration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/app/views/admin/configuracao.php"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access protection is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the configuration form is not displayed"
       }
     ],
     "priority": "Low"
   },
   {
-    "id": "TC007",
-    "title": "Show an empty state when no tickets are waiting",
-    "description": "Verifies that the public panel presents a clear empty state when there are no current or upcoming queue items.",
-    "category": "Public Waiting Room Panel",
+    "id": "TC009",
+    "title": "Use the documented configuration route exactly",
+    "description": "The configuration page opens correctly from the documented PHP file route and does not rely on alias routes.",
+    "category": "System Configuration",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to /hospital-bengo/public/painel.php"
+        "description": "Navigate to /hospital-bengo/public/index.php"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /hospital-bengo/app/views/admin/configuracao.php"
       },
       {
         "type": "assertion",
-        "description": "Verify an empty waiting room state is displayed"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify no upcoming tickets are shown"
+        "description": "Verify the configuration form is displayed"
       }
     ],
     "priority": "Low"

@@ -2,18 +2,18 @@
   "status": "commited",
   "type": "frontend",
   "scope": "codebase",
-  "localEndpoint": "http://localhost:80/hospital-bengo/public/index.php",
+  "localEndpoint": "http://localhost:80/hospital-bengo/admin",
   "loginUser": "admin",
-  "loginPassword": "miguelpungui23",
+  "loginPassword": "miguelpungui2",
   "executionArgs": {
     "projectName": "hospital-bengo",
     "projectPath": "c:\\xampp\\htdocs\\hospital-bengo",
     "testIds": [],
-    "additionalInstruction": "",
-    "serverMode": "development",
+    "additionalInstruction": "Test the configuration options thoroughly using the exact path: /hospital-bengo/app/views/admin/configuracao.php. Verify form submissions and switches.",
+    "serverMode": "production",
     "envs": {
-      "API_KEY": "sk-user-T3tK1WJl8p37-JfVFwCSA8TybveqRamjcL412RZQ4utSoTULKXTiCoUU0yuYQeVEIm69_eC2Ld3whqUFBDh-DbO2aWDkCe-Oeldc_ZzSxM1Eosl8c3eGmTRWHNVqldWFUNg"
+      "API_KEY": "sk-user-jgSIvpoQZT4VTlzBid18k-DD3oBykCzhUgn4xmjWfVGq8ekaEsp1DwQ-t9unRZOw-4xlN_7UWQ4jnNpkJ_8Cd7eeEJsnp4ayZxk5p9HeMW9B3kDoamdVbOrc_4mfaGQd_4o"
     }
   },
-  "serverPort": 60100
+  "serverPort": 57373
 }

@@ -342,50 +342,52 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <!-- Perfil de Acesso -->
-                                <div class="field-wrap">
-                                    <select id="perfil" name="perfil" required class="fi cursor-pointer" style="-webkit-appearance:none;appearance:none;">
-                                        <option value="" disabled <?= empty($form['perfil'] ?? '') ? 'selected' : '' ?>>  </option>
-                                        <option value="recepcionista" <?= ($form['perfil'] ?? '') === 'recepcionista' ? 'selected' : '' ?>>Recepcionista</option>
-                                        <option value="medico" <?= ($form['perfil'] ?? '') === 'medico' ? 'selected' : '' ?>>Médico</option>
-                                        <option value="admin" <?= ($form['perfil'] ?? '') === 'admin' ? 'selected' : '' ?>>Administrador</option>
-                                    </select>
-                                    <span class="material-symbols-outlined field-icon">security</span>
-                                    <label for="perfil" class="fl">Perfil de Acesso *</label>
-                                    <span class="material-symbols-outlined select-arrow">expand_more</span>
-                                </div>
+                                <?php
+                                $sel_id = 'perfil';
+                                $sel_name = 'perfil';
+                                $sel_icon = 'security';
+                                $sel_label = 'Perfil de Acesso *';
+                                $sel_value = $form['perfil'] ?? '';
+                                $sel_required = true;
+                                $sel_options = [
+                                    '' => ['label' => ' '],
+                                    'recepcionista' => ['label' => 'Recepcionista'],
+                                    'medico' => ['label' => 'Médico'],
+                                    'admin' => ['label' => 'Administrador']
+                                ];
+                                include __DIR__ . '/../comum/custom_select_floating.php';
+                                ?>
 
                                 <!-- Especialidade (condicional) -->
                                 <div class="campo-medico" id="campo-especialidade">
-                                    <div class="field-wrap">
-                                        <select id="especialidade_id" name="especialidade_id" class="fi cursor-pointer" style="-webkit-appearance:none;appearance:none;">
-                                            <option value="0" disabled selected>  </option>
-                                            <?php foreach ($especialidades as $e): ?>
-                                                <option value="<?= $e['id'] ?>" <?= ($form['especialidade_id'] ?? '') == $e['id'] ? 'selected' : '' ?>>
-                                                    <?= htmlspecialchars($e['nome']) ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                        <span class="material-symbols-outlined field-icon">medical_information</span>
-                                        <label for="especialidade_id" class="fl">Especialidade *</label>
-                                        <span class="material-symbols-outlined select-arrow">expand_more</span>
-                                    </div>
+                                    <?php
+                                    $sel_id = 'especialidade_id';
+                                    $sel_name = 'especialidade_id';
+                                    $sel_icon = 'medical_information';
+                                    $sel_label = 'Especialidade *';
+                                    $sel_value = (string)($form['especialidade_id'] ?? '0');
+                                    $sel_options = ['0' => ['label' => ' ']];
+                                    foreach ($especialidades as $e) {
+                                        $sel_options[(string)$e['id']] = ['label' => htmlspecialchars($e['nome'])];
+                                    }
+                                    include __DIR__ . '/../comum/custom_select_floating.php';
+                                    ?>
                                 </div>
 
                                 <!-- Consultório (condicional) -->
                                 <div class="campo-medico" id="campo-consultorio">
-                                    <div class="field-wrap">
-                                        <select id="consultorio_id" name="consultorio_id" class="fi cursor-pointer" style="-webkit-appearance:none;appearance:none;">
-                                            <option value="0" disabled selected>  </option>
-                                            <?php foreach ($consultorios as $c): ?>
-                                                <option value="<?= $c['id'] ?>" <?= ($form['consultorio_id'] ?? '') == $c['id'] ? 'selected' : '' ?>>
-                                                    <?= htmlspecialchars($c['nome']) ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                        <span class="material-symbols-outlined field-icon">meeting_room</span>
-                                        <label for="consultorio_id" class="fl">Consultório</label>
-                                        <span class="material-symbols-outlined select-arrow">expand_more</span>
-                                    </div>
+                                    <?php
+                                    $sel_id = 'consultorio_id';
+                                    $sel_name = 'consultorio_id';
+                                    $sel_icon = 'meeting_room';
+                                    $sel_label = 'Consultório';
+                                    $sel_value = (string)($form['consultorio_id'] ?? '0');
+                                    $sel_options = ['0' => ['label' => ' ']];
+                                    foreach ($consultorios as $c) {
+                                        $sel_options[(string)$c['id']] = ['label' => htmlspecialchars($c['nome'])];
+                                    }
+                                    include __DIR__ . '/../comum/custom_select_floating.php';
+                                    ?>
                                 </div>
                             </div>
 
@@ -409,7 +411,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
 
     <script>
         // ─── Toggle Médico fields ───
-        const perfil = document.getElementById('perfil');
+        const perfil = document.getElementById('perfil-native');
         const camposMedico = document.querySelectorAll('.campo-medico');
 
         function toggleCamposMedico() {
@@ -418,29 +420,16 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                 c.classList.toggle('visivel', show);
             });
             if (!show) {
-                document.getElementById('especialidade_id').value = '0';
-                document.getElementById('consultorio_id').value = '0';
-            }
-            // Mark selects with value as "has-value" for floating label
-            markSelectStates();
-        }
-
-        // ─── Floating label support for <select> ───
-        function markSelectStates() {
-            document.querySelectorAll('select.fi').forEach(sel => {
-                const val = sel.value;
-                if (val && val.trim() !== '' && val !== '0') {
-                    sel.classList.add('has-value');
-                } else {
-                    sel.classList.remove('has-value');
+                if(typeof CustomSelect !== 'undefined') {
+                    CustomSelect.select('especialidade_id', '0', ' ', '', '');
+                    CustomSelect.select('consultorio_id', '0', ' ', '', '');
                 }
+            }
+            // Sync floating labels for all selects
+            document.querySelectorAll('select[id$="-native"]').forEach(sel => {
+                if(typeof syncFloatingLabel === 'function') syncFloatingLabel(sel);
             });
         }
-
-        // Listen to all selects
-        document.querySelectorAll('select.fi').forEach(sel => {
-            sel.addEventListener('change', markSelectStates);
-        });
 
         perfil.addEventListener('change', toggleCamposMedico);
         
@@ -463,7 +452,6 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
 
         // Init on load
         toggleCamposMedico();
-        markSelectStates();
     </script>
 </body>
 </html>

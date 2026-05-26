@@ -179,10 +179,12 @@ $subtituloPagina = 'Agendar consulta para data futura';
                                     <span class="material-symbols-outlined text-on-surface-variant pointer-events-none transition-transform duration-200">expand_more</span>
                                 </button>
                                 
-                                <select name="especialidade_id" id="sel-especialidade" required class="hidden">
-                                    <option disabled selected value="">Seleccione a Especialidade...</option>
-                                    <?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
-                                </select>
+                                <div class="h-0 w-0 overflow-hidden absolute">
+                                    <select name="especialidade_id" id="sel-especialidade" required>
+                                        <option disabled selected value="">Seleccione a Especialidade...</option>
+                                        <?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
+                                    </select>
+                                </div>
                                 
                                 <div class="custom-dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-[24px] p-2 floating-card border border-zinc-100 z-50 max-h-60 overflow-y-auto">
                                     <?php foreach($especialidades as $e): 
@@ -228,12 +230,14 @@ $subtituloPagina = 'Agendar consulta para data futura';
                                         <span class="material-symbols-outlined text-on-surface-variant pointer-events-none transition-transform duration-200">expand_more</span>
                                     </button>
                                     
-                                    <select name="prioridade" id="sel-prioridade" required class="hidden">
-                                        <option value="4" selected>Normal</option>
-                                        <option value="3">Grávida</option>
-                                        <option value="2">Idoso</option>
-                                        <option value="1">Urgente</option>
-                                    </select>
+                                    <div class="h-0 w-0 overflow-hidden absolute">
+                                        <select name="prioridade" id="sel-prioridade" required>
+                                            <option value="4" selected>Normal</option>
+                                            <option value="3">Grávida</option>
+                                            <option value="2">Idoso</option>
+                                            <option value="1">Urgente</option>
+                                        </select>
+                                    </div>
                                     
                                     <div class="custom-dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-[24px] p-2 floating-card border border-zinc-100 z-50">
                                         <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low rounded-[16px] transition-colors text-left" onclick="selectOption('priority-dropdown', 'priority-text', 'priority-icon', 'Normal', 'check_circle', 'text-[#3B82F6]')">
@@ -524,29 +528,51 @@ inputPesq.addEventListener('input', function(){
     debounce = setTimeout(()=>{
         fetch(BASE+'app/controllers/agenda_api.php?acao=pesquisar_paciente&q='+encodeURIComponent(q))
         .then(r=>r.json()).then(d=>{
+            if(!d || !d.resultados) {
+                console.error('API Error: No resultados array');
+                return;
+            }
             if(!d.resultados.length){
                 divResult.innerHTML='<div class="px-5 py-4 text-xs font-bold text-on-surface-variant">Nenhum paciente encontrado.</div>';
                 divResult.classList.remove('hidden');
                 return;
             }
-            divResult.innerHTML = d.resultados.map(p=>
-                `<div class="px-5 py-3 hover:bg-surface-container-low cursor-pointer transition-colors border-b border-surface-container-low/50 last:border-0" onclick="seleccionarPaciente(${p.id},'${p.nome.replace(/'/g,"\\'")}','${p.bi_nif||''}','${p.idade||''}')">
+            divResult.innerHTML = d.resultados.map(p=> {
+                const safeId = p.id || 0;
+                const safeNome = p.nome ? String(p.nome).replace(/'/g,"\\'") : '';
+                const displayNome = p.nome || '';
+                const safeBi = p.bi_nif || '';
+                const safeIdade = p.idade || '';
+                const safeProc = p.numero_processo || '';
+                
+                return `<div class="px-5 py-3 hover:bg-surface-container-low cursor-pointer transition-colors border-b border-surface-container-low/50 last:border-0" onclick="seleccionarPaciente(${safeId},'${safeNome}','${safeBi}','${safeIdade}','${safeProc}')">
                     <div class="flex items-center justify-between">
-                        <span class="font-black text-sm text-black">${p.nome}</span>
-                        <span class="text-xs font-bold text-on-surface-variant bg-surface-container px-2 py-1 rounded-md">${p.idade||'?'} anos</span>
+                        <span class="font-black text-sm text-black">${displayNome}</span>
+                        <span class="text-xs font-bold text-on-surface-variant bg-surface-container px-2 py-1 rounded-md">${safeIdade||'?'} anos</span>
                     </div>
-                    <div class="text-[10px] text-on-surface-variant font-bold mt-1 uppercase tracking-widest">${p.bi_nif ? 'BI: '+p.bi_nif : ''}</div>
-                </div>`
-            ).join('');
+                    <div class="text-[10px] text-on-surface-variant font-bold mt-1 uppercase tracking-widest">${safeProc ? 'Nº Proc: '+safeProc + ' • ' : ''}${safeBi ? 'BI: '+safeBi : ''}</div>
+                </div>`;
+            }).join('');
+            divResult.classList.remove('hidden');
+        }).catch(e => {
+            console.error("Fetch Error:", e);
+            divResult.innerHTML='<div class="px-5 py-4 text-xs font-bold text-red-500">Erro ao pesquisar pacientes.</div>';
             divResult.classList.remove('hidden');
         });
     }, 300);
 });
 
-function seleccionarPaciente(id, nome, bi, idade){
+function seleccionarPaciente(id, nome, bi, idade, numero_processo = ''){
     document.getElementById('paciente-id').value = id;
     document.getElementById('paciente-nome-display').textContent = nome;
-    const extraInfo = (bi ? 'BI: ' + bi : 'S/ BI') + (idade ? ' • ' + idade + ' anos' : '');
+    
+    let extraParts = [];
+    if (numero_processo) extraParts.push('Nº Proc: ' + numero_processo);
+    if (bi) extraParts.push('BI: ' + bi);
+    if (idade) extraParts.push(idade + ' anos');
+    
+    const extraInfo = extraParts.length > 0 ? extraParts.join(' • ') : 'S/ Dados Extra';
+    
     document.getElementById('paciente-extra').textContent = extraInfo;
     document.getElementById('paciente-iniciais').textContent = nome.charAt(0).toUpperCase();
     
@@ -589,7 +615,7 @@ if(pacienteIdInicial > 0) {
     fetch(BASE+'app/controllers/agenda_api.php?acao=obter_paciente&paciente_id='+pacienteIdInicial)
     .then(r=>r.json()).then(d=>{
         if(d.paciente) {
-            seleccionarPaciente(d.paciente.id, d.paciente.nome, d.paciente.bi_nif, d.paciente.idade);
+            seleccionarPaciente(d.paciente.id, d.paciente.nome, d.paciente.bi_nif, d.paciente.idade, d.paciente.numero_processo);
         }
     });
 }

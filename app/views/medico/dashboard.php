@@ -72,7 +72,7 @@ $totalFila = array_sum($distribuicao);
         .floating-card { box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 10px -2px rgba(0,0,0,0.03); }
     </style>
 </head>
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface bg-[#f3f4f6]">
 
     <?php $paginaActual = 'dashboard'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -96,9 +96,10 @@ $totalFila = array_sum($distribuicao);
     <?php $tituloPagina = 'Dashboard'; ?>
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
-    <div class="ml-56 mt-28 h-[calc(100vh-7rem)] flex flex-col">
+    <div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
         <div class="flex-1 overflow-y-auto custom-scrollbar">
-            <main class="w-full max-w-[1500px] mx-auto px-8 pb-24 pt-4">
+            <main class="w-full pb-24 pt-4">
 
                 <!-- ============================================ -->
                 <!-- SECÇÃO 1: Cabeçalho de Boas-Vindas           -->
@@ -416,7 +417,8 @@ $totalFila = array_sum($distribuicao);
 
             </main>
         </div>
-    </div>
+    </main>
+</div>
 
 
 </body>

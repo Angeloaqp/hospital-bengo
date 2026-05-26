@@ -46,6 +46,14 @@ $estadoBadge = [
     'remarcada'=>'bg-indigo-100 text-indigo-600',
 ];
 $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
+
+if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
+    function agendaMedicoPrioridadeTriagemLabel(?int $prioridade): string
+    {
+        $labels = [1=>'Urgente',2=>'Alta',3=>'Moderada',4=>'Normal'];
+        return $labels[$prioridade ?: 4] ?? 'Normal';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -66,12 +74,12 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     .floating-card{box-shadow:0 4px 20px -2px rgba(0,0,0,.05),0 2px 10px -2px rgba(0,0,0,.03)}
     </style>
 </head>
-<body class="text-on-surface">
+<body class="text-on-surface bg-[#f3f4f6]">
 <?php $paginaActual='agenda'; include __DIR__.'/../comum/sidebar.php'; ?>
 <?php $tituloPagina='Minha Agenda'; $subtituloPagina=''; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
 
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<main class="w-full max-w-[1500px]">
+<div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
 
 <!-- Header -->
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
@@ -100,31 +108,57 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 </div>
 
 <!-- Filtros -->
-<form method="GET" class="bg-white rounded-[1.5rem] p-5 floating-card border border-white mb-6">
+<form method="GET" class="bg-white rounded-[1.5rem] p-5 floating-card border border-white mb-6 relative z-50">
 <div class="flex flex-wrap gap-3 items-end">
     <div>
         <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Data</label>
-        <input type="date" name="data" value="<?= $dataFiltro ?>" class="rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold" onchange="this.form.submit()">
+        <?php 
+        $cal_id = 'cal-filtro-medico';
+        $cal_name = 'data';
+        $cal_value = $dataFiltro;
+        $cal_onchange = 'this.form.submit()';
+        require __DIR__ . '/../comum/calendario_dropdown.php'; 
+        ?>
     </div>
     <div>
         <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Turno</label>
-        <select name="turno" class="rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold" onchange="this.form.submit()">
-            <option value="">Todos</option>
-            <option value="manha" <?= $turnoFiltro==='manha'?'selected':'' ?>>Manhã</option>
-            <option value="tarde" <?= $turnoFiltro==='tarde'?'selected':'' ?>>Tarde</option>
-        </select>
+        <?php
+        $sel_id = 'cs-turno-med';
+        $sel_name = 'turno';
+        $sel_icon = 'schedule';
+        $sel_placeholder = 'Todos';
+        $sel_value = $turnoFiltro;
+        $sel_onchange = 'this.form.submit()';
+        $sel_size = 'sm';
+        $sel_options = [
+            '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
+            'manha' => ['label' => 'Manhã', 'icon' => 'light_mode', 'color' => 'text-amber-500'],
+            'tarde' => ['label' => 'Tarde', 'icon' => 'routine', 'color' => 'text-orange-500'],
+        ];
+        include __DIR__ . '/../comum/custom_select.php';
+        ?>
     </div>
     <div>
         <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Estado</label>
-        <select name="estado" class="rounded-xl border-surface-container-high px-3 py-2 text-sm font-bold" onchange="this.form.submit()">
-            <option value="">Todos</option>
-            <option value="marcada" <?= $estadoFiltro==='marcada'?'selected':'' ?>>Marcada</option>
-            <option value="confirmada" <?= $estadoFiltro==='confirmada'?'selected':'' ?>>Confirmada</option>
-            <option value="em_atendimento" <?= $estadoFiltro==='em_atendimento'?'selected':'' ?>>Em Atendimento</option>
-            <option value="concluida" <?= $estadoFiltro==='concluida'?'selected':'' ?>>Concluída</option>
-            <option value="cancelada" <?= $estadoFiltro==='cancelada'?'selected':'' ?>>Cancelada</option>
-            <option value="falta" <?= $estadoFiltro==='falta'?'selected':'' ?>>Falta</option>
-        </select>
+        <?php
+        $sel_id = 'cs-estado-med';
+        $sel_name = 'estado';
+        $sel_icon = 'info';
+        $sel_placeholder = 'Todos';
+        $sel_value = $estadoFiltro;
+        $sel_onchange = 'this.form.submit()';
+        $sel_size = 'sm';
+        $sel_options = [
+            '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
+            'marcada' => ['label' => 'Marcada', 'icon' => 'event', 'color' => 'text-blue-600'],
+            'confirmada' => ['label' => 'Confirmada', 'icon' => 'check_circle', 'color' => 'text-green-600'],
+            'em_atendimento' => ['label' => 'Em Atendimento', 'icon' => 'pending', 'color' => 'text-yellow-600'],
+            'concluida' => ['label' => 'Concluída', 'icon' => 'task_alt', 'color' => 'text-gray-500'],
+            'cancelada' => ['label' => 'Cancelada', 'icon' => 'cancel', 'color' => 'text-red-600'],
+            'falta' => ['label' => 'Falta', 'icon' => 'person_off', 'color' => 'text-orange-600'],
+        ];
+        include __DIR__ . '/../comum/custom_select.php';
+        ?>
     </div>
     <div class="flex gap-2">
         <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' -1 day')) ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">← Anterior</a>
@@ -150,6 +184,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     <th class="pb-3 text-center">Senha</th>
     <th class="pb-3 text-center">Prioridade</th>
     <th class="pb-3 text-center">Estado</th>
+    <th class="pb-3">Triagem</th>
     <th class="pb-3">Origem</th>
 </tr>
 </thead>
@@ -158,6 +193,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     $eb = $estadoBadge[$m['estado']] ?? 'bg-gray-100 text-gray-500';
     $pb = $prioBadge[$m['prioridade']] ?? 'bg-blue-600';
     $pl = $prioLabels[$m['prioridade']] ?? 'Normal';
+    $temTriagem = !empty($m['triagem_id']);
 ?>
 <tr class="group hover:bg-surface-container-low/30 transition-colors">
     <td class="py-3 text-xs font-bold"><?= $turnoLabel[$m['turno']] ?? $m['turno'] ?></td>
@@ -172,6 +208,25 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     </td>
     <td class="py-3 text-center"><span class="px-2 py-0.5 <?= $pb ?> text-white text-[9px] font-black rounded-full"><?= strtoupper($pl) ?></span></td>
     <td class="py-3 text-center"><span class="px-2 py-0.5 <?= $eb ?> text-[9px] font-black rounded-full"><?= strtoupper($m['estado']) ?></span></td>
+    <td class="py-3 text-xs">
+        <?php if($temTriagem): ?>
+            <div class="font-bold text-black">
+                <?= agendaMedicoPrioridadeTriagemLabel((int) $m['triagem_prioridade']) ?>
+                <span class="text-on-surface-variant font-semibold">
+                    <?= $m['triagem_pressao'] ? ' · PA ' . htmlspecialchars($m['triagem_pressao']) : '' ?>
+                    <?= $m['triagem_temperatura'] ? ' · ' . htmlspecialchars($m['triagem_temperatura']) . '°C' : '' ?>
+                    <?= $m['triagem_fc'] ? ' · FC ' . htmlspecialchars($m['triagem_fc']) : '' ?>
+                </span>
+            </div>
+            <?php if($m['triagem_sintomas'] || $m['triagem_obs']): ?>
+                <div class="text-[11px] text-on-surface-variant font-medium max-w-[260px] truncate">
+                    <?= htmlspecialchars($m['triagem_sintomas'] ?: $m['triagem_obs']) ?>
+                </div>
+            <?php endif; ?>
+        <?php else: ?>
+            <span class="text-[10px] font-bold text-amber-700">Sem dados</span>
+        <?php endif; ?>
+    </td>
     <td class="py-3 text-[10px] font-bold text-on-surface-variant uppercase"><?= $m['origem'] === 'mesmo_dia' ? 'Mesmo dia' : 'Marcação' ?></td>
 </tr>
 <?php endforeach; ?>

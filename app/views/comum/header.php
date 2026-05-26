@@ -21,9 +21,11 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
 ?>
 
 <!-- Header Wrapper with Shield -->
-<div id="header-wrapper" class="fixed top-0 right-0 left-56 z-50 h-28 bg-gradient-to-b from-[#f3f4f6] to-transparent font-['Manrope'] antialiased transition-all duration-300">
-    <header class="h-16 mt-6 px-8 max-w-[1500px] mx-auto">
-        <div class="rounded-2xl h-full px-6 flex items-center justify-between floating-card border border-white/50 bg-white">
+<div id="header-wrapper" class="fixed top-0 left-[17rem] right-6 z-50 h-28 bg-transparent font-['Manrope'] antialiased transition-all duration-300">
+    <!-- Mask: esconde conteúdo ao rolar, alargado para cobrir o fosso lateral -->
+    <div class="absolute inset-y-0 -left-6 -right-6" style="z-index:-1; background: linear-gradient(to bottom, rgba(243,244,246,1) 60%, rgba(243,244,246,0) 100%);"></div>
+    <header class="h-16 mt-6 w-full ">
+        <div class="rounded-2xl h-full px-6 flex items-center justify-between shadow-[0_10px_40px_-10px_rgba(0,0,0,0.04)] border border-white/50 bg-white">
             <div class="flex items-center gap-3">
                 <h1 class="text-base font-extrabold tracking-tight text-black"><?= $tituloPagina ?? 'Dashboard' ?></h1>
                 

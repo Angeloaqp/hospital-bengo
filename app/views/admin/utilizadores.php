@@ -307,14 +307,21 @@ $avatarColors = [
                         </button>
                     </div>
                     <div class="relative shrink-0 w-full md:w-auto">
-                        <select id="filterPerfil"
-                            class="w-full md:w-auto bg-white pl-6 pr-5 h-[70px] rounded-[1.5rem] text-sm font-bold text-on-surface-variant border border-white/50 shadow-sm hover:shadow-md transition-shadow cursor-pointer outline-none focus:ring-2 focus:ring-black/10"
-                            style="min-width: 200px;">
-                            <option value="">Todos os perfis</option>
-                            <option value="admin">Administrador</option>
-                            <option value="medico">Médico</option>
-                            <option value="recepcionista">Recepcionista</option>
-                        </select>
+                        <?php
+                        $sel_id = 'filterPerfil';
+                        $sel_name = 'perfil_filtro';
+                        $sel_icon = 'badge';
+                        $sel_placeholder = 'Todos os perfis';
+                        $sel_value = '';
+                        $sel_size = 'sm';
+                        $sel_options = [
+                            '' => ['label' => 'Todos os perfis', 'icon' => 'groups', 'color' => 'text-on-surface-variant'],
+                            'admin' => ['label' => 'Administrador', 'icon' => 'shield_person', 'color' => 'text-black'],
+                            'medico' => ['label' => 'Médico', 'icon' => 'stethoscope', 'color' => 'text-blue-600'],
+                            'recepcionista' => ['label' => 'Recepcionista', 'icon' => 'badge', 'color' => 'text-purple-600'],
+                        ];
+                        include __DIR__ . '/../comum/custom_select.php';
+                        ?>
                     </div>
                 </div>
 
@@ -488,7 +495,7 @@ $avatarColors = [
         (function () {
             const CARDS_PER_PAGE = 3;
             const searchInput = document.getElementById('searchInput');
-            const filterPerfil = document.getElementById('filterPerfil');
+            const filterPerfil = document.getElementById('filterPerfil-native');
             const allCards = Array.from(document.querySelectorAll('#cards-container .user-card'));
             const emptyState = document.getElementById('emptyState');
             const visibleCount = document.getElementById('visibleCount');

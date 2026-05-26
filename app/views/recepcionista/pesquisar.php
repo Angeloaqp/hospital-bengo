@@ -59,7 +59,7 @@ $tipos = $db->query(
     <!-- Estilos controlados de forma centralizada pelo Tailwind (ver header.php) -->
 </head>
 
-<body class="text-on-surface">
+<body class="text-on-surface bg-[#f3f4f6]">
 
 <?php $paginaActual = 'pesquisar'; ?>
 <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -67,8 +67,9 @@ $tipos = $db->query(
 <?php $tituloPagina = 'Pesquisar Pacientes'; ?>
 <?php include __DIR__ . '/../comum/header.php'; ?>
 
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<main class="w-full max-w-[1500px]">
+<div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
+<main class="w-full">
 
     <!-- Hero Header Section -->
     <section class="mb-4 mt-2 flex items-center justify-between">
@@ -305,24 +306,40 @@ $tipos = $db->query(
                             
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Para Onde Direcionar?</label>
-                                <select name="tipo_atendimento_id" required class="w-full h-12 px-4 bg-surface-container-low border-none rounded-xl font-bold text-sm text-black focus:ring-2 focus:ring-black/10 cursor-pointer appearance-none">
-                                    <option value="" disabled selected>Escolher setor especialista...</option>
-                                    <?php foreach ($tipos as $t): ?>
-                                        <option value="<?= $t['id'] ?>">
-                                            <?= htmlspecialchars($t['nome']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                                <?php
+                                $sel_id = 'cs-tipo-atd';
+                                $sel_name = 'tipo_atendimento_id';
+                                $sel_icon = 'local_hospital';
+                                $sel_placeholder = 'Escolher setor especialista...';
+                                $sel_value = '';
+                                $sel_required = true;
+                                $sel_size = 'sm';
+                                $sel_options = [];
+                                foreach ($tipos as $t) {
+                                    $sel_options[(string)$t['id']] = ['label' => htmlspecialchars($t['nome']), 'icon' => 'medical_services', 'color' => 'text-blue-600'];
+                                }
+                                include __DIR__ . '/../comum/custom_select.php';
+                                ?>
                             </div>
 
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Nível de Prioridade</label>
-                                <select name="prioridade" required class="w-full h-12 px-4 bg-surface-container-low border-none rounded-xl font-bold text-sm text-black focus:ring-2 focus:ring-black/10 cursor-pointer appearance-none">
-                                    <option value="4" selected>Fila Regular (Normal)</option>
-                                    <option value="1">Urgência Crítica</option>
-                                    <option value="2">Idoso / Terceira Idade</option>
-                                    <option value="3">Gestante / Maternidade</option>
-                                </select>
+                                <?php
+                                $sel_id = 'cs-prioridade-pesq';
+                                $sel_name = 'prioridade';
+                                $sel_icon = 'check_circle';
+                                $sel_placeholder = 'Fila Regular (Normal)';
+                                $sel_value = '4';
+                                $sel_required = true;
+                                $sel_size = 'sm';
+                                $sel_options = [
+                                    '4' => ['label' => 'Fila Regular (Normal)', 'icon' => 'check_circle', 'color' => 'text-blue-600'],
+                                    '1' => ['label' => 'Urgência Crítica', 'icon' => 'notification_important', 'color' => 'text-red-600'],
+                                    '2' => ['label' => 'Idoso / Terceira Idade', 'icon' => 'elderly', 'color' => 'text-amber-500'],
+                                    '3' => ['label' => 'Gestante / Maternidade', 'icon' => 'pregnant_woman', 'color' => 'text-purple-600'],
+                                ];
+                                include __DIR__ . '/../comum/custom_select.php';
+                                ?>
                             </div>
 
                             <button type="submit" class="w-full mt-2 bg-black text-white rounded-2xl text-sm font-black tracking-tight py-4 hover:bg-zinc-800 active:scale-[0.98] transition-all flex flex-col justify-center items-center gap-1 shadow-lg group relative overflow-hidden">
@@ -459,6 +476,7 @@ $tipos = $db->query(
         </div>
     <?php endif; ?>
 
+</main>
 </main>
 </div>
 

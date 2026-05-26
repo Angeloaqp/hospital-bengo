@@ -1,0 +1,29 @@
+/* Custom Select Dropdown — Hospital Geral do Bengo */
+.cs-dropdown .cs-panel {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+}
+.cs-dropdown.open .cs-panel {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.cs-dropdown .cs-chevron {
+    transition: transform 0.2s ease-in-out;
+}
+.cs-dropdown .cs-option.active {
+    font-weight: 800;
+}
+/* Custom scrollbar for dropdown panels */
+.cs-panel::-webkit-scrollbar {
+    width: 4px;
+}
+.cs-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+.cs-panel::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.1);
+    border-radius: 4px;
+}

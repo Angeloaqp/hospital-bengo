@@ -62,7 +62,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
     </style>
 </head>
 
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface bg-[#f3f4f6]">
     <?php $paginaActual = 'perfil'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
@@ -74,8 +74,9 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
     <?php $accoesPagina = ob_get_clean(); ?>
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
-    <main class="ml-64 pt-24 h-screen overflow-y-auto custom-scrollbar relative">
-        <div class="p-8 pb-32 max-w-[1400px] mx-auto min-h-full">
+    <div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
+        <div class="pb-32">
 
             <div class="mb-10 bento-card flex items-end justify-between">
                 <div>
@@ -263,6 +264,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
 
         </div>
     </main>
+</div>
 
     <script>
         const DADOS_CHART = <?= json_encode($grafico) ?>;

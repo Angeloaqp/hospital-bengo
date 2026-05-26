@@ -81,6 +81,7 @@ CREATE TABLE `tipos_atendimento` (
 DROP TABLE IF EXISTS `pacientes`;
 CREATE TABLE `pacientes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `numero_processo` varchar(20) UNIQUE DEFAULT NULL,
   `nome` varchar(150) NOT NULL,
   `bi_nif` varchar(20) DEFAULT NULL,
   `idade` tinyint(3) unsigned NOT NULL,

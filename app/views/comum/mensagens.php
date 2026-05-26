@@ -134,7 +134,7 @@ function tempoRelativo($data)
         }
     </style>
 </head>
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface bg-[#f3f4f6]">
     <?php $paginaActual = 'mensagens'; ?>
     <?php include __DIR__ . '/sidebar.php'; ?>
 
@@ -149,8 +149,9 @@ function tempoRelativo($data)
 
     <?php include __DIR__ . '/header.php'; ?>
 
-    <main class="ml-64 pt-24 h-screen overflow-y-auto custom-scrollbar">
-        <div class="p-8 max-w-[1400px] mx-auto min-h-full pb-24">
+    <div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
+        <div class="pb-24">
             
             <?php if ($mensagem): ?>
                 <div class="mb-6 p-4 bg-green-50 rounded-2xl flex items-center gap-3 border border-green-100 glide-in">
@@ -440,5 +441,6 @@ function tempoRelativo($data)
             </div>
         </div>
     </main>
+</div>
 </body>
 </html>

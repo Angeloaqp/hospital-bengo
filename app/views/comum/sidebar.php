@@ -1,3 +1,9 @@
+<!-- Prevent Sidebar Flicker -->
+<script>
+    if (localStorage.getItem('sidebar-minimized') === 'true') {
+        document.documentElement.classList.add('sidebar-minimized');
+    }
+</script>
 <?php
 // ================================================
 // Componente Reutilizável: Sidebar + Bottom Nav (Mobile)
@@ -57,45 +63,46 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
 
 <!-- 1. DESKTOP SIDEBAR -->
 <aside id="desktop-sidebar" class="hidden lg:flex fixed left-6 top-6 bottom-6 flex-col py-6 z-[60] w-56 bg-white rounded-[2rem] floating-card font-['Manrope'] antialiased border border-white/50 transition-all duration-300">
+    
     <!-- Top Section: Hospital Logo & Toggle -->
-    <div class="mb-2 flex items-center justify-between px-6 min-h-[32px]">
-        <div class="text-[18px] font-black tracking-tighter text-black leading-tight sidebar-logo-text">
-            <span>HGB</span>
+    <div id="sidebar-top" class="mb-8 flex flex-col items-center px-6 gap-3 transition-all">
+        <div class="flex flex-col items-center justify-center overflow-hidden h-12 w-full px-2">
+            <img src="<?= BASE_URL ?>public/assets/img/logo_hgb.png" alt="HGB Logo" class="h-10 w-auto sidebar-text transition-all object-contain">
+            <img src="<?= BASE_URL ?>public/assets/img/logo_hgb.png" alt="H" class="h-8 w-auto hidden sidebar-mini-text transition-all object-contain" style="object-position: left;">
         </div>
-        <button type="button" id="sidebar-toggle-btn" class="p-1.5 rounded-full hover:bg-surface-container-low transition-colors text-black flex items-center justify-center shrink-0">
-            <span class="material-symbols-outlined text-[24px]" id="sidebar-toggle-icon">menu_open</span>
-        </button>
-    </div>
-    <div class="px-6 mb-6 sidebar-logo-text">
         <div class="w-10 h-[1.5px] bg-black/5"></div>
+        <!-- Toggle Minimize (Abaixo do Logo) -->
+        <button type="button" id="sidebar-toggle" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-full transition-all" title="Alternar Menu">
+            <span class="material-symbols-outlined text-[18px] transition-transform duration-300" id="sidebar-toggle-icon">menu_open</span>
+        </button>
     </div>
     
     <!-- Middle Section: Navigation Icons -->
-    <nav class="flex flex-col gap-1.5 px-3 flex-1">
+    <nav class="flex flex-col gap-1.5 px-3 flex-1 overflow-y-auto custom-scrollbar">
         <?php foreach ($_navLinks as $link): ?>
             <?php if ($_paginaActual === $link['id']): ?>
                 <!-- Active -->
-                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full bg-black text-white rounded-2xl transition-all shadow-md hover:scale-105 active:scale-95 sidebar-link-item">
+                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full bg-black text-white rounded-2xl transition-all shadow-md hover:scale-105 active:scale-95 overflow-hidden sidebar-link">
                     <span class="material-symbols-outlined text-[20px] icon-filled shrink-0"><?= $link['icon'] ?></span>
-                    <span class="text-xs font-bold tracking-tight whitespace-nowrap sidebar-text"><?= $link['titulo'] ?></span>
+                    <span class="text-xs font-bold tracking-tight sidebar-text whitespace-nowrap"><?= $link['titulo'] ?></span>
                 </a>
             <?php else: ?>
                 <!-- Inactive -->
-                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all hover:scale-105 sidebar-link-item">
+                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all hover:scale-105 overflow-hidden sidebar-link">
                     <span class="material-symbols-outlined text-[20px] icon-outline shrink-0"><?= $link['icon'] ?></span>
-                    <span class="text-xs font-semibold tracking-tight whitespace-nowrap sidebar-text"><?= $link['titulo'] ?></span>
+                    <span class="text-xs font-semibold tracking-tight sidebar-text whitespace-nowrap"><?= $link['titulo'] ?></span>
                 </a>
             <?php endif; ?>
         <?php endforeach; ?>
     </nav>
     
     <!-- Bottom Section: Avatar & Logout -->
-    <div class="mt-auto flex flex-col gap-1.5 px-3">
-        <div class="px-4 mb-3">
+    <div id="sidebar-bottom" class="mt-auto flex flex-col gap-1.5 px-3 transition-all">
+        <div class="px-4 mb-3 transition-all">
             <div class="h-[1px] bg-black/5 w-full"></div>
         </div>
         <!-- Meu Perfil -->
-        <a href="<?= $_basePerfil ?>index.php" class="flex items-center gap-3 px-4 py-2.5 w-full <?php echo $_paginaActual === 'perfil' ? 'bg-black text-white' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-black' ?> rounded-2xl transition-all sidebar-link-item">
+        <a href="<?= $_basePerfil ?>index.php" class="flex items-center gap-3 px-4 py-2.5 w-full <?php echo $_paginaActual === 'perfil' ? 'bg-black text-white' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-black' ?> rounded-2xl transition-all overflow-hidden sidebar-link">
             <div class="w-7 h-7 rounded-full overflow-hidden border border-surface-container-high shrink-0 bg-black text-white flex items-center justify-center font-bold text-[10px]">
                 <?php if (!empty($_fotoPathSidebar)): ?>
                     <img src="<?= BASE_URL . 'public/' . $_fotoPathSidebar ?>" class="w-full h-full object-cover" alt="Foto">
@@ -103,15 +110,15 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
                     <?= $_inicialSidebar ?>
                 <?php endif; ?>
             </div>
-            <span class="text-xs font-semibold tracking-tight whitespace-nowrap sidebar-text">Meu Perfil</span>
+            <span class="text-xs font-semibold tracking-tight sidebar-text whitespace-nowrap">Meu Perfil</span>
         </a>
         <!-- Sair -->
         <form method="POST" action="<?= BASE_URL ?>app/controllers/auth.php" class="w-full m-0">
             <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
             <input type="hidden" name="acao" value="logout">
-            <button type="submit" class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:text-error hover:bg-error/5 rounded-2xl transition-all cursor-pointer sidebar-link-item">
+            <button type="submit" class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:text-error hover:bg-error/5 rounded-2xl transition-all cursor-pointer overflow-hidden sidebar-link">
                 <span class="material-symbols-outlined text-[20px] shrink-0">logout</span>
-                <span class="text-xs font-semibold tracking-tight text-inherit whitespace-nowrap sidebar-text">Sair</span>
+                <span class="text-xs font-semibold tracking-tight text-inherit sidebar-text whitespace-nowrap">Sair</span>
             </button>
         </form>
     </div>
@@ -142,78 +149,82 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
     </form>
 </nav>
 
-<!-- Correção de margens para o conteúdo principal no Mobile e Transições da Sidebar -->
+<!-- Correção de margens para o conteúdo principal no Mobile e Minimized state -->
 <style>
+    /* Transições globais */
+    .ml-56, .ml-64, .lg\:ml-56, .lg\:ml-64, .ml-\[17rem\] { transition: margin-left 0.3s ease; }
+
+    /* Estado Minimizado */
+    html.sidebar-minimized .ml-56,
+    html.sidebar-minimized .ml-64,
+    html.sidebar-minimized .lg\:ml-56,
+    html.sidebar-minimized .lg\:ml-64,
+    html.sidebar-minimized .ml-\[17rem\] { margin-left: 7.5rem !important; }
+    html.sidebar-minimized #header-wrapper { left: 7.5rem !important; right: 1.5rem !important; }
+    html.sidebar-minimized #desktop-sidebar { 
+        width: 4.5rem !important; 
+        border-radius: 1.5rem !important; 
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05) !important;
+        border: none !important;
+        overflow: hidden !important;
+    }
+    html.sidebar-minimized .sidebar-text { display: none !important; }
+    html.sidebar-minimized .sidebar-mini-text { display: block !important; }
+    html.sidebar-minimized .sidebar-link { justify-content: center; padding-left: 0; padding-right: 0; }
+    html.sidebar-minimized #sidebar-top { padding-left: 0; padding-right: 0; }
+    html.sidebar-minimized #sidebar-bottom { padding-left: 0; padding-right: 0; }
+    html.sidebar-minimized #sidebar-toggle-icon { transform: rotate(180deg); }
+    
     /* Safe area bottom para iOS */
     .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
     
-    /* Transições globais de layout */
-    .ml-56, .transition-all {
-        transition-property: all;
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        transition-duration: 300ms;
-    }
-    
-    /* Estado fechado (Sidebar minimizada) */
-    body.sidebar-closed #desktop-sidebar {
-        width: 5.5rem; /* w-22 ~ 88px */
-    }
-    
-    body.sidebar-closed #desktop-sidebar .sidebar-text,
-    body.sidebar-closed #desktop-sidebar .sidebar-logo-text {
-        display: none;
-    }
-    
-    body.sidebar-closed #desktop-sidebar .mb-2.flex {
-        justify-content: center;
-    }
-    
-    body.sidebar-closed #sidebar-toggle-btn {
-        margin: 0 auto;
-    }
-    
-    body.sidebar-closed #desktop-sidebar .sidebar-link-item {
-        justify-content: center;
-        padding-left: 0;
-        padding-right: 0;
-    }
-    
-    body.sidebar-closed #header-wrapper {
-        left: 5.5rem;
-    }
-    
-    body.sidebar-closed .ml-56 {
-        margin-left: 5.5rem !important;
-    }
-    
     @media (max-width: 1023px) {
-        /* No mobile, o conteúdo principal não deve ter a margem da sidebar (ml-56) */
-        .ml-56, body.sidebar-closed .ml-56 { margin-left: 0 !important; }
-        /* O header volta a ocupar toda a largura em mobile */
-        #header-wrapper, body.sidebar-closed #header-wrapper { left: 0 !important; }
+        /* No mobile, o conteúdo principal não deve ter a margem da sidebar */
+        .ml-56, .ml-64, .lg\:ml-56, .lg\:ml-64,
+        html.sidebar-minimized .ml-56, html.sidebar-minimized .ml-64,
+        html.sidebar-minimized .lg\:ml-56, html.sidebar-minimized .lg\:ml-64,
+        html.sidebar-minimized .ml-\[17rem\] { margin-left: 0 !important; }
+        html.sidebar-minimized #header-wrapper { left: 0 !important; }
         /* Adicionar padding em baixo para compensar a bottom nav */
         main { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 1rem)) !important; }
     }
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const toggleBtn = document.getElementById('sidebar-toggle-btn');
-    const toggleIcon = document.getElementById('sidebar-toggle-icon');
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('sidebar-toggle');
     
-    // Restaurar estado salvo
-    if (localStorage.getItem('sidebar-closed') === 'true') {
-        document.body.classList.add('sidebar-closed');
-        if (toggleIcon) toggleIcon.textContent = 'menu';
+    // Atualizar UI caso a classe já tenha sido adicionada no head
+    function updateToggleUI() {
+        const isMin = document.documentElement.classList.contains('sidebar-minimized');
+        const icon = document.getElementById('sidebar-toggle-icon');
+        
+        if (icon) {
+            // A animação do ícone já é controlada pelo CSS (transform: rotate(180deg))
+        }
     }
     
+    updateToggleUI();
+
     if (toggleBtn) {
-        toggleBtn.addEventListener('click', function() {
-            document.body.classList.toggle('sidebar-closed');
-            const isClosed = document.body.classList.contains('sidebar-closed');
-            localStorage.setItem('sidebar-closed', isClosed);
-            if (toggleIcon) toggleIcon.textContent = isClosed ? 'menu' : 'menu_open';
+        toggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('sidebar-minimized');
+            const isMin = document.documentElement.classList.contains('sidebar-minimized');
+            localStorage.setItem('sidebar-minimized', isMin);
+            updateToggleUI();
         });
     }
+
+    // Sincronizar abas abertas em tempo real
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'sidebar-minimized') {
+            if (e.newValue === 'true') {
+                document.documentElement.classList.add('sidebar-minimized');
+            } else {
+                document.documentElement.classList.remove('sidebar-minimized');
+            }
+            updateToggleUI();
+        }
+    });
 });
 </script>

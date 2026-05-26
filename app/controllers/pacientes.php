@@ -29,7 +29,6 @@ if ($acao === 'registar') {
     $nome = trim($_POST['nome'] ?? '');
     $idade = trim($_POST['idade'] ?? '');
     $morada = trim($_POST['morada'] ?? '');
-    $peso = trim($_POST['peso'] ?? '');
     $tipo_atendimento = trim($_POST['tipo_atendimento_id'] ?? '');
     $prioridade = trim($_POST['prioridade'] ?? '');
 
@@ -48,10 +47,7 @@ if ($acao === 'registar') {
         $erros[] = 'Morada é obrigatória.';
     }
 
-    // Peso obrigatório para menores de 18
-    if ((int) $idade < 18 && empty($peso)) {
-        $erros[] = 'Peso é obrigatório para menores de 18 anos.';
-    }
+
 
     if (
         empty($tipo_atendimento) ||
@@ -80,22 +76,25 @@ if ($acao === 'registar') {
 
     // --- Registo ---
     try {
-        $codigo = Paciente::registarComSenha([
+        $resultado = Paciente::registarComSenha([
             'nome' => $nome,
             'idade' => $idade,
             'morada' => $morada,
-            'peso' => $peso ?: null,
             'tipo_atendimento_id' => $tipo_atendimento,
             'prioridade' => $prioridade,
         ], (int) sessao('utilizador_id'));
+        
+        $codigo = $resultado['codigo'];
+        $numProcesso = $resultado['numero_processo'];
 
         $_SESSION['mensagem'] =
-            "Paciente registado com sucesso — Senha: {$codigo}";
+            "Paciente registado com sucesso — Senha: {$codigo} | Nº Processo: {$numProcesso}";
         $_SESSION['ultima_senha'] = $codigo;
+        $_SESSION['ultimo_processo'] = $numProcesso;
 
         if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
             header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'senha' => $codigo]);
+            echo json_encode(['status' => 'success', 'senha' => $codigo, 'numero_processo' => $numProcesso]);
             exit;
         }
 

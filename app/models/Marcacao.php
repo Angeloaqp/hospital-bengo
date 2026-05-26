@@ -367,18 +367,20 @@ class Marcacao
             return false;
         }
 
-        // 2. Obter capacidade da disponibilidade
+        // 2. Obter capacidade da disponibilidade (data concreta primeiro, depois padrão semanal)
         $diaSemana = (int) date('N', strtotime($data)); // 1=Seg, 7=Dom
         $stmt2 = $db->prepare(
             "SELECT capacidade FROM disponibilidades_medicas
              WHERE medico_id = :med
-             AND dia_semana = :dia
+             AND (data_disponibilidade = :data2 OR (data_disponibilidade IS NULL AND dia_semana = :dia))
              AND turno = :turno
              AND activo = 1
+             ORDER BY data_disponibilidade DESC
              LIMIT 1"
         );
         $stmt2->execute([
             ':med'  => $medicoId,
+            ':data2' => $data,
             ':dia'  => $diaSemana,
             ':turno'=> $turno,
         ]);
@@ -406,11 +408,13 @@ class Marcacao
 
         $stmt = $db->prepare(
             "SELECT capacidade FROM disponibilidades_medicas
-             WHERE medico_id = :med AND dia_semana = :dia
+             WHERE medico_id = :med
+             AND (data_disponibilidade = :data2 OR (data_disponibilidade IS NULL AND dia_semana = :dia))
              AND turno = :turno AND activo = 1
+             ORDER BY data_disponibilidade DESC
              LIMIT 1"
         );
-        $stmt->execute([':med' => $medicoId, ':dia' => $diaSemana, ':turno' => $turno]);
+        $stmt->execute([':med' => $medicoId, ':data2' => $data, ':dia' => $diaSemana, ':turno' => $turno]);
         $disp = $stmt->fetch();
         $capacidade = $disp ? (int) $disp['capacidade'] : 15;
         $ocupacao = self::contarOcupacao($medicoId, $data, $turno);
@@ -497,13 +501,13 @@ class Marcacao
         $diaSemana = (int) date('N', strtotime($data));
 
         $where = [
-            "d.dia_semana = :dia",
+            "(d.data_disponibilidade = :data_exact OR (d.data_disponibilidade IS NULL AND d.dia_semana = :dia))",
             "d.turno = :turno",
             "d.activo = 1",
             "u.perfil = 'medico'",
             "u.estado = 1",
         ];
-        $params = [':dia' => $diaSemana, ':turno' => $turno];
+        $params = [':data_exact' => $data, ':dia' => $diaSemana, ':turno' => $turno];
 
         if ($especialidadeId) {
             $where[] = "d.especialidade_id = :esp";

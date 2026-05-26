@@ -108,12 +108,19 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                     <div class="group">
                         <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="sexo">Género</label>
                         <div class="relative">
-                            <select id="sexo" name="sexo" class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] appearance-none cursor-pointer">
-                                <option value="">Seleccionar...</option>
-                                <option value="M" <?= ($antigos['sexo'] ?? '') === 'M' ? 'selected' : '' ?>>Masculino</option>
-                                <option value="F" <?= ($antigos['sexo'] ?? '') === 'F' ? 'selected' : '' ?>>Feminino</option>
-                            </select>
-                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#474747]">expand_more</span>
+                            <?php
+                            $sel_id = 'sexo';
+                            $sel_name = 'sexo';
+                            $sel_icon = 'person';
+                            $sel_placeholder = 'Seleccionar...';
+                            $sel_value = $antigos['sexo'] ?? '';
+                            $sel_options = [
+                                '' => ['label' => 'Seleccionar...', 'icon' => 'person', 'color' => 'text-on-surface-variant'],
+                                'M' => ['label' => 'Masculino', 'icon' => 'male', 'color' => 'text-blue-600'],
+                                'F' => ['label' => 'Feminino', 'icon' => 'female', 'color' => 'text-pink-500'],
+                            ];
+                            include __DIR__ . '/../comum/custom_select.php';
+                            ?>
                         </div>
                     </div>
                     <div class="group">

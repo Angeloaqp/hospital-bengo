@@ -41,15 +41,15 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
     </style>
 </head>
 
-<body class="text-on-surface">
+<body class="text-on-surface bg-[#f3f4f6]">
 
 <?php $paginaActual = 'marcacao'; ?>
 <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
 <?php include __DIR__ . '/../comum/header.php'; ?>
 
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<main class="w-full max-w-[1000px] relative">
+<div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full relative">
 
     <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" id="form-marcacao">
         <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
@@ -113,10 +113,19 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
             <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Especialidade da Consulta *</label>
-                    <select name="especialidade_id" id="sel-especialidade" required class="w-full h-14 px-5 bg-surface-container-low border-none rounded-2xl font-semibold text-sm focus:ring-2 focus:ring-black/10 transition-all appearance-none">
-                        <option value="">Seleccione a Especialidade...</option>
-                        <?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
-                    </select>
+                    <?php
+                    $sel_id = 'sel-especialidade';
+                    $sel_name = 'especialidade_id';
+                    $sel_icon = 'medical_services';
+                    $sel_placeholder = 'Seleccione a Especialidade...';
+                    $sel_value = '';
+                    $sel_required = true;
+                    $sel_options = [];
+                    foreach($especialidades as $e) {
+                        $sel_options[(string)$e['id']] = ['label' => htmlspecialchars($e['nome']), 'icon' => 'medical_services', 'color' => 'text-blue-600'];
+                    }
+                    include __DIR__ . '/../comum/custom_select.php';
+                    ?>
                 </div>
             </div>
         </section>
@@ -185,17 +194,33 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
                     </label>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="area-data-manual">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-50" id="area-data-manual">
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Data da Consulta *</label>
-                        <input type="date" name="data_consulta" id="sel-data" required min="<?= date('Y-m-d') ?>" value="<?= $dados['data_consulta'] ?? date('Y-m-d') ?>" class="w-full h-14 px-5 bg-surface-container-low border-none rounded-2xl font-semibold text-sm focus:ring-2 focus:ring-black/10 transition-all" />
+                        <?php 
+                        $cal_id = 'cal-atendimento-diario';
+                        $cal_name = 'data_consulta';
+                        $cal_value = $dados['data_consulta'] ?? date('Y-m-d');
+                        $cal_min = date('Y-m-d');
+                        $cal_class = 'w-full';
+                        require __DIR__ . '/../comum/calendario_dropdown.php'; 
+                        ?>
                     </div>
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Turno *</label>
-                        <select name="turno" id="sel-turno" required class="w-full h-14 px-5 bg-surface-container-low border-none rounded-2xl font-semibold text-sm focus:ring-2 focus:ring-black/10 transition-all appearance-none">
-                            <option value="manha">Manhã (08:00 - 13:00)</option>
-                            <option value="tarde">Tarde (13:00 - 18:00)</option>
-                        </select>
+                        <?php
+                        $sel_id = 'sel-turno';
+                        $sel_name = 'turno';
+                        $sel_icon = 'light_mode';
+                        $sel_placeholder = 'Manhã (08:00 - 13:00)';
+                        $sel_value = 'manha';
+                        $sel_required = true;
+                        $sel_options = [
+                            'manha' => ['label' => 'Manhã (08:00 - 13:00)', 'icon' => 'light_mode', 'color' => 'text-amber-500'],
+                            'tarde' => ['label' => 'Tarde (13:00 - 18:00)', 'icon' => 'routine', 'color' => 'text-orange-500'],
+                        ];
+                        include __DIR__ . '/../comum/custom_select.php';
+                        ?>
                     </div>
                 </div>
                 
@@ -228,12 +253,21 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Nível de Prioridade *</label>
-                    <select name="prioridade" required class="w-full h-14 px-5 bg-surface-container-low border-none rounded-2xl font-semibold text-sm focus:ring-2 focus:ring-black/10 transition-all appearance-none">
-                        <option value="4">Fila Regular (Normal)</option>
-                        <option value="3">Prioritário: Grávida</option>
-                        <option value="2">Prioritário: Terceira Idade</option>
-                        <option value="1">Atendimento Urgente</option>
-                    </select>
+                    <?php
+                    $sel_id = 'cs-prioridade-atd';
+                    $sel_name = 'prioridade';
+                    $sel_icon = 'check_circle';
+                    $sel_placeholder = 'Fila Regular (Normal)';
+                    $sel_value = '4';
+                    $sel_required = true;
+                    $sel_options = [
+                        '4' => ['label' => 'Fila Regular (Normal)', 'icon' => 'check_circle', 'color' => 'text-blue-600'],
+                        '3' => ['label' => 'Prioritário: Grávida', 'icon' => 'pregnant_woman', 'color' => 'text-purple-600'],
+                        '2' => ['label' => 'Prioritário: Terceira Idade', 'icon' => 'elderly', 'color' => 'text-amber-500'],
+                        '1' => ['label' => 'Atendimento Urgente', 'icon' => 'notification_important', 'color' => 'text-red-600'],
+                    ];
+                    include __DIR__ . '/../comum/custom_select.php';
+                    ?>
                 </div>
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Observações / Motivo</label>
@@ -622,7 +656,8 @@ document.getElementById('form-marcacao').addEventListener('submit', function(e) 
             }, 300);
             
         } else {
-            alert('Erro: ' + (d.erros ? d.erros.join('\n') : 'Falha desconhecida.'));
+            alert('Erro: ' + (d.erros ? d.erros.join('
+') : 'Falha desconhecida.'));
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = originalText;
         }

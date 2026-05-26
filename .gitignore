@@ -19,3 +19,5 @@ Thumbs.db
 # Temp files
 /tmp/
 *.tmp
+
+testsprite_tests\tmp\config.json

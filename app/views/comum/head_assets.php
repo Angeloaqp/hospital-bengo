@@ -6,7 +6,7 @@
 <link href="<?= BASE_URL ?>public/assets/css/material_symbols.css" rel="stylesheet"/>
 
 <!-- Tactile Editorial CSS -->
-<link rel="stylesheet" href="/hospital-bengo/public/css/tactile.css">
+<link rel="stylesheet" href="/hospital-bengo/public/css/tactile.css?v=<?= time() ?>">
 
 <!-- Tailwind Config: Tactile Editorial Design System -->
 <script>
@@ -59,8 +59,9 @@ tailwind.config = {
     h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
 </style>
 
-<!-- UX Magic (Etapa 3) -->
-<script defer src="/hospital-bengo/public/js/ux.js"></script>
+<!-- Tactile UX Scripts -->
+<script defer src="/hospital-bengo/public/js/ux.js?v=<?= time() ?>"></script>
+<script src="/hospital-bengo/public/js/calendar_widget.js?v=<?= time() ?>"></script>
 
 <?php if (isset($_SESSION['mensagem']) && !empty($_SESSION['mensagem'])): ?>
     <meta name="flash-message" content="<?= htmlspecialchars($_SESSION['mensagem']) ?>" data-type="success">

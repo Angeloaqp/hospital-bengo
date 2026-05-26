@@ -138,33 +138,54 @@ unset($_SESSION['erro']);
                         <!-- Perfil -->
                         <div class="md:col-span-2 mt-4 pt-6 border-t border-surface-container-low">
                             <label for="perfil" class="tactile-label">Nível de Acesso *</label>
-                            <select id="perfil" name="perfil" class="tactile-input appearance-none bg-no-repeat bg-[right_1rem_center]" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'black\'><path d=\'M7 10l5 5 5-5z\'/></svg>'); background-size: 1.5rem;" required>
-                                <option value="recepcionista" <?= $u['perfil'] === 'recepcionista' ? 'selected' : '' ?>>Recepcionista</option>
-                                <option value="medico" <?= $u['perfil'] === 'medico' ? 'selected' : '' ?>>Médico</option>
-                                <option value="admin" <?= $u['perfil'] === 'admin' ? 'selected' : '' ?>>Administrador</option>
-                            </select>
+                            <?php
+                            $sel_id = 'perfil';
+                            $sel_name = 'perfil';
+                            $sel_icon = 'shield_person';
+                            $sel_placeholder = 'Seleccionar perfil';
+                            $sel_value = $u['perfil'];
+                            $sel_required = true;
+                            $sel_options = [
+                                'recepcionista' => ['label' => 'Recepcionista', 'icon' => 'badge', 'color' => 'text-purple-600'],
+                                'medico' => ['label' => 'Médico', 'icon' => 'stethoscope', 'color' => 'text-blue-600'],
+                                'admin' => ['label' => 'Administrador', 'icon' => 'shield_person', 'color' => 'text-black'],
+                            ];
+                            include __DIR__ . '/../comum/custom_select.php';
+                            ?>
                         </div>
 
                         <!-- Especialidade (Médico) -->
                         <div class="campo-medico">
                             <label for="especialidade_id" class="tactile-label">Especialidade *</label>
-                            <select id="especialidade_id" name="especialidade_id" class="tactile-input appearance-none bg-no-repeat bg-[right_1rem_center]" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'black\'><path d=\'M7 10l5 5 5-5z\'/></svg>'); background-size: 1.5rem;">
-                                <option value="0">— Seleccionar —</option>
-                                <?php foreach ($especialidades as $e): ?>
-                                    <option value="<?= $e['id'] ?>" <?= ($u['especialidade_id'] ?? 0) == $e['id'] ? 'selected' : '' ?>><?= htmlspecialchars($e['nome']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <?php
+                            $sel_id = 'especialidade_id';
+                            $sel_name = 'especialidade_id';
+                            $sel_icon = 'medical_services';
+                            $sel_placeholder = '— Seleccionar —';
+                            $sel_value = (string)($u['especialidade_id'] ?? 0);
+                            $sel_options = ['0' => ['label' => '— Seleccionar —', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant']];
+                            foreach ($especialidades as $e) {
+                                $sel_options[(string)$e['id']] = ['label' => htmlspecialchars($e['nome']), 'icon' => 'medical_services', 'color' => 'text-blue-600'];
+                            }
+                            include __DIR__ . '/../comum/custom_select.php';
+                            ?>
                         </div>
 
                         <!-- Consultório (Médico) -->
                         <div class="campo-medico">
                             <label for="consultorio_id" class="tactile-label">Consultório Vinculado</label>
-                            <select id="consultorio_id" name="consultorio_id" class="tactile-input appearance-none bg-no-repeat bg-[right_1rem_center]" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'black\'><path d=\'M7 10l5 5 5-5z\'/></svg>'); background-size: 1.5rem;">
-                                <option value="0">— Seleccionar —</option>
-                                <?php foreach ($consultorios as $c): ?>
-                                    <option value="<?= $c['id'] ?>" <?= ($u['consultorio_id'] ?? 0) == $c['id'] ? 'selected' : '' ?>><?= htmlspecialchars($c['nome']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <?php
+                            $sel_id = 'consultorio_id';
+                            $sel_name = 'consultorio_id';
+                            $sel_icon = 'meeting_room';
+                            $sel_placeholder = '— Seleccionar —';
+                            $sel_value = (string)($u['consultorio_id'] ?? 0);
+                            $sel_options = ['0' => ['label' => '— Seleccionar —', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant']];
+                            foreach ($consultorios as $c) {
+                                $sel_options[(string)$c['id']] = ['label' => htmlspecialchars($c['nome']), 'icon' => 'meeting_room', 'color' => 'text-green-600'];
+                            }
+                            include __DIR__ . '/../comum/custom_select.php';
+                            ?>
                         </div>
                     </div>
 
@@ -181,7 +202,7 @@ unset($_SESSION['erro']);
     </div>
 
     <script>
-        const perfilSelect = document.getElementById('perfil');
+        const perfilSelect = document.getElementById('perfil-native');
         const camposMedico = document.querySelectorAll('.campo-medico');
 
         function toggleCamposMedico() {
@@ -190,8 +211,8 @@ unset($_SESSION['erro']);
                 c.style.display = show ? 'block' : 'none';
             });
             if (!show) {
-                document.getElementById('especialidade_id').value = '0';
-                document.getElementById('consultorio_id').value = '0';
+                document.getElementById('especialidade_id-native').value = '0';
+                document.getElementById('consultorio_id-native').value = '0';
             }
         }
 

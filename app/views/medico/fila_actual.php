@@ -80,7 +80,7 @@ $prioridades = [
         .crossfade-in { opacity: 0; animation: fadeIn 0.5s ease-out 0.1s forwards; }
     </style>
 </head>
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface bg-[#f3f4f6]">
 
     <?php $paginaActual = 'fila_actual'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -112,10 +112,11 @@ $prioridades = [
     <?php $tituloPagina = 'Dashboard — Fila Actual'; ?>
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
-    <div class="ml-56 mt-28 h-[calc(100vh-7rem)] flex flex-col">
+    <div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
         <!-- Scrollable Content Area -->
         <div class="flex-1 overflow-y-auto custom-scrollbar">
-            <main class="w-full max-w-[1500px] mx-auto px-8 pb-24 pt-4">
+            <main class="w-full pb-24 pt-4">
                 
                 <!-- Page Title Section -->
                 <header class="mb-8 flex items-end justify-between fade-in">
@@ -529,7 +530,8 @@ $prioridades = [
                             </button>
                         </div>
                     </div>
-                    <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-surface-container-low rounded-full opacity-30 pointer-events-none"></div>
+                    <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-surface-container-low rounded-full opacity-30 pointer-events-none"></main>
+</div>
                 `;
                 
                 // 4. Iniciar countdown do botão Desfazer dinâmico

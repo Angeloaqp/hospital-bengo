@@ -1,33 +1,35 @@
 version: "2"
 type: frontend
 tech_stack:
-  - php
-  - tailwind css
-  - vanilla javascript
-  - mysql
+  - PHP
+  - HTML
+  - JavaScript
+  - Bootstrap
 routes:
   - path: /hospital-bengo/public/index.php
     file: public/index.php
     auth_required: false
-    description: User login page
-  - path: /hospital-bengo/public/painel.php
-    file: public/painel.php
-    auth_required: false
-    description: Public panel for waiting room
+    description: Login page
+  - path: /hospital-bengo/app/views/admin/configuracao.php
+    file: app/views/admin/configuracao.php
+    auth_required: true
+    description: Admin Settings and System Configuration
 features:
-  - name: User Login
-    description: Login with username and password
+  - name: System Configuration
+    description: Admin page for hospital system settings. This includes editing the hospital name, changing the logo, and toggling specific system features like walk-ins, online appointments, etc.
     files:
-      - public/index.php
-      - app/controllers/auth.php
-    entry_route: /hospital-bengo/public/index.php
+      - app/views/admin/configuracao.php
+      - app/controllers/admin_config.php
+    entry_route: /hospital-bengo/app/views/admin/configuracao.php
     user_interactions:
-      - Fill username input field
-      - Fill password input field
-      - Click Aceder ao Painel button to submit
-      - See error message on invalid credentials
-    api_calls:
-      - method: POST
-        endpoint: /hospital-bengo/app/controllers/auth.php
-    auth_required: false
-known_limitations: []
+      - Navigate to the configuration page
+      - Update hospital name input
+      - Upload a new logo image
+      - Toggle various system feature switches (e.g., enable/disable modules)
+      - Click save changes
+    api_calls: []
+    auth_required: true
+known_limitations:
+  - issue: URL route structure
+    location: All
+    impact: The correct URLs directly point to the PHP files in app/views/admin directory. Always use the exact URL /hospital-bengo/app/views/admin/configuracao.php to access the configuration. Do NOT use alias routes like /admin.

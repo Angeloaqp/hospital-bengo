@@ -33,7 +33,9 @@ $prioridades = [
 
 // Mensagem flash (após registo de paciente)
 $mensagem = $_SESSION['mensagem'] ?? '';
-unset($_SESSION['mensagem']);
+$ultimaSenha = $_SESSION['ultima_senha'] ?? '';
+$ultimoProcesso = $_SESSION['ultimo_processo'] ?? '';
+unset($_SESSION['mensagem'], $_SESSION['ultima_senha'], $_SESSION['ultimo_processo']);
 ?>
 <!DOCTYPE html>
 <html lang="pt"><head>
@@ -98,9 +100,31 @@ unset($_SESSION['mensagem']);
     .floating-card {
         box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
     }
+    
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #print-ticket, #print-ticket * {
+            visibility: visible;
+        }
+        #print-ticket {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 300px;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        /* Hide all UI elements including modal backgrounds */
+        .no-print {
+            display: none !important;
+        }
+    }
 </style>
 </head>
-<body class="text-on-surface">
+<body class="text-on-surface bg-[#f3f4f6]">
 
 <?php
 // ── SIDEBAR ──
@@ -122,9 +146,44 @@ include __DIR__ . '/../comum/header.php';
     data-paciente="<?= $ultimaChamada ? explode(' ', $ultimaChamada['paciente_nome'])[0] : '' ?>">
 </div>
 
+<?php if ($ultimaSenha): ?>
+<!-- TICKET DE IMPRESSÃO (MODAL) -->
+<div id="ticket-modal" class="fixed inset-0 z-[100] flex justify-center items-center bg-black/60 backdrop-blur-sm no-print">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl flex flex-col items-center">
+        <h3 class="font-black text-xl mb-6 tracking-tight">Imprimir Senha</h3>
+        
+        <!-- Ticket Físico Renderizado -->
+        <div id="print-ticket" class="w-full border-2 border-black border-dashed rounded-xl p-6 flex flex-col items-center justify-center bg-white mb-8">
+            <h4 class="font-extrabold text-lg mb-1"><?= APP_NOME ?></h4>
+            <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-6">Recepção Principal</p>
+            
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-1">Senha de Atendimento</p>
+            <p class="text-5xl font-mono font-black text-black mb-4"><?= htmlspecialchars($ultimaSenha) ?></p>
+            
+            <?php if ($ultimoProcesso): ?>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-1 mt-2">Nº Processo (Vitalício)</p>
+            <p class="text-lg font-black text-primary bg-surface-container px-3 py-1 rounded-md mb-2"><?= htmlspecialchars($ultimoProcesso) ?></p>
+            <?php endif; ?>
+            
+            <div class="w-full border-t border-black/10 my-4"></div>
+            <p class="text-[9px] font-bold text-on-surface-variant text-center">Data: <?= date('d/m/Y H:i') ?></p>
+            <p class="text-[9px] font-bold text-on-surface-variant text-center mt-1">Aguarde ser chamado no painel.</p>
+        </div>
+
+        <div class="flex gap-3 w-full">
+            <button onclick="document.getElementById('ticket-modal').style.display='none'" class="flex-1 bg-surface-container-low text-black py-3 rounded-xl font-bold text-sm hover:bg-surface-container transition-colors">Fechar</button>
+            <button onclick="window.print()" class="flex-1 bg-black text-white py-3 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg">
+                <span class="material-symbols-outlined text-[18px]">print</span>
+                Imprimir
+            </button>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <!-- Main Content Area -->
-<div class="ml-56 mt-28 p-8 flex justify-center">
-<main class="w-full max-w-[1500px]">
+<div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
 
     <!-- Welcome Header -->
     <div class="mb-6">
@@ -186,7 +245,6 @@ include __DIR__ . '/../comum/header.php';
                             <tr class="text-on-surface-variant text-[10px] font-black uppercase tracking-[0.15em]">
                                 <th class="pb-4">Senha</th>
                                 <th class="pb-4">Nome do Paciente</th>
-                                <th class="pb-4">Consulta</th>
                                 <th class="pb-4 text-center">Prioridade</th>
                                 <th class="pb-4 text-right">Chegada</th>
                             </tr>
@@ -203,7 +261,6 @@ include __DIR__ . '/../comum/header.php';
                             <tr class="group hover:bg-surface-container-low/30 transition-colors">
                                 <td class="py-4 font-black <?= $isUrgente ? 'text-error' : 'text-black' ?> text-base"><?= htmlspecialchars($s['codigo']) ?></td>
                                 <td class="py-4 font-bold text-black text-sm"><?= htmlspecialchars($s['paciente_nome']) ?></td>
-                                <td class="py-4 text-on-surface-variant text-xs font-medium"><?= htmlspecialchars($s['tipo_atendimento']) ?></td>
                                 <td class="py-4 text-center">
                                     <span class="px-3 py-1 <?= $p['badge'] ?> text-white text-[9px] font-black rounded-full"><?= strtoupper($p['label']) ?></span>
                                 </td>

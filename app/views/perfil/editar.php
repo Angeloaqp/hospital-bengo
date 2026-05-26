@@ -102,7 +102,7 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
     </style>
 </head>
 
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface bg-[#f3f4f6]">
     <?php $paginaActual = 'perfil'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
@@ -114,8 +114,9 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
     <?php $accoesPagina = ob_get_clean(); ?>
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
-    <main class="ml-64 pt-24 h-screen overflow-y-auto custom-scrollbar">
-        <div class="p-8 max-w-[1200px] mx-auto min-h-full pb-24">
+    <div class="ml-[17rem] mr-6 mt-28 py-8 ">
+<main class="w-full">
+        <div class="pb-24">
             
             <div class="mb-10 flex justify-between items-end glide-in">
                 <div>
@@ -289,5 +290,6 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
             </div>
         </div>
     </main>
+</div>
 </body>
 </html>

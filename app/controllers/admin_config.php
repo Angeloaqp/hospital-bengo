@@ -138,27 +138,36 @@ if ($acao === 'guardar_disponibilidade') {
     $medicoId = (int) ($_POST['medico_id'] ?? 0);
     $espId = (int) ($_POST['especialidade_id'] ?? 0);
     $consId = !empty($_POST['consultorio_id']) ? (int) $_POST['consultorio_id'] : null;
-    $diaSemana = (int) ($_POST['dia_semana'] ?? 0);
+    $dataDisp = trim($_POST['data_disponibilidade'] ?? '');
     $turno = trim($_POST['turno'] ?? '');
     $capacidade = (int) ($_POST['capacidade'] ?? 10);
 
-    if ($medicoId <= 0 || $espId <= 0 || $diaSemana < 1 || $diaSemana > 7 || !in_array($turno, ['manha', 'tarde'])) {
+    if ($medicoId <= 0 || $espId <= 0 || empty($dataDisp) || !in_array($turno, ['manha', 'tarde', 'ambos'])) {
         $_SESSION['erro'] = 'Dados inválidos para disponibilidade.';
         header('Location: ' . $destino . '?tab=disponibilidade');
         exit;
     }
 
-    Disponibilidade::guardar([
-        'medico_id'       => $medicoId,
-        'especialidade_id'=> $espId,
-        'consultorio_id'  => $consId,
-        'dia_semana'      => $diaSemana,
-        'turno'           => $turno,
-        'capacidade'      => max(1, $capacidade),
-    ]);
+    // Derive dia_semana from the date (1=Mon..7=Sun)
+    $diaSemana = (int) date('N', strtotime($dataDisp));
+    
+    // If 'ambos', create one for manha and one for tarde
+    $turnos = ($turno === 'ambos') ? ['manha', 'tarde'] : [$turno];
+    
+    foreach ($turnos as $t) {
+        Disponibilidade::guardar([
+            'medico_id'            => $medicoId,
+            'especialidade_id'     => $espId,
+            'consultorio_id'       => $consId,
+            'dia_semana'           => $diaSemana,
+            'data_disponibilidade' => $dataDisp,
+            'turno'                => $t,
+            'capacidade'           => max(1, $capacidade),
+        ]);
+    }
 
-    Auditoria::registar($utilizadorId, 'guardar_disponibilidade', "Médico #{$medicoId}, dia {$diaSemana}, {$turno}");
-    $_SESSION['mensagem'] = 'Disponibilidade guardada.';
+    Auditoria::registar($utilizadorId, 'guardar_disponibilidade', "Médico #{$medicoId}, data {$dataDisp}, {$turno}");
+    $_SESSION['mensagem'] = 'Disponibilidade guardada com sucesso.';
     header('Location: ' . $destino . '?tab=disponibilidade');
     exit;
 }
@@ -209,6 +218,50 @@ if ($acao === 'remover_bloqueio') {
     Auditoria::registar($utilizadorId, 'remover_bloqueio', "Bloqueio #{$id}");
     $_SESSION['mensagem'] = 'Bloqueio removido.';
     header('Location: ' . $destino . '?tab=bloqueios');
+    exit;
+}
+
+// ------------------------------------------------
+// VÍNCULOS MÉDICOS
+// ------------------------------------------------
+if ($acao === 'sincronizar_vinculos') {
+    $medicoId = (int) ($_POST['medico_id'] ?? 0);
+    $especialidades = $_POST['especialidades'] ?? [];
+    $consultorios = $_POST['consultorios'] ?? [];
+
+    if ($medicoId <= 0) {
+        $_SESSION['erro'] = 'Seleccione um médico.';
+        header('Location: ' . $destino . '?tab=vinculos');
+        exit;
+    }
+
+    $db = Database::ligar();
+    $db->beginTransaction();
+    try {
+        // Clear existing links
+        $db->prepare("DELETE FROM medico_especialidades WHERE medico_id = :m")->execute([':m' => $medicoId]);
+        $db->prepare("DELETE FROM medico_consultorios_adicionais WHERE medico_id = :m")->execute([':m' => $medicoId]);
+
+        // Insert new specialty links
+        $stmtEsp = $db->prepare("INSERT INTO medico_especialidades (medico_id, especialidade_id) VALUES (:m, :e)");
+        foreach ($especialidades as $eId) {
+            $stmtEsp->execute([':m' => $medicoId, ':e' => (int) $eId]);
+        }
+
+        // Insert new office links
+        $stmtCons = $db->prepare("INSERT INTO medico_consultorios_adicionais (medico_id, consultorio_id) VALUES (:m, :c)");
+        foreach ($consultorios as $cId) {
+            $stmtCons->execute([':m' => $medicoId, ':c' => (int) $cId]);
+        }
+
+        $db->commit();
+        Auditoria::registar($utilizadorId, 'sincronizar_vinculos', "Médico #{$medicoId}: " . count($especialidades) . " esp, " . count($consultorios) . " cons");
+        $_SESSION['mensagem'] = 'Vínculos sincronizados com sucesso.';
+    } catch (Exception $e) {
+        $db->rollBack();
+        $_SESSION['erro'] = 'Erro ao sincronizar vínculos.';
+    }
+    header('Location: ' . $destino . '?tab=vinculos');
     exit;
 }
 
