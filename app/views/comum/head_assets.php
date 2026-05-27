@@ -41,8 +41,10 @@ tailwind.config = {
             },
             borderRadius: {
                 DEFAULT: "1rem",
-                lg: "2rem",
-                xl: "3rem",
+                lg: "1rem",
+                xl: "0.75rem",
+                "2xl": "1rem",
+                "3xl": "1.5rem",
                 full: "9999px"
             },
             fontFamily: {

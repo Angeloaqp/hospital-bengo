@@ -63,7 +63,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
             height: 100%;
             background: #f4f5f7;
             border: 2px solid transparent;
-            border-radius: 1.25rem;
+            border-radius: 0.75rem;
             padding: 1.6rem 1.25rem 0.5rem 3.5rem;
             font-size: 0.95rem;
             font-weight: 600;
@@ -174,7 +174,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                         opacity 0.4s ease 0.1s;
         }
         .campo-medico.visivel {
-            display: block; max-height: 200px; opacity: 1;
+            display: block; max-height: 200px; opacity: 1; overflow: visible;
         }
 
         /* ─── Section divider ─── */
@@ -393,10 +393,10 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
 
                             <!-- Actions -->
                             <div class="flex items-center justify-end gap-4 mt-12 pt-6 border-t border-black/5">
-                                <a href="utilizadores.php" class="font-bold text-sm text-on-surface-variant hover:text-black transition-colors px-6 py-3 rounded-full hover:bg-gray-50">
+                                <a href="utilizadores.php" class="font-bold text-sm text-on-surface-variant hover:text-black transition-colors px-6 py-3 rounded-xl hover:bg-gray-50">
                                     Cancelar
                                 </a>
-                                <button type="submit" class="bg-black text-white px-9 py-4 rounded-full font-bold text-sm flex items-center gap-2.5 btn-action shadow-lg shadow-black/10">
+                                <button type="submit" class="bg-black text-white px-9 py-4 rounded-xl font-bold text-sm flex items-center gap-2.5 btn-action shadow-lg shadow-black/10">
                                     <span class="material-symbols-outlined text-[20px]">person_add</span>
                                     Criar Utilizador
                                 </button>

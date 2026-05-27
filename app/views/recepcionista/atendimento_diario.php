@@ -303,10 +303,10 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
 
         <!-- Ações -->
         <div class="flex flex-col sm:flex-row justify-end gap-4" id="form-actions">
-            <a href="agenda.php" class="px-8 py-4 rounded-2xl font-black text-sm bg-surface-container-low text-black hover:bg-surface-container transition-colors text-center shadow-sm">
+            <a href="agenda.php" class="px-8 py-4 rounded-xl font-black text-sm bg-surface-container-low text-black hover:bg-surface-container transition-colors text-center shadow-sm">
                 Cancelar
             </a>
-            <button type="submit" id="btn-submit" class="bg-black text-white px-8 py-4 rounded-2xl font-black text-sm hover:scale-[1.02] transition-transform shadow-lg flex items-center justify-center gap-2">
+            <button type="submit" id="btn-submit" class="bg-black text-white px-8 py-4 rounded-xl font-black text-sm hover:scale-[1.02] transition-transform shadow-lg flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-[18px]"><?= $mesmoDia ? 'assignment_turned_in' : 'event_available' ?></span>
                 <span id="btn-text"><?= $mesmoDia ? 'Confirmar & Ir para Check-in' : 'Agendar Consulta' ?></span>
             </button>

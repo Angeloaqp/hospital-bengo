@@ -40,7 +40,7 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
                 <!-- Acções extras da página (botões injectados pelo layout antigo que precisa de se adaptar ao Tailwind) -->
                 <?php if (!empty($accoesPagina)): ?>
                     <div class="flex items-center gap-2">
-                        <?= str_replace(['btn-sm', 'btn-primario', 'btn'], ['text-xs px-4 py-2', 'bg-black text-white rounded-full font-bold shadow hover:scale-105', 'rounded-full px-4 py-2 font-bold transition-all text-xs'], $accoesPagina ?? '') ?>
+                        <?= str_replace(['btn-sm', 'btn-primario', 'btn'], ['text-xs px-4 py-2', 'bg-black text-white rounded-xl font-bold shadow hover:scale-105', 'rounded-xl px-4 py-2 font-bold transition-all text-xs'], $accoesPagina ?? '') ?>
                     </div>
                 <?php endif; ?>
 

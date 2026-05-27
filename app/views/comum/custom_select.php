@@ -45,9 +45,9 @@ $sizeBtn = 'h-14 px-5 rounded-xl';
 $sizePanel = 'rounded-xl p-2';
 $sizeOpt = 'px-4 py-3 rounded-lg';
 if ($sel_size === 'sm') {
-    $sizeBtn = 'h-10 px-3 rounded-lg';
-    $sizePanel = 'rounded-lg p-1.5';
-    $sizeOpt = 'px-3 py-2 rounded-md';
+    $sizeBtn = 'h-10 px-3 rounded-xl uppercase tracking-wider text-xs font-bold';
+    $sizePanel = 'rounded-xl p-1.5';
+    $sizeOpt = 'px-3 py-2 rounded-lg';
 } elseif ($sel_size === 'lg') {
     $sizeBtn = 'h-16 px-6 rounded-2xl';
     $sizePanel = 'rounded-2xl p-3';

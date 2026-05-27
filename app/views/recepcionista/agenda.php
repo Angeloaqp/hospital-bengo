@@ -48,7 +48,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 <link href="<?= BASE_URL ?>public/assets/css/google_fonts.css" rel="stylesheet"/>
 <link href="<?= BASE_URL ?>public/assets/css/material_symbols.css" rel="stylesheet"/>
 <script>
-tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#f9f9f9","surface-container-highest":"#e2e2e2","on-primary":"#e5e2e1","surface-container-high":"#e8e8e8",outline:"#777777","surface-dim":"#dadada","surface-container":"#eeeeee","on-error":"#ffffff",primary:"#000000","primary-container":"#3c3b3b",secondary:"#5e5e5e","outline-variant":"#c6c6c6","on-secondary":"#ffffff","surface-variant":"#e2e2e2",surface:"#f9f9f9","on-background":"#1a1c1c","on-surface":"#1a1c1c","surface-container-low":"#f3f3f3","surface-container-lowest":"#ffffff","inverse-surface":"#2f3131","surface-bright":"#f9f9f9","on-surface-variant":"#474747",error:"#ba1a1a"},borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"},fontFamily:{headline:["Manrope"],body:["Inter"],label:["Inter"]}}}}
+tailwind.config={darkMode:"class",theme:{extend:{colors:{background:"#f9f9f9","surface-container-highest":"#e2e2e2","on-primary":"#e5e2e1","surface-container-high":"#e8e8e8",outline:"#777777","surface-dim":"#dadada","surface-container":"#eeeeee","on-error":"#ffffff",primary:"#000000","primary-container":"#3c3b3b",secondary:"#5e5e5e","outline-variant":"#c6c6c6","on-secondary":"#ffffff","surface-variant":"#e2e2e2",surface:"#f9f9f9","on-background":"#1a1c1c","on-surface":"#1a1c1c","surface-container-low":"#f3f3f3","surface-container-lowest":"#ffffff","inverse-surface":"#2f3131","surface-bright":"#f9f9f9","on-surface-variant":"#474747",error:"#ba1a1a"},borderRadius:{DEFAULT:"1rem",lg:"1rem",xl:"0.75rem","2xl":"1rem","3xl":"1.5rem",full:"9999px"},fontFamily:{headline:["Manrope"],body:["Inter"],label:["Inter"]}}}}
 </script>
 <style>
 .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
@@ -76,10 +76,10 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
         <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= dataFormatoPT($dataFiltro) ?></p>
     </div>
     <div class="flex gap-3">
-        <a href="marcacao.php" class="bg-black text-white px-6 py-2.5 rounded-full font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
+        <a href="marcacao.php" class="bg-black text-white px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
             <span class="material-symbols-outlined text-[18px]">add</span> Nova Marcação
         </a>
-        <a href="marcacao.php?origem=mesmo_dia" class="bg-white text-black px-6 py-2.5 rounded-full font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline border border-black/10">
+        <a href="marcacao.php?origem=mesmo_dia" class="bg-white text-black px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline border border-black/10">
             <span class="material-symbols-outlined text-[18px]">bolt</span> Mesmo Dia
         </a>
     </div>

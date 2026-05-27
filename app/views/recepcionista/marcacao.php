@@ -463,14 +463,14 @@ $subtituloPagina = 'Agendar consulta para data futura';
                         
                         <!-- Action Buttons -->
                         <div class="flex flex-col gap-3 w-full relative">
-                            <button type="submit" id="btn-submit" class="w-full bg-black text-white hover:bg-zinc-800 transition-all flex flex-col items-center justify-center gap-0.5 shadow-xl rounded-[24px] group active:scale-95 py-4">
+                            <button type="submit" id="btn-submit" class="w-full bg-black text-white hover:bg-zinc-800 transition-all flex flex-col items-center justify-center gap-0.5 shadow-xl rounded-xl group active:scale-95 py-4">
                                 <span class="hidden material-symbols-outlined animate-spin text-white" id="submit-loading">progress_activity</span>
                                 <div class="flex flex-col items-center" id="submit-content">
                                     <span class="text-lg font-black tracking-tight" id="submit-btn-title">Agendar Consulta</span>
                                     <span class="text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] group-hover:text-white/60" id="submit-btn-subtitle">Confirmar Reserva</span>
                                 </div>
                             </button>
-                            <a href="agenda.php" class="w-full bg-transparent text-zinc-400 hover:text-error hover:bg-error/5 transition-all py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.15em] active:scale-95 text-center" id="secondary-action-btn">
+                            <a href="agenda.php" class="w-full bg-transparent text-zinc-400 hover:text-error hover:bg-error/5 transition-all py-4 rounded-xl font-bold text-xs uppercase tracking-[0.15em] active:scale-95 text-center" id="secondary-action-btn">
                                 Cancelar Agendamento
                             </a>
                             

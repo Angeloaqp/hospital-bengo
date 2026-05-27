@@ -77,10 +77,7 @@ unset($_SESSION['mensagem'], $_SESSION['ultima_senha'], $_SESSION['ultimo_proces
                     "error": "#ba1a1a",
                 },
                 "borderRadius": {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
+                    "DEFAULT": "1rem", "lg": "1rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"
                 },
                 "fontFamily": {
                     "headline": ["Manrope"],
@@ -228,7 +225,7 @@ include __DIR__ . '/../comum/header.php';
             <div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-black tracking-tight">Fila de Espera Atual</h3>
-                    <a href="registar.php" class="bg-black text-white px-6 py-2.5 rounded-full font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
+                    <a href="registar.php" class="bg-black text-white px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
                         <span class="material-symbols-outlined text-[18px]">add</span>
                         Novo Atendimento
                     </a>

@@ -92,7 +92,7 @@ $tabs = [
                     "surface": "#f9f9f9"
                 },
                 "borderRadius": {
-                    "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"
+                    "DEFAULT": "1rem", "lg": "1rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"
                 },
                 "fontFamily": {
                     "headline": ["Manrope"], "display": ["Manrope"], "body": ["Inter"], "label": ["Inter"]
@@ -222,7 +222,7 @@ $tabs = [
                             <input name="responsavel" type="text" class="input-recessed w-full rounded-2xl pl-12 pr-5 py-4 text-sm font-medium text-on-surface focus:ring-2 focus:ring-primary/20" placeholder="Nome...">
                         </div>
                     </div>
-                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-xl mt-4 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
                         <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">add</span>
                         <span class="btn-text">Criar Consultório</span>
                         <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
@@ -300,7 +300,7 @@ $tabs = [
                         <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Descrição</label>
                         <input name="descricao" type="text" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface focus:ring-2 focus:ring-primary/20" placeholder="Descrição rápida...">
                     </div>
-                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-xl mt-4 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
                         <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">add</span>
                         <span class="btn-text">Criar Especialidade</span>
                         <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
@@ -377,7 +377,7 @@ $tabs = [
                             <?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
                         </select>
                     </div>
-                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-xl mt-4 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
                         <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">add</span>
                         <span class="btn-text">Criar Tipo</span>
                         <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
@@ -481,7 +481,7 @@ $tabs = [
                         <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Capacidade (Qtd.)</label>
                         <input type="number" name="capacidade" value="10" min="1" max="50" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20">
                     </div>
-                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-6 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                    <button type="button" class="form-submit-btn w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-xl mt-6 hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
                         <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">event_available</span>
                         <span class="btn-text">Guardar Horário</span>
                         <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
@@ -534,7 +534,7 @@ $tabs = [
                     </div>
                     
                     <div class="md:col-span-3 pt-6 border-t border-surface-container flex justify-end">
-                        <button type="button" class="form-submit-btn bg-on-surface text-on-primary font-extrabold px-8 py-4 rounded-full hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                        <button type="button" class="form-submit-btn bg-on-surface text-on-primary font-extrabold px-8 py-4 rounded-xl hover:bg-inverse-surface transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
                             <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-180 btn-icon">sync</span>
                             <span class="btn-text">Sincronizar Vínculos</span>
                             <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
@@ -630,7 +630,7 @@ $tabs = [
                         <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Motivo</label>
                         <input name="motivo" required type="text" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-error/20" placeholder="Feriado, Reunião, Obras...">
                     </div>
-                    <button type="button" class="form-submit-btn w-full bg-error text-white font-extrabold py-4 rounded-full mt-6 hover:bg-[#93000a] transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                    <button type="button" class="form-submit-btn w-full bg-error text-white font-extrabold py-4 rounded-xl mt-6 hover:bg-[#93000a] transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
                         <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">block</span>
                         <span class="btn-text">Criar Bloqueio</span>
                         <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
@@ -664,7 +664,7 @@ $tabs = [
             <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Responsável</label>
             <input type="text" name="responsavel" id="editConsResp" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface">
         </div>
-        <button type="submit" class="w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all">Guardar Alterações</button>
+        <button type="submit" class="w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-xl mt-4 hover:bg-inverse-surface transition-all">Guardar Alterações</button>
     </form>
 </dialog>
 
@@ -686,7 +686,7 @@ $tabs = [
             <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Descrição</label>
             <input type="text" name="descricao" id="editEspDesc" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium text-on-surface">
         </div>
-        <button type="submit" class="w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all">Guardar Alterações</button>
+        <button type="submit" class="w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-xl mt-4 hover:bg-inverse-surface transition-all">Guardar Alterações</button>
     </form>
 </dialog>
 
@@ -715,7 +715,7 @@ $tabs = [
                 <?php foreach($especialidades as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
             </select>
         </div>
-        <button type="submit" class="w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-full mt-4 hover:bg-inverse-surface transition-all">Guardar Alterações</button>
+        <button type="submit" class="w-full bg-on-surface text-on-primary font-extrabold py-4 rounded-xl mt-4 hover:bg-inverse-surface transition-all">Guardar Alterações</button>
     </form>
 </dialog>
 

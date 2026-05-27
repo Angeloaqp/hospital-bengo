@@ -50,7 +50,7 @@ unset($_SESSION['erro']);
             width: 100%;
             padding: 14px 16px;
             border: 1px solid #e5e7eb;
-            border-radius: 1rem;
+            border-radius: 0.75rem;
             font-size: 14px;
             color: #111827;
             background: #fff;
@@ -190,8 +190,8 @@ unset($_SESSION['erro']);
                     </div>
 
                     <div class="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-surface-container-low">
-                        <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="px-6 py-3 rounded-full text-sm font-bold text-on-surface-variant hover:bg-surface-container-low transition-all">Cancelar</a>
-                        <button type="submit" class="px-8 py-3 bg-black text-white rounded-full font-bold text-sm shadow hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                        <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="px-6 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container-low transition-all">Cancelar</a>
+                        <button type="submit" class="px-8 py-3 bg-black text-white rounded-xl font-bold text-sm shadow hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">save</span> Guardar Alterações
                         </button>
                     </div>

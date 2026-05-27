@@ -61,16 +61,21 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
 <?php include __DIR__ . '/../comum/header.php'; ?>
 
 <div class="ml-0 lg:ml-56 pt-28 px-4 sm:px-8 pb-24 lg:pb-8 flex justify-center min-h-screen">
-    <main class="w-full max-w-[900px] relative mt-4">
+    <main class="w-full max-w-[1200px] relative mt-4">
 
-        <form method="POST" action="<?= BASE_URL ?>app/controllers/pacientes_api.php" id="form-registo">
+        <div class="mb-4 transition-all duration-500" id="page-header">
+            <h1 class="font-headline text-3xl font-black text-black tracking-tight">Novo Paciente</h1>
+            <p class="font-body text-[#474747] mt-2 text-sm">Preencha os detalhes abaixo para registar um novo paciente no sistema HGB.</p>
+        </div>
+
+        <form method="POST" action="<?= BASE_URL ?>app/controllers/pacientes_api.php" id="form-registo" class="bg-white rounded-[32px] floating-card border border-white/50 overflow-hidden relative z-10 transition-all duration-500">
             <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
             <input type="hidden" name="acao" value="registar_apenas">
             <input type="hidden" name="paciente_id" id="paciente_id" value="">
 
             <!-- ERROS -->
             <?php if (!empty($erros)): ?>
-                <div class="bg-[#ffdad6] text-[#410002] px-6 py-5 rounded-[1.5rem] text-sm font-bold shadow-sm mb-8 flex gap-3 items-start">
+                <div class="bg-[#ffdad6] text-[#410002] px-6 py-5 mx-8 mt-8 rounded-[1.5rem] text-sm font-bold shadow-sm flex gap-3 items-start">
                     <span class="material-symbols-outlined shrink-0">error</span>
                     <div>
                         <?php foreach ($erros as $e): ?>
@@ -80,174 +85,146 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                 </div>
             <?php endif; ?>
 
-            <!-- Section: Dados Pessoais -->
-            <section class="bg-white rounded-[2.5rem] p-8 sm:p-12 ambient-shadow mb-8 transition-all duration-500 relative z-10" id="section-form">
-                <div class="flex items-center gap-4 mb-10">
-                    <div class="w-12 h-12 rounded-[1rem] bg-[#f3f3f3] flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[#1a1c1c] text-2xl">badge</span>
+            <div class="p-8 md:p-12 flex flex-col gap-12" id="section-form-content">
+                <!-- Section 1: Dados Pessoais -->
+                <section>
+                    <div class="border-b border-surface-container pb-4 mb-8">
+                        <h2 class="font-headline text-xl font-bold text-black flex items-center gap-2">
+                            <span class="material-symbols-outlined text-black text-[24px]">person</span>
+                            Dados Pessoais
+                        </h2>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-['Manrope'] font-extrabold tracking-tight text-[#1a1c1c]">Dados Demográficos</h3>
-                        <p class="text-sm font-medium text-[#474747] mt-1">Informações principais de identificação do paciente.</p>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
-                    <div class="md:col-span-2 group">
-                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="nome">Nome Completo *</label>
-                        <input id="nome" name="nome" value="<?= htmlspecialchars($antigos['nome'] ?? '') ?>" required minlength="3" class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30" placeholder="Ex: António Kiala" type="text" />
-                    </div>
-                    <div class="group">
-                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="bi_nif">BI ou NIF</label>
-                        <input id="bi_nif" name="bi_nif" value="<?= htmlspecialchars($antigos['bi_nif'] ?? '') ?>" class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30" placeholder="000000000XX000" type="text" />
-                    </div>
-                    <div class="group">
-                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="idade">Idade *</label>
-                        <input id="idade" name="idade" value="<?= htmlspecialchars($antigos['idade'] ?? '') ?>" required min="0" max="120" class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30" placeholder="Anos" type="number" />
-                    </div>
-                    <div class="group">
-                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="sexo">Género</label>
-                        <div class="relative">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <!-- Nome Completo -->
+                        <div class="flex flex-col gap-2">
+                            <label class="font-headline text-sm font-bold text-black flex items-center gap-1">
+                                Nome Completo <span aria-label="Required" class="w-1.5 h-1.5 rounded-full bg-error inline-block"></span>
+                            </label>
+                            <div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-[#f3f3f3]/50">
+                                <input name="nome" value="<?= htmlspecialchars($antigos['nome'] ?? '') ?>" required minlength="3" class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="Ex: Maria João Silva" type="text"/>
+                            </div>
+                        </div>
+                        <!-- Idade -->
+                        <div class="flex flex-col gap-2">
+                            <label class="font-headline text-sm font-bold text-black flex items-center gap-1">
+                                Idade <span aria-label="Required" class="w-1.5 h-1.5 rounded-full bg-error inline-block"></span>
+                            </label>
+                            <div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-[#f3f3f3]/50">
+                                <input id="idade" name="idade" value="<?= htmlspecialchars($antigos['idade'] ?? '') ?>" required type="number" min="0" max="120" class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="Anos"/>
+                            </div>
+                        </div>
+                        <!-- Género -->
+                        <div class="flex flex-col gap-2">
+                            <label class="font-headline text-sm font-bold text-black">Género</label>
                             <?php
-                            $sel_id = 'sexo';
+                            $sel_id = 'cs-genero';
                             $sel_name = 'sexo';
-                            $sel_icon = 'person';
-                            $sel_placeholder = 'Seleccionar...';
+                            $sel_icon = 'wc';
+                            $sel_placeholder = 'Selecione o género...';
                             $sel_value = $antigos['sexo'] ?? '';
+                            $sel_class = 'w-full';
                             $sel_options = [
-                                '' => ['label' => 'Seleccionar...', 'icon' => 'person', 'color' => 'text-on-surface-variant'],
-                                'M' => ['label' => 'Masculino', 'icon' => 'male', 'color' => 'text-blue-600'],
-                                'F' => ['label' => 'Feminino', 'icon' => 'female', 'color' => 'text-pink-500'],
+                                'M' => ['label' => 'Masculino', 'icon' => 'male', 'color' => 'text-blue-500'],
+                                'F' => ['label' => 'Feminino', 'icon' => 'female', 'color' => 'text-pink-500']
                             ];
                             include __DIR__ . '/../comum/custom_select.php';
                             ?>
                         </div>
-                    </div>
-                    <div class="group">
-                        <label class="block text-[11px] font-bold uppercase tracking-widest text-[#474747] mb-2 ml-1" for="morada">Morada *</label>
-                        <input id="morada" name="morada" value="<?= htmlspecialchars($antigos['morada'] ?? '') ?>" required class="tactile-input w-full h-14 px-5 rounded-[1rem] font-semibold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30" placeholder="Ex: Centralidade do Sequele" type="text" />
-                    </div>
-                    
-                    <!-- Campo de peso se for menor de idade (Tactile Soft Section) -->
-                    <div class="md:col-span-2 overflow-hidden transition-all duration-500 ease-in-out" id="campo-peso-wrapper" style="max-height: 0; opacity: 0;">
-                        <div class="p-6 bg-[#f9f9f9] rounded-[1.5rem] mt-2 relative overflow-hidden">
-                            <!-- Indicador lateral suave -->
-                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-400"></div>
-                            
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pl-4">
-                                <div class="flex items-start gap-4">
-                                    <div class="w-10 h-10 rounded-full bg-[#f3f3f3] flex items-center justify-center shrink-0">
-                                        <span class="material-symbols-outlined text-[#1a1c1c]">child_care</span>
-                                    </div>
-                                    <div>
-                                        <p class="text-base font-bold text-[#1a1c1c]">Paciente Pediátrico</p>
-                                        <p class="text-xs text-[#474747] font-medium mt-1 leading-relaxed">Sendo menor de 18 anos, informe o peso (kg) obrigatório para cálculo seguro de dosagens.</p>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-1 sm:w-32 shrink-0">
-                                    <input id="peso" name="peso" value="<?= htmlspecialchars($antigos['peso'] ?? '') ?>" step="0.1" min="1" max="200" class="tactile-input h-14 px-5 rounded-[1rem] font-bold text-base text-[#1a1c1c] placeholder-[#1a1c1c]/30 w-full" type="number" placeholder="Peso (kg)" />
-                                </div>
+                        <!-- BI / Passaporte -->
+                        <div class="flex flex-col gap-2">
+                            <label class="font-headline text-sm font-bold text-black">BI / Passaporte</label>
+                            <div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-[#f3f3f3]/50">
+                                <input name="bi_nif" value="<?= htmlspecialchars($antigos['bi_nif'] ?? '') ?>" class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="Nº do documento" type="text"/>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="mt-12 flex justify-end">
-                    <button type="submit" id="btn-registar" class="btn-gradient text-[#e5e2e1] px-8 py-4 rounded-[2rem] font-black text-sm hover:scale-[1.02] hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] transition-all flex items-center gap-3 active:scale-95">
-                        <span class="material-symbols-outlined text-[20px]">person_add</span>
+                <!-- Section 2: Contactos e Morada -->
+                <section>
+                    <div class="border-b border-surface-container pb-4 mb-8">
+                        <h2 class="font-headline text-xl font-bold text-black flex items-center gap-2">
+                            <span class="material-symbols-outlined text-black text-[24px]">contact_phone</span>
+                            Contactos e Morada
+                        </h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <!-- Morada Completa -->
+                        <div class="flex flex-col gap-2 md:col-span-2">
+                            <label class="font-headline text-sm font-bold text-black flex items-center gap-1">Morada Completa <span aria-label="Required" class="w-1.5 h-1.5 rounded-full bg-error inline-block"></span></label>
+                            <div class="bg-surface-container-low p-3.5 flex items-start input-focus-ring rounded-2xl bg-[#f3f3f3]/50">
+                                <textarea name="morada" required class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline resize-none" placeholder="Rua, Bairro, Município..." rows="3"><?= htmlspecialchars($antigos['morada'] ?? '') ?></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+
+                <!-- Footer Actions -->
+                <div class="pt-6 border-t border-surface-container flex items-center justify-end gap-4">
+                    <button type="button" onclick="window.history.back()" class="px-6 py-3 font-headline font-bold text-sm text-[#474747] hover:bg-[#f3f3f3] transition-colors duration-300 ease-in-out rounded-2xl">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="btn-registar" class="px-8 py-3 bg-black text-white font-headline font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 ease-in-out active:scale-95 flex items-center gap-2 rounded-2xl">
+                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
                         <span id="btn-text">Registar Paciente</span>
                     </button>
                 </div>
-            </section>
-
-            <!-- Painel de Sucesso (Oculto inicialmente) -->
-            <section class="bg-white rounded-[2.5rem] p-8 sm:p-14 ambient-shadow text-center flex flex-col items-center justify-center opacity-0 pointer-events-none absolute inset-0 transition-all duration-700 translate-y-8 z-0" id="section-sucesso">
-                
-                <!-- Circulo Decorativo Tactile -->
-                <div class="relative w-28 h-28 mb-8">
-                    <div class="absolute inset-0 bg-[#e2e2e2] rounded-full animate-ping opacity-20"></div>
-                    <div class="absolute inset-0 bg-[#f3f3f3] rounded-full flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[#1a1c1c] text-5xl font-bold">check_circle</span>
-                    </div>
-                </div>
-
-                <h3 class="text-3xl sm:text-4xl font-['Manrope'] font-extrabold text-[#1a1c1c] tracking-tight mb-3">Paciente Registado!</h3>
-                <p class="text-[#474747] font-medium text-base max-w-md mx-auto mb-12 leading-relaxed">O registo do paciente foi guardado na base de dados com sucesso. Escolha o próximo passo lógico.</p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
-                    <!-- Card 1 -->
-                    <a href="#" id="link-mesmo-dia" class="group p-8 bg-[#f9f9f9] rounded-[2rem] hover:bg-white ambient-shadow-hover transition-all text-left flex flex-col justify-between h-full relative overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-br from-black/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div class="relative z-10">
-                            <div class="w-12 h-12 rounded-[1rem] bg-white flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500">
-                                <span class="material-symbols-outlined text-[#1a1c1c] text-[24px]">local_hospital</span>
-                            </div>
-                            <h4 class="text-xl font-['Manrope'] font-bold tracking-tight mb-2 text-[#1a1c1c]">Atendimento Imediato</h4>
-                            <p class="text-sm text-[#474747] font-medium leading-relaxed">Encaminhar o paciente agora mesmo para a triagem ou urgência.</p>
-                        </div>
-                        <div class="relative z-10 mt-8 flex justify-end">
-                            <span class="w-8 h-8 rounded-full bg-[#1a1c1c] text-white flex items-center justify-center group-hover:bg-[#3c3b3b] transition-colors">
-                                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-                            </span>
-                        </div>
-                    </a>
-                    
-                    <!-- Card 2 -->
-                    <a href="#" id="link-marcacao" class="group p-8 bg-[#f9f9f9] rounded-[2rem] hover:bg-white ambient-shadow-hover transition-all text-left flex flex-col justify-between h-full relative overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-br from-black/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div class="relative z-10">
-                            <div class="w-12 h-12 rounded-[1rem] bg-white flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500">
-                                <span class="material-symbols-outlined text-[#1a1c1c] text-[24px]">calendar_month</span>
-                            </div>
-                            <h4 class="text-xl font-['Manrope'] font-bold tracking-tight mb-2 text-[#1a1c1c]">Fazer Marcação</h4>
-                            <p class="text-sm text-[#474747] font-medium leading-relaxed">Agendar consulta médica para uma data e horário futuro.</p>
-                        </div>
-                        <div class="relative z-10 mt-8 flex justify-end">
-                            <span class="w-8 h-8 rounded-full bg-[#1a1c1c] text-white flex items-center justify-center group-hover:bg-[#3c3b3b] transition-colors">
-                                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-                            </span>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="mt-12 flex flex-wrap justify-center gap-6">
-                    <button type="button" onclick="editarPaciente()" class="group flex items-center gap-2 text-xs font-bold text-[#474747] hover:text-[#1a1c1c] uppercase tracking-widest transition-colors">
-                        <span class="material-symbols-outlined text-[16px] group-hover:-translate-x-1 transition-transform">edit</span>
-                        Editar Dados
-                    </button>
-                    <span class="text-[#dadada] hidden sm:block">|</span>
-                    <button type="button" onclick="window.location.reload()" class="group flex items-center gap-2 text-xs font-bold text-[#474747] hover:text-[#1a1c1c] uppercase tracking-widest transition-colors">
-                        <span class="material-symbols-outlined text-[16px] group-hover:rotate-180 transition-transform duration-500">refresh</span>
-                        Registar Outro
-                    </button>
-                </div>
-            </section>
-
+            </div>
         </form>
 
+        <!-- Sucesso Screen -->
+        <div id="section-sucesso" class="min-h-[70vh] flex flex-col items-center justify-center text-center opacity-0 pointer-events-none absolute inset-0 transition-all duration-700 translate-y-8 z-0 hidden w-full">
+            <div class="mb-12 flex flex-col items-center">
+                <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6" style="animation: successBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;">
+                    <span class="material-symbols-outlined text-[64px] text-green-600 font-bold">check</span>
+                </div>
+                <h1 class="font-headline text-4xl font-black text-black tracking-tight mb-3">Paciente Registado!</h1>
+                <p class="font-body text-[#474747] text-lg max-w-xl">O registo do paciente foi guardado na base de dados com sucesso. Escolha o próximo passo lógico.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl mb-12">
+                <!-- Card 1 -->
+                <a href="#" id="link-mesmo-dia" class="bg-white p-10 rounded-[2.5rem] floating-card border border-white/50 text-left flex flex-col relative group cursor-pointer hover:-translate-y-1 hover:shadow-[0_12px_30px_-4px_rgba(0,0,0,0.1)] transition-all duration-300">
+                    <div class="w-14 h-14 bg-[#f3f3f3] rounded-2xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-black text-[28px]">medical_services</span>
+                    </div>
+                    <h3 class="font-headline text-xl font-bold text-black mb-2">Atendimento Imediato</h3>
+                    <p class="font-body text-[#474747] text-sm pr-12">Encaminhar o paciente agora mesmo para a triagem ou urgência.</p>
+                    <div class="absolute bottom-8 right-8 w-12 h-12 bg-black text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </div>
+                </a>
+                <!-- Card 2 -->
+                <a href="#" id="link-marcacao" class="bg-white p-10 rounded-[2.5rem] floating-card border border-white/50 text-left flex flex-col relative group cursor-pointer hover:-translate-y-1 hover:shadow-[0_12px_30px_-4px_rgba(0,0,0,0.1)] transition-all duration-300">
+                    <div class="w-14 h-14 bg-[#f3f3f3] rounded-2xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-black text-[28px]">calendar_month</span>
+                    </div>
+                    <h3 class="font-headline text-xl font-bold text-black mb-2">Fazer Marcação</h3>
+                    <p class="font-body text-[#474747] text-sm pr-12">Agendar consulta médica para uma data e horário futuro.</p>
+                    <div class="absolute bottom-8 right-8 w-12 h-12 bg-black text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </div>
+                </a>
+            </div>
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <button type="button" onclick="editarPaciente()" class="flex items-center gap-2 px-6 py-3 bg-[#f3f3f3] text-[#474747] font-headline font-bold text-sm rounded-2xl hover:bg-[#e8e8e8] transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                    Editar Dados
+                </button>
+                <button type="button" onclick="window.location.reload()" class="flex items-center gap-2 px-6 py-3 bg-[#f3f3f3] text-[#474747] font-headline font-bold text-sm rounded-2xl hover:bg-[#e8e8e8] transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">person_add</span>
+                    Registar Outro
+                </button>
+            </div>
+        </div>
+
     </main>
-</div>
 
 <script>
-    const inputIdade = document.getElementById('idade');
-    const campoPesoWrapper = document.getElementById('campo-peso-wrapper');
-    const inputPeso = document.getElementById('peso');
 
-    // Lógica da Idade: Exibir secção pediátrica de forma animada e elegante
-    inputIdade.addEventListener('input', function () {
-        if (parseInt(this.value) < 18 && this.value !== '') {
-            campoPesoWrapper.style.maxHeight = '200px';
-            campoPesoWrapper.style.opacity = '1';
-            inputPeso.required = true;
-        } else {
-            campoPesoWrapper.style.maxHeight = '0';
-            campoPesoWrapper.style.opacity = '0';
-            inputPeso.required = false;
-            inputPeso.value = '';
-        }
-    });
     
-    // Animação de submissão do formulário com feedback tactile
+    // Animação de submissão do formulário
     document.getElementById('form-registo').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
@@ -264,22 +241,30 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
             const result = await response.json();
             
             if (result.status === 'success') {
-                // Configurar links baseados no ID retornado do paciente
                 document.getElementById('link-mesmo-dia').href = `marcacao.php?origem=mesmo_dia&paciente_id=${result.paciente_id}`;
                 document.getElementById('link-marcacao').href = `marcacao.php?origem=marcacao&paciente_id=${result.paciente_id}`;
                 document.getElementById('paciente_id').value = result.paciente_id;
                 
-                // Animar transição (Fade Out Form, Fade In Sucesso) usando Tonal Layering
-                const sectionForm = document.getElementById('section-form');
+                const sectionForm = document.getElementById('form-registo');
+                const pageHeader = document.getElementById('page-header');
                 const sectionSucesso = document.getElementById('section-sucesso');
                 
                 sectionForm.classList.remove('z-10');
                 sectionForm.classList.add('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4', 'z-0');
                 
+                if (pageHeader) {
+                    pageHeader.classList.add('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4');
+                }
+                
                 setTimeout(() => {
-                    sectionSucesso.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-8', 'z-0');
-                    sectionSucesso.classList.add('opacity-100', 'translate-y-0', 'z-10');
+                    sectionSucesso.classList.remove('hidden');
+                    // Add small delay so browser renders display block before transitioning opacity
+                    setTimeout(() => {
+                        sectionSucesso.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-8', 'z-0');
+                        sectionSucesso.classList.add('opacity-100', 'translate-y-0', 'z-10');
+                    }, 50);
                     sectionForm.style.display = 'none';
+                    if (pageHeader) pageHeader.style.display = 'none';
                 }, 400);
                 
                 if (typeof window.showToast === 'function') window.showToast('Paciente guardado com sucesso!', 'success');
@@ -288,7 +273,7 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                 btn.classList.remove('opacity-80', 'cursor-wait');
                 btnText.textContent = document.getElementById('paciente_id').value ? 'Salvar Alterações' : 'Registar Paciente';
                 if (typeof window.showToast === 'function') window.showToast((result.erros || []).join(', '), 'error');
-                else alert('Erros:\n' + (result.erros || []).join('\n'));
+                else alert('Erros:\\n' + (result.erros || []).join('\\n'));
             }
         } catch (e) {
             btn.disabled = false;
@@ -302,23 +287,30 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
     // Função para voltar atrás no painel de sucesso (Editar paciente)
     function editarPaciente() {
         const sectionSucesso = document.getElementById('section-sucesso');
-        const sectionForm = document.getElementById('section-form');
+        const sectionForm = document.getElementById('form-registo');
         
-        sectionSucesso.classList.remove('z-10');
+        sectionSucesso.classList.remove('z-10', 'opacity-100', 'translate-y-0');
         sectionSucesso.classList.add('opacity-0', 'pointer-events-none', 'translate-y-8', 'z-0');
-        sectionSucesso.classList.remove('opacity-100', 'translate-y-0');
         
         setTimeout(() => {
             sectionForm.style.display = 'block';
+            const pageHeader = document.getElementById('page-header');
+            if (pageHeader) pageHeader.style.display = 'block';
+
             setTimeout(() => {
                 sectionForm.classList.remove('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4', 'z-0');
-                sectionForm.classList.add('z-10');
+                sectionForm.classList.add('z-10', 'opacity-100');
+                if (pageHeader) pageHeader.classList.remove('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4');
                 
                 const btn = document.getElementById('btn-registar');
                 document.getElementById('btn-text').textContent = 'Salvar Alterações';
                 btn.disabled = false;
                 btn.classList.remove('opacity-80', 'cursor-wait');
             }, 50);
+            
+            setTimeout(() => {
+                sectionSucesso.classList.add('hidden');
+            }, 700);
         }, 400);
     }
 </script>
