@@ -59,6 +59,27 @@ tailwind.config = {
 <style>
     body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
     h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
+
+    /* Scrollbar Global & Custom - Mais visível e elegante */
+    ::-webkit-scrollbar, .custom-scrollbar::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track, .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb, .custom-scrollbar::-webkit-scrollbar-thumb { 
+        background-color: #9ca3af; 
+        border-radius: 10px; 
+        border: 3px solid transparent; 
+        background-clip: padding-box; 
+    }
+    ::-webkit-scrollbar-thumb:hover, .custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+        background-color: #6b7280; 
+    }
+
+    /* Animações Globais (Páginas, Dashboards e Cartões) */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    .fade-in-delay-1 { animation: fadeIn 0.5s ease-out 0.1s forwards; opacity: 0; }
+    .fade-in-delay-2 { animation: fadeIn 0.5s ease-out 0.2s forwards; opacity: 0; }
+    .fade-in-delay-3 { animation: fadeIn 0.5s ease-out 0.3s forwards; opacity: 0; }
+    .fade-in-delay-4 { animation: fadeIn 0.5s ease-out 0.4s forwards; opacity: 0; }
 </style>
 
 <!-- Tactile UX Scripts -->

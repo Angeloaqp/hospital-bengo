@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html lang="pt" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HGB - Novo Paciente</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#dadada",
+                        "on-tertiary-container": "#6d6e6e",
+                        "inverse-primary": "#c8c6c5",
+                        "on-primary-fixed-variant": "#474746",
+                        "outline-variant": "#c4c7c9",
+                        "tertiary": "#5d5f5f",
+                        "on-primary-container": "#6f6d6d",
+                        "surface-tint": "#5f5e5e",
+                        "surface-container-highest": "#e2e2e2",
+                        "secondary-container": "#e3e2e2",
+                        "on-surface-variant": "#44474a",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-secondary-container": "#646464",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "error": "#ba1a1a",
+                        "on-background": "#1a1c1c",
+                        "surface-variant": "#e2e2e2",
+                        "outline": "#74777a",
+                        "surface-container-high": "#e8e8e8",
+                        "primary": "#5f5e5e",
+                        "surface": "#f9f9f9",
+                        "primary-container": "#f4f1f1",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f9f9f9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#1c1b1b",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#f2f2f2",
+                        "on-secondary-fixed-variant": "#464747",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#e3e2e2",
+                        "surface-container": "#eeeeee",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "surface-bright": "#f9f9f9",
+                        "primary-fixed": "#e5e2e1",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f3f3f3",
+                        "secondary": "#5e5e5e",
+                        "inverse-on-surface": "#f1f1f1",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "on-surface": "#1a1c1c",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        h1, h2, h3, label, button { font-family: 'Manrope', sans-serif; }
+        .floating-card {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #dadada;
+            border-radius: 20px;
+        }
+        
+        /* Input Focus Ring - Soft Glow */
+        .input-focus-ring {
+            transition: box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
+        }
+        .input-focus-ring:focus-within {
+            box-shadow: 0 0 0 4px rgba(26, 28, 28, 0.06);
+            border-color: transparent;
+            background-color: #ffffff;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slowPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.15); }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0;
+        }
+        .animate-slow-pulse {
+            animation: slowPulse 3s ease-in-out infinite;
+        }
+
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate-fade-in-up,
+            .animate-slow-pulse {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .transition-all,
+            .transition-colors,
+            .transition-shadow,
+            .input-focus-ring {
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Floating Sidebar -->
+<aside class="fixed left-6 top-6 bottom-6 flex flex-col py-6 z-[60] w-56 bg-white rounded-[32px] floating-card font-['Manrope'] antialiased border border-white/50 animate-fade-in-up">
+<div class="mb-8 flex flex-col items-center px-6 gap-2">
+<div class="text-[18px] font-black tracking-tighter text-black flex flex-col items-center leading-tight">
+<span class="">HGB</span>
+</div>
+<div class="w-10 h-[1.5px] bg-black/5"></div>
+</div>
+<nav class="flex flex-col gap-1.5 px-3 flex-1">
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all duration-300 ease-in-out active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="text-xs font-semibold tracking-tight">Dashboard</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all duration-300 ease-in-out active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="calendar_month">calendar_month</span>
+<span class="text-xs font-semibold tracking-tight">Agenda</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all duration-300 ease-in-out active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="list_alt">list_alt</span>
+<span class="text-xs font-semibold tracking-tight">Atendimento Diário</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all duration-300 ease-in-out active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+<span class="text-xs font-semibold tracking-tight">Nova Marcação</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full bg-black text-white rounded-2xl transition-all duration-300 ease-in-out shadow-md active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px] icon-fill" data-icon="person_add">person_add</span>
+<span class="text-xs font-bold tracking-tight">Novo Paciente</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all duration-300 ease-in-out active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+<span class="text-xs font-semibold tracking-tight">Pesquisa</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all duration-300 ease-in-out active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
+<span class="text-xs font-semibold tracking-tight">Mensagens</span>
+</button>
+</nav>
+<div class="mt-auto flex flex-col gap-1.5 px-3">
+<div class="px-4 mb-3">
+<div class="h-[1px] bg-black/5 w-full"></div>
+</div>
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all duration-300 ease-in-out active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<div class="w-7 h-7 rounded-full overflow-hidden border border-surface-container-high shrink-0">
+<img alt="Afonso Diallo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4OLzjBtDsdOtAr-WaOVoT9eoCzw-DXR2bHqs_9gCs3a1G7o7d19LLm2u5jz85IYOWLKARMaL4xH36Y3KYFI26tGmNXxrImLmHtnVupEepeTESuGylYtb-4XtXs_VdB9G0AI7r2bmIEXDYq0jVUfKFg6ZkqHRW6pQxkMuiEnPPv9YsH465hs6_gy0e2sGuu3nH46IfNG15K47rhrbMnB1iXjOScZ1SAjsyij30zC0MG8eLZky-cWZMnc818pCFzxjWWF3GIeyR8HwY"/>
+</div>
+<span class="text-xs font-semibold tracking-tight">Meu Perfil</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-2.5 w-full text-on-surface-variant hover:text-error hover:bg-error/5 rounded-2xl transition-all duration-300 ease-in-out active:scale-95 motion-reduce:transition-none motion-reduce:transform-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="text-xs font-semibold tracking-tight text-inherit">Sair</span>
+</button>
+</div>
+</aside>
+<!-- Header Wrapper with Shield -->
+<div class="fixed top-0 right-0 left-56 z-50 h-28 bg-gradient-to-b from-[#f3f4f6] to-transparent animate-fade-in-up delay-100">
+<header class="h-16 mt-6 px-8 max-w-[1200px] mx-auto">
+<div class="rounded-2xl h-full px-6 flex items-center justify-between floating-card border border-white/50 bg-white">
+<div class="flex items-center bg-surface-container-low rounded-full px-4 py-2 w-64 input-focus-ring">
+<span class="material-symbols-outlined text-outline mr-2 text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 p-0 text-sm text-black w-full font-body placeholder-outline" placeholder="Search patients..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-on-surface-variant font-headline font-semibold text-sm">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+                    14:32
+                </div>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-300 ease-in-out cursor-pointer active:opacity-80 relative">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<div class="h-6 w-[1px] bg-black/10"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-black leading-none">Afonso Diallo</p>
+<p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-black mt-0.5">Recepção Principal</p>
+</div>
+<div class="w-9 h-9 rounded-full overflow-hidden bg-surface-container-high ring-2 ring-surface-container">
+<img alt="Perfil do Usuário" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ5nuWcSrvrYEacZgpyvSBZBI__QsLxZ_L5jRXDQ7E09fKDLq2r1_H3977K4uUJPC4MlIZ8CgxMrSE-5wzvjt-SVdwIHQC8YQ9VxUadUgXkgoTMpUEHbYAYVaHN-boAQikbL2sKMCFWOQD5uLnpU7XP4SBo_rDVkR5XogMgOvI8PEHpMHUIJshznKh0oS_suB-MpE_ps_sQ5N6MduIyG7alR_gSRRS4NLE5Xnc6qt55qLLaLYtivJH4LL6Dw7odX2BWC6L804nJp1i"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+</div>
+<!-- Main Content Area -->
+<div class="ml-56 mt-28 p-8 flex justify-center pb-24">
+<main class="w-full max-w-[1200px] space-y-8">
+<div class="mb-2 animate-fade-in-up delay-100">
+<h1 class="font-headline text-3xl font-black text-black tracking-tight">Novo Paciente</h1>
+<p class="font-body text-on-surface-variant mt-2 text-sm">Preencha os detalhes abaixo para registar um novo paciente no sistema HGB.</p>
+</div>
+<form class="bg-white rounded-[32px] floating-card border border-white/50 overflow-hidden">
+<div class="p-8 md:p-12 flex flex-col gap-12">
+<!-- Section 1: Dados Pessoais -->
+<section class="animate-fade-in-up delay-100">
+<div class="border-b border-surface-container pb-4 mb-8">
+<h2 class="font-headline text-xl font-bold text-black flex items-center gap-2">
+<span class="material-symbols-outlined text-black text-[24px]">person</span>
+                                Dados Pessoais
+                            </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+<!-- Nome Completo -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black flex items-center gap-1">
+                                    Nome Completo <span aria-label="Required" class="w-1.5 h-1.5 rounded-full bg-error inline-block animate-slow-pulse"></span>
+</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="Ex: Maria João Silva" required="" type="text"/>
+</div>
+</div>
+<!-- Data de Nascimento -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black flex items-center gap-1">
+                                    Data de Nascimento <span aria-label="Required" class="w-1.5 h-1.5 rounded-full bg-error inline-block animate-slow-pulse"></span>
+</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" required="" type="date"/>
+</div>
+</div>
+<!-- Género -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black">Género</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring relative rounded-2xl bg-neutral-100/50">
+<select class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm appearance-none cursor-pointer pr-8">
+<option disabled="" selected="" value="">Selecione...</option>
+<option value="m">Masculino</option>
+<option value="f">Feminino</option>
+<option value="o">Outro</option>
+</select>
+</div>
+</div>
+<!-- BI / Passaporte -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black flex items-center gap-1">
+                                    BI / Passaporte <span aria-label="Required" class="w-1.5 h-1.5 rounded-full bg-error inline-block animate-slow-pulse"></span>
+</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="Nº do documento" required="" type="text"/>
+</div>
+</div>
+<!-- Estado Civil -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black">Estado Civil</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring relative rounded-2xl bg-neutral-100/50">
+<select class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm appearance-none cursor-pointer pr-8">
+<option disabled="" selected="" value="">Selecione...</option>
+<option value="solteiro">Solteiro(a)</option>
+<option value="casado">Casado(a)</option>
+<option value="divorciado">Divorciado(a)</option>
+<option value="viuvo">Viúvo(a)</option>
+</select>
+</div>
+</div>
+<!-- Nacionalidade -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black">Nacionalidade</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="Ex: Angolana" type="text"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Contactos e Morada -->
+<section class="animate-fade-in-up delay-200">
+<div class="border-b border-surface-container pb-4 mb-8">
+<h2 class="font-headline text-xl font-bold text-black flex items-center gap-2">
+<span class="material-symbols-outlined text-black text-[24px]">contact_phone</span>
+                                Contactos e Morada
+                            </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+<!-- Telemóvel Principal -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black flex items-center gap-1">
+                                    Telemóvel Principal <span aria-label="Required" class="w-1.5 h-1.5 rounded-full bg-error inline-block animate-slow-pulse"></span>
+</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<span class="text-on-surface-variant font-body text-sm mr-2 font-bold">+244</span>
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="9XX XXX XXX" required="" type="tel"/>
+</div>
+</div>
+<!-- Email -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black">Email</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="paciente@email.com" type="email"/>
+</div>
+</div>
+<!-- Morada Completa -->
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-headline text-sm font-bold text-black">Morada Completa</label>
+<div class="bg-surface-container-low p-3.5 flex items-start input-focus-ring rounded-2xl bg-neutral-100/50">
+<textarea class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline resize-none" placeholder="Rua, Bairro, Município..." rows="3"></textarea>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Informação Clínica -->
+<section class="animate-fade-in-up delay-300">
+<div class="border-b border-surface-container pb-4 mb-8">
+<h2 class="font-headline text-xl font-bold text-black flex items-center gap-2">
+<span class="material-symbols-outlined text-black text-[24px]">monitor_heart</span>
+                                Informação Clínica
+                            </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+<!-- Grupo Sanguíneo -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black">Grupo Sanguíneo</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring relative rounded-2xl bg-neutral-100/50">
+<select class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm appearance-none cursor-pointer pr-8">
+<option disabled="" selected="" value="">Desconhecido</option>
+<option value="A+">A+</option>
+<option value="A-">A-</option>
+<option value="B+">B+</option>
+<option value="B-">B-</option>
+<option value="AB+">AB+</option>
+<option value="AB-">AB-</option>
+<option value="O+">O+</option>
+<option value="O-">O-</option>
+</select>
+</div>
+</div>
+<!-- Alergias -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black">Alergias</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="Ex: Penicilina, Amendoim (Deixe em branco se nenhuma)" type="text"/>
+</div>
+</div>
+<!-- Condições Médicas -->
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-headline text-sm font-bold text-black">Condições Médicas Pré-existentes</label>
+<div class="bg-surface-container-low p-3.5 flex items-start input-focus-ring rounded-2xl bg-neutral-100/50">
+<textarea class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline resize-none" placeholder="Hipertensão, Diabetes, etc." rows="3"></textarea>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Contacto de Emergência -->
+<section class="animate-fade-in-up delay-400">
+<div class="border-b border-surface-container pb-4 mb-8">
+<h2 class="font-headline text-xl font-bold text-black flex items-center gap-2">
+<span class="material-symbols-outlined text-black text-[24px]">emergency</span>
+                                Contacto de Emergência
+                            </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+<!-- Nome do Contacto -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black flex items-center gap-1">
+                                    Nome do Contacto <span aria-label="Required" class="w-1.5 h-1.5 rounded-full bg-error inline-block animate-slow-pulse"></span>
+</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="Nome completo" required="" type="text"/>
+</div>
+</div>
+<!-- Parentesco -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black">Parentesco</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="Ex: Cônjuge, Irmão, Filho" type="text"/>
+</div>
+</div>
+<!-- Telemóvel de Emergência -->
+<div class="flex flex-col gap-2">
+<label class="font-headline text-sm font-bold text-black flex items-center gap-1">
+                                    Telemóvel de Emergência <span aria-label="Required" class="w-1.5 h-1.5 rounded-full bg-error inline-block animate-slow-pulse"></span>
+</label>
+<div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring rounded-2xl bg-neutral-100/50">
+<span class="text-on-surface-variant font-body text-sm mr-2 font-bold">+244</span>
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" placeholder="9XX XXX XXX" required="" type="tel"/>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Actions -->
+<div class="bg-white px-8 py-6 border-t border-surface-container flex items-center justify-end gap-4 rounded-b-[32px] animate-fade-in-up delay-400">
+<button class="px-6 py-3 font-headline font-bold text-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-300 ease-in-out rounded-2xl" type="button">
+                        Cancelar
+                    </button>
+<button class="px-8 py-3 bg-black text-white font-headline font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 ease-in-out active:scale-95 flex items-center gap-2 rounded-2xl" type="submit">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                        Registar Paciente
+                    </button>
+</div>
+</form>
+</main>
+</div>
+</body></html>

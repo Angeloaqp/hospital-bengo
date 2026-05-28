@@ -1,74 +1,20 @@
-<?php
-// ================================================
-// Hospital Geral do Bengo
-// Formulário de Registo de Paciente
-// ================================================
+import re
 
-require_once __DIR__ . '/../../../config/base_url.php';
-require_once __DIR__ . '/../../../config/sessao.php';
-require_once __DIR__ . '/../../../config/database.php';
-require_once __DIR__ . '/../../../app/models/Paciente.php';
+with open("app/views/recepcionista/registar.php", "r", encoding="utf-8") as f:
+    content = f.read()
 
-exigirPerfil(['recepcionista', 'admin']);
+# Replace from <main class="w-full max-w-[900px] relative mt-4"> to </script>
+start_marker = r'<main class="w-full max-w-\[900px\] relative mt-4">'
+end_marker = r'</script>'
 
-$erros = $_SESSION['erros_form'] ?? [];
-$antigos = $_SESSION['dados_form'] ?? [];
-unset($_SESSION['erros_form'], $_SESSION['dados_form']);
-?>
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registar Paciente — <?= APP_NOME ?></title>
-    <?php include __DIR__ . '/../comum/head_assets.php'; ?>
-    <style>
-        /* Tactile Editorial Custom Styles */
-        .tactile-input {
-            background-color: #f3f3f3; /* surface-container-low */
-            border: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .tactile-input:hover {
-            background-color: #eeeeee; /* surface-container */
-        }
-        .tactile-input:focus {
-            background-color: #ffffff;
-            box-shadow: 0 0 0 4px rgba(0,0,0,0.04);
-            outline: none;
-        }
-        .ambient-shadow {
-            box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.04);
-        }
-        .ambient-shadow-hover {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .ambient-shadow-hover:hover {
-            box-shadow: 0px 24px 48px rgba(0, 0, 0, 0.08);
-            transform: translateY(-4px);
-        }
-        .btn-gradient {
-            background: linear-gradient(135deg, #000000 0%, #3c3b3b 100%);
-        }
-    </style>
-</head>
-<body class="bg-[#f9f9f9] text-[#1a1c1c] font-['Inter'] antialiased">
+new_main = """<main class="w-full max-w-[1200px] relative mt-4">
 
-<?php $paginaActual = 'registar'; ?>
-<?php include __DIR__ . '/../comum/sidebar.php'; ?>
-
-<?php $tituloPagina = 'Novo Paciente'; $subtituloPagina = 'Registar novo paciente no sistema'; ?>
-<?php include __DIR__ . '/../comum/header.php'; ?>
-
-<div class="ml-0 lg:ml-[17rem] lg:mr-6 px-4 sm:px-6 lg:px-0 mt-28 pb-24 lg:pb-8 flex justify-center min-h-screen">
-    <main class="w-full relative mt-4">
-
-        <div class="mb-4 transition-all duration-500 fade-in" id="page-header">
+        <div class="mb-4">
             <h1 class="font-headline text-3xl font-black text-black tracking-tight">Novo Paciente</h1>
             <p class="font-body text-[#474747] mt-2 text-sm">Preencha os detalhes abaixo para registar um novo paciente no sistema HGB.</p>
         </div>
 
-        <form method="POST" action="<?= BASE_URL ?>app/controllers/pacientes_api.php" id="form-registo" class="bg-white rounded-[32px] floating-card border border-white/50 overflow-hidden relative z-10 transition-all duration-500 fade-in-delay-1">
+        <form method="POST" action="<?= BASE_URL ?>app/controllers/pacientes_api.php" id="form-registo" class="bg-white rounded-[32px] floating-card border border-white/50 overflow-hidden relative z-10 transition-all duration-500">
             <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
             <input type="hidden" name="acao" value="registar_apenas">
             <input type="hidden" name="paciente_id" id="paciente_id" value="">
@@ -116,19 +62,13 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                         <!-- Género -->
                         <div class="flex flex-col gap-2">
                             <label class="font-headline text-sm font-bold text-black">Género</label>
-                            <?php
-                            $sel_id = 'cs-genero';
-                            $sel_name = 'sexo';
-                            $sel_icon = 'wc';
-                            $sel_placeholder = 'Selecione o género...';
-                            $sel_value = $antigos['sexo'] ?? '';
-                            $sel_class = 'w-full';
-                            $sel_options = [
-                                'M' => ['label' => 'Masculino', 'icon' => 'male', 'color' => 'text-blue-500'],
-                                'F' => ['label' => 'Feminino', 'icon' => 'female', 'color' => 'text-pink-500']
-                            ];
-                            include __DIR__ . '/../comum/custom_select.php';
-                            ?>
+                            <div class="bg-surface-container-low p-3.5 flex items-center input-focus-ring relative rounded-2xl bg-[#f3f3f3]/50">
+                                <select name="sexo" class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm appearance-none cursor-pointer pr-8">
+                                    <option disabled selected value="">Selecione...</option>
+                                    <option value="M" <?= ($antigos['sexo'] ?? '') === 'M' ? 'selected' : '' ?>>Masculino</option>
+                                    <option value="F" <?= ($antigos['sexo'] ?? '') === 'F' ? 'selected' : '' ?>>Feminino</option>
+                                </select>
+                            </div>
                         </div>
                         <!-- BI / Passaporte -->
                         <div class="flex flex-col gap-2">
@@ -159,7 +99,28 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                     </div>
                 </section>
 
-
+                <!-- Campo de peso se for menor de idade -->
+                <div class="overflow-hidden transition-all duration-500 ease-in-out" id="campo-peso-wrapper" style="max-height: 0; opacity: 0;">
+                    <div class="p-6 bg-[#f9f9f9] rounded-[1.5rem] mt-2 relative overflow-hidden">
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-400"></div>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pl-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-[#f3f3f3] flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[#1a1c1c]">child_care</span>
+                                </div>
+                                <div>
+                                    <p class="text-base font-bold text-[#1a1c1c]">Paciente Pediátrico</p>
+                                    <p class="text-xs text-[#474747] font-medium mt-1 leading-relaxed">Sendo menor de 18 anos, informe o peso (kg) obrigatório para cálculo seguro de dosagens.</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1 sm:w-32 shrink-0">
+                                <div class="bg-white p-3.5 flex items-center input-focus-ring rounded-2xl border border-black/5">
+                                    <input id="peso" name="peso" value="<?= htmlspecialchars($antigos['peso'] ?? '') ?>" step="0.1" min="1" max="200" class="bg-transparent border-none focus:ring-0 p-0 w-full text-black font-body text-sm placeholder-outline" type="number" placeholder="Peso (kg)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Footer Actions -->
                 <div class="pt-6 border-t border-surface-container flex items-center justify-end gap-4">
@@ -222,7 +183,25 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
     </main>
 
 <script>
+    const inputIdade = document.getElementById('idade');
+    const campoPesoWrapper = document.getElementById('campo-peso-wrapper');
+    const inputPeso = document.getElementById('peso');
 
+    // Lógica da Idade: Exibir secção pediátrica de forma animada e elegante
+    if (inputIdade) {
+        inputIdade.addEventListener('input', function () {
+            if (parseInt(this.value) < 18 && this.value !== '') {
+                campoPesoWrapper.style.maxHeight = '200px';
+                campoPesoWrapper.style.opacity = '1';
+                inputPeso.required = true;
+            } else {
+                campoPesoWrapper.style.maxHeight = '0';
+                campoPesoWrapper.style.opacity = '0';
+                inputPeso.required = false;
+                inputPeso.value = '';
+            }
+        });
+    }
     
     // Animação de submissão do formulário
     document.getElementById('form-registo').addEventListener('submit', async (e) => {
@@ -246,15 +225,10 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                 document.getElementById('paciente_id').value = result.paciente_id;
                 
                 const sectionForm = document.getElementById('form-registo');
-                const pageHeader = document.getElementById('page-header');
                 const sectionSucesso = document.getElementById('section-sucesso');
                 
                 sectionForm.classList.remove('z-10');
                 sectionForm.classList.add('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4', 'z-0');
-                
-                if (pageHeader) {
-                    pageHeader.classList.add('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4');
-                }
                 
                 setTimeout(() => {
                     sectionSucesso.classList.remove('hidden');
@@ -264,7 +238,6 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                         sectionSucesso.classList.add('opacity-100', 'translate-y-0', 'z-10');
                     }, 50);
                     sectionForm.style.display = 'none';
-                    if (pageHeader) pageHeader.style.display = 'none';
                 }, 400);
                 
                 if (typeof window.showToast === 'function') window.showToast('Paciente guardado com sucesso!', 'success');
@@ -294,13 +267,9 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
         
         setTimeout(() => {
             sectionForm.style.display = 'block';
-            const pageHeader = document.getElementById('page-header');
-            if (pageHeader) pageHeader.style.display = 'block';
-
             setTimeout(() => {
                 sectionForm.classList.remove('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4', 'z-0');
                 sectionForm.classList.add('z-10', 'opacity-100');
-                if (pageHeader) pageHeader.classList.remove('opacity-0', 'scale-[0.98]', 'pointer-events-none', '-translate-y-4');
                 
                 const btn = document.getElementById('btn-registar');
                 document.getElementById('btn-text').textContent = 'Salvar Alterações';
@@ -313,7 +282,11 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
             }, 700);
         }, 400);
     }
-</script>
+</script>"""
 
-</body>
-</html>
+# Using regex to replace content
+pattern = re.compile(start_marker + r'.*?' + end_marker, re.DOTALL)
+new_content = pattern.sub(new_main, content)
+
+with open("app/views/recepcionista/registar.php", "w", encoding="utf-8") as f:
+    f.write(new_content)

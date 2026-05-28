@@ -78,8 +78,8 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
 <?php $paginaActual='agenda'; include __DIR__.'/../comum/sidebar.php'; ?>
 <?php $tituloPagina='Minha Agenda'; $subtituloPagina=''; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
 
-<div class="ml-[17rem] mr-6 mt-28 p-8 flex justify-center pb-24">
-<main class="w-full max-w-[1200px] space-y-10">
+<div class="ml-0 lg:ml-[17rem] lg:mr-6 px-4 sm:px-6 lg:px-0 mt-28 pb-24 lg:pb-8 flex justify-center min-h-screen">
+<main class="w-full space-y-10">
 
 <!-- Date Header -->
 <section class="mb-2">

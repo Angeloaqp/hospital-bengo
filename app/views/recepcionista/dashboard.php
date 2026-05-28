@@ -197,19 +197,19 @@ include __DIR__ . '/../comum/header.php';
     ></div>
     <!-- Metrics Grid -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white fade-in-delay-1">
             <p class="text-on-surface-variant font-bold uppercase tracking-widest text-[10px]">Em espera</p>
             <p class="text-4xl font-extrabold text-black mt-2"><?= $emEspera ?></p>
         </div>
-        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white fade-in-delay-2">
             <p class="text-error font-black uppercase tracking-widest text-[10px]">Urgentes</p>
             <p class="text-4xl font-extrabold text-error mt-2"><?= $urgentes ?></p>
         </div>
-        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white fade-in-delay-3">
             <p class="text-[#10B981] font-black uppercase tracking-widest text-[10px]">Atendidos hoje</p>
             <p class="text-4xl font-extrabold text-black mt-2"><?= $atendidos ?></p>
         </div>
-        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white">
+        <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white fade-in-delay-4">
             <p class="text-on-surface-variant font-bold uppercase tracking-widest text-[10px]">Tempo médio</p>
             <div class="flex items-baseline gap-1 mt-2">
                 <span class="text-4xl font-extrabold text-black"><?= $tempoMedio > 0 ? $tempoMedio : '--' ?></span>
@@ -221,7 +221,7 @@ include __DIR__ . '/../comum/header.php';
     <!-- Main Layout Columns -->
     <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
         <!-- Coluna Principal (Fila de Espera) -->
-        <div class="xl:col-span-3">
+        <div class="xl:col-span-3 fade-in-delay-1">
             <div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-black tracking-tight">Fila de Espera Atual</h3>
@@ -277,7 +277,7 @@ include __DIR__ . '/../comum/header.php';
         </div>
 
         <!-- Coluna Lateral (Widgets) -->
-        <div class="space-y-6">
+        <div class="space-y-6 fade-in-delay-2">
             <!-- Fluxo Widget -->
             <div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
                 <h3 class="font-black mb-6 text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 text-on-surface-variant">

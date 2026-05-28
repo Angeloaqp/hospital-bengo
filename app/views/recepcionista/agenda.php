@@ -70,7 +70,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
 <main class="w-full">
 
 <!-- Header + Ações -->
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 fade-in">
     <div>
         <h2 class="text-3xl font-extrabold text-black tracking-tight">Agenda do Dia</h2>
         <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= dataFormatoPT($dataFiltro) ?></p>
@@ -86,7 +86,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
 </div>
 
 <!-- Métricas -->
-<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 fade-in-delay-1">
     <?php
     $metricas = [
         ['label'=>'Total','valor'=>$estatsDia['total']??0,'cor'=>'text-black'],
@@ -104,7 +104,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
 </div>
 
 <!-- Filtros -->
-<form method="GET" class="bg-white rounded-[1.5rem] p-5 floating-card border border-white mb-6 relative z-50">
+<form method="GET" class="bg-white rounded-[1.5rem] p-5 floating-card border border-white mb-6 relative z-50 fade-in-delay-2">
 <div class="flex flex-wrap gap-3 items-end">
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Data</label>
     <?php 
@@ -175,7 +175,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif}
 </form>
 
 <!-- Tabela da Agenda -->
-<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white mb-6">
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white mb-6 fade-in-delay-3">
 <h3 class="text-lg font-black tracking-tight mb-4"><?= count($agenda) ?> marcações</h3>
 <?php if(empty($agenda)): ?>
     <div class="text-center py-12 text-on-surface-variant font-semibold">Nenhuma marcação para este dia.</div>
