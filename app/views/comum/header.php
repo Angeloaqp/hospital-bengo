@@ -29,7 +29,7 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
             <div class="flex items-center gap-3">
                 <h1 class="text-base font-extrabold tracking-tight text-black"><?= $tituloPagina ?? 'Dashboard' ?></h1>
                 
-                <div class="h-4 w-[1px] bg-black/10"></div>
+                <div class="h-4 w-[1px] bg-primary/10"></div>
                 <div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-bold">
                     <span class="material-symbols-outlined text-[16px]">schedule</span>
                     <span id="header-relogio"><?= date('H:i') ?></span>
@@ -54,15 +54,15 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
                     </button>
                     
                     <!-- Dropdown Card (Hidden by default) -->
-                    <div id="notif-menu" class="hidden absolute right-0 mt-3 w-80 bg-white rounded-[1.5rem] shadow-2xl border border-black/5 overflow-hidden z-50 flex flex-col transform origin-top-right transition-all">
-                        <div class="px-5 py-4 flex items-center justify-between border-b border-black/5 bg-surface-container-low/30">
+                    <div id="notif-menu" class="hidden absolute right-0 mt-3 w-80 bg-white rounded-[1.5rem] shadow-2xl border border-primary/5 overflow-hidden z-50 flex flex-col transform origin-top-right transition-all">
+                        <div class="px-5 py-4 flex items-center justify-between border-b border-primary/5 bg-surface-container-low/30">
                             <h3 class="text-sm font-black text-black tracking-tight">Notificações</h3>
                             <span class="text-[9px] font-bold text-on-surface-variant uppercase tracking-widest"><?= $_naoLidas ?> Novas</span>
                         </div>
                         <div class="flex flex-col max-h-[320px] overflow-y-auto custom-scrollbar">
                             <?php if ($_naoLidas > 0): ?>
                                 <!-- Exemplo Mockup de Notificação Recente -->
-                                <div class="px-5 py-4 hover:bg-surface-container-low transition-colors cursor-pointer border-b border-black/5 flex gap-3">
+                                <div class="px-5 py-4 hover:bg-surface-container-low transition-colors cursor-pointer border-b border-primary/5 flex gap-3">
                                     <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
                                         <span class="material-symbols-outlined text-[16px]">info</span>
                                     </div>
@@ -79,13 +79,13 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <a href="<?= BASE_URL ?>app/views/comum/mensagens.php" class="block w-full px-5 py-3 text-center text-xs font-bold text-black hover:bg-surface-container-low transition-colors border-t border-black/5">
+                        <a href="<?= BASE_URL ?>app/views/comum/mensagens.php" class="block w-full px-5 py-3 text-center text-xs font-bold text-black hover:bg-surface-container-low transition-colors border-t border-primary/5">
                             Ver Todas as Mensagens
                         </a>
                     </div>
                 </div>
 
-                <div class="h-6 w-[1px] bg-black/5 mx-1"></div>
+                <div class="h-6 w-[1px] bg-primary/5 mx-1"></div>
 
                 <!-- Utilizador & Avatar -->
                 <a href="<?= $_basePerfil ?>index.php" class="flex items-center gap-3 hover:opacity-80 transition-opacity">

@@ -69,7 +69,7 @@ $tabs = [
     <div class="overflow-x-auto pb-2 hide-scrollbar relative w-full ">
         <div class="flex gap-2 p-1.5 bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-surface-container rounded-full w-max relative z-10 mx-auto" id="tabs-container">
             <?php foreach($tabs as $k=>$v): ?>
-                <button onclick="switchTab('<?= $k ?>')" id="tab-btn-<?= $k ?>" class="tab-btn px-6 py-2.5 rounded-full font-bold text-sm transition-all relative z-10 <?= $tab===$k ? 'text-on-primary bg-on-surface shadow-md' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low' ?>"><?= $v ?></button>
+                <button onclick="switchTab('<?= $k ?>')" id="tab-btn-<?= $k ?>" class="tab-btn px-6 py-2.5 rounded-full font-bold text-sm transition-all relative z-10 <?= $tab===$k ? 'text-white bg-primary shadow-md' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low' ?>"><?= $v ?></button>
             <?php endforeach; ?>
         </div>
     </div>
@@ -576,7 +576,7 @@ $tabs = [
 </div> <!-- End Main Content Area -->
 
 <!-- Modais de Edição com UI Adaptada (Bento style) -->
-<dialog id="modalEditConsultorio" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-black/40 shadow-2xl w-full max-w-md m-auto border border-surface-container-high">
+<dialog id="modalEditConsultorio" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-primary/40 shadow-none w-full max-w-md m-auto border border-surface-container-high">
     <div class="flex justify-between items-center mb-6">
         <h3 class="font-headline font-extrabold text-2xl text-on-surface">Editar Consultório</h3>
         <button onclick="document.getElementById('modalEditConsultorio').close()" class="text-on-surface-variant hover:text-black font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
@@ -598,7 +598,7 @@ $tabs = [
     </form>
 </dialog>
 
-<dialog id="modalEditEspecialidade" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-black/40 shadow-2xl w-full max-w-md m-auto border border-surface-container-high">
+<dialog id="modalEditEspecialidade" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-primary/40 shadow-none w-full max-w-md m-auto border border-surface-container-high">
     <div class="flex justify-between items-center mb-6">
         <h3 class="font-headline font-extrabold text-2xl text-on-surface">Editar Especialidade</h3>
         <button onclick="document.getElementById('modalEditEspecialidade').close()" class="text-on-surface-variant hover:text-black font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
@@ -620,7 +620,7 @@ $tabs = [
     </form>
 </dialog>
 
-<dialog id="modalEditTipo" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-black/40 shadow-2xl w-full max-w-md m-auto border border-surface-container-high">
+<dialog id="modalEditTipo" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-primary/40 shadow-none w-full max-w-md m-auto border border-surface-container-high">
     <div class="flex justify-between items-center mb-6">
         <h3 class="font-headline font-extrabold text-2xl text-on-surface">Editar Tipo</h3>
         <button onclick="document.getElementById('modalEditTipo').close()" class="text-on-surface-variant hover:text-black font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
@@ -655,7 +655,7 @@ function switchTab(tabId) {
     // Esconder todos
     document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('text-on-primary', 'bg-on-surface', 'shadow-md');
+        btn.classList.remove('text-white', 'bg-primary', 'shadow-md');
         btn.classList.add('text-on-surface-variant', 'hover:text-on-surface', 'hover:bg-surface-container-low');
     });
 
@@ -663,7 +663,7 @@ function switchTab(tabId) {
     document.getElementById('tab-content-' + tabId).style.display = 'block';
     const activeBtn = document.getElementById('tab-btn-' + tabId);
     if(activeBtn) {
-        activeBtn.classList.add('text-on-primary', 'bg-on-surface', 'shadow-md');
+        activeBtn.classList.add('text-white', 'bg-primary', 'shadow-md');
         activeBtn.classList.remove('text-on-surface-variant', 'hover:text-on-surface', 'hover:bg-surface-container-low');
     }
     

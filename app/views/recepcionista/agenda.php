@@ -71,7 +71,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
         <a href="marcacao.php" class="bg-[#007aff] text-white px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
             <span class="material-symbols-outlined text-[18px]">add</span> Nova Marcação
         </a>
-        <a href="marcacao.php?origem=mesmo_dia" class="bg-white text-black px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline border border-black/10">
+        <a href="marcacao.php?origem=mesmo_dia" class="bg-white text-black px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline border border-primary/10">
             <span class="material-symbols-outlined text-[18px]">bolt</span> Mesmo Dia
         </a>
     </div>
@@ -268,7 +268,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 </div>
 
 <!-- Modal Triagem -->
-<div id="modal-triagem" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+<div id="modal-triagem" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
 <div class="bg-white rounded-[2rem] w-full max-w-lg p-8 floating-card max-h-[90vh] overflow-y-auto">
 <h3 class="text-xl font-black mb-6 flex items-center gap-2"><span class="material-symbols-outlined text-blue-600">vital_signs</span> Triagem Clínica</h3>
 <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" id="form-triagem">
@@ -320,7 +320,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 </div>
 
 <!-- Modal Remarcar -->
-<div id="modal-remarcar" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+<div id="modal-remarcar" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
 <div class="bg-white rounded-[2rem] w-full max-w-sm p-8 floating-card">
 <h3 class="text-xl font-black mb-6">Remarcar Consulta</h3>
 <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php">

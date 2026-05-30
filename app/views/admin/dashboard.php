@@ -101,7 +101,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
     <?php
     $tituloPagina = 'Visão Global';
     ob_start(); ?>
-    <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-black/5 shadow-sm">
+    <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-primary/5 shadow-sm">
         <span class="material-symbols-outlined text-[16px] text-on-surface-variant">calendar_today</span>
         <span class="text-xs font-bold text-black"><?= dataFormatoPT(null, 'curto') ?></span>
     </div>
@@ -157,7 +157,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
                     <div class="flex items-baseline gap-2">
                         <span class="text-4xl font-extrabold text-black tracking-tight block"><?= $totalHoje ?></span>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-black/5 flex items-center justify-between text-xs font-bold text-on-surface-variant">
+                    <div class="mt-4 pt-4 border-t border-primary/5 flex items-center justify-between text-xs font-bold text-on-surface-variant">
                         <span class="flex items-center gap-1 text-green-600"><span class="w-2 h-2 rounded-full bg-green-500"></span> <?= $concluidosHoje ?> Concluídos</span>
                         <span class="flex items-center gap-1 text-red-600"><span class="w-2 h-2 rounded-full bg-red-500"></span> <?= $ausentesHoje ?> Ausentes</span>
                     </div>
@@ -178,7 +178,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
                         <span class="text-4xl font-extrabold <?= $esperaHoje > 5 ? 'text-yellow-600' : 'text-black' ?> tracking-tight block"><?= $esperaHoje ?></span>
                         <span class="text-xs font-bold text-on-surface-variant">Pacientes</span>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-black/5 flex items-center text-xs font-bold text-on-surface-variant">
+                    <div class="mt-4 pt-4 border-t border-primary/5 flex items-center text-xs font-bold text-on-surface-variant">
                         Fila aguardando chamada
                     </div>
                 </div>
@@ -194,7 +194,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
                     <div class="flex items-baseline gap-2">
                         <span class="text-4xl font-extrabold text-black tracking-tight block"><?= $tempoMedio ?></span>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-black/5 flex items-center text-xs font-bold text-on-surface-variant">
+                    <div class="mt-4 pt-4 border-t border-primary/5 flex items-center text-xs font-bold text-on-surface-variant">
                         Da senha à chamada
                     </div>
                 </div>
@@ -289,7 +289,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
 
             <!-- Recent Activity List -->
             <div class="bg-white rounded-[2rem] border border-white/50 shadow-sm overflow-hidden glide-in stagger-5">
-                <div class="p-8 border-b border-black/5 flex justify-between items-center bg-white/50 backdrop-blur-md sticky top-0 z-10">
+                <div class="p-8 border-b border-primary/5 flex justify-between items-center bg-white/50 backdrop-blur-md sticky top-0 z-10">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-black">
                             <span class="material-symbols-outlined text-[20px]">list_alt</span>
@@ -301,7 +301,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
                 <div class="p-4 pt-2">
                     <?php if (!empty($ultimos)): ?>
                         <!-- Column Headers -->
-                        <div class="grid grid-cols-12 gap-4 px-6 py-3 border-b border-black/5 text-[10px] uppercase tracking-widest font-extrabold text-on-surface-variant/80">
+                        <div class="grid grid-cols-12 gap-4 px-6 py-3 border-b border-primary/5 text-[10px] uppercase tracking-widest font-extrabold text-on-surface-variant/80">
                             <div class="col-span-2">Senha</div>
                             <div class="col-span-3">Paciente</div>
                             <div class="col-span-2">Especialidade / Tipo</div>
@@ -321,7 +321,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
                                 $hora = date('H:i', strtotime($a['criado_em']));
                                 $medico = $a['medico'] ? htmlspecialchars(explode(' ', $a['medico'])[0]) : '—';
                             ?>
-                            <div class="activity-row bg-white border border-black/5 rounded-2xl p-4 px-6 grid grid-cols-12 gap-4 items-center">
+                            <div class="activity-row bg-white border border-primary/5 rounded-2xl p-4 px-6 grid grid-cols-12 gap-4 items-center">
                                 <!-- Senha -->
                                 <div class="col-span-2 flex items-center gap-3">
                                     <span class="px-3 py-1.5 bg-surface-container-low text-black rounded-lg font-black text-sm tracking-wide">

@@ -158,7 +158,7 @@ $tipos = $db->query(
                                 </td>
                                 <td class="px-8 py-6 text-right">
                                     <div class="flex items-center justify-end gap-3">
-                                        <a href="pesquisar.php?ver=<?= $r['id'] ?>&q=<?= urlencode($termo) ?>#paciente-painel" class="flex items-center gap-2 border border-black/10 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-wider hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm whitespace-nowrap">
+                                        <a href="pesquisar.php?ver=<?= $r['id'] ?>&q=<?= urlencode($termo) ?>#paciente-painel" class="flex items-center gap-2 border border-primary/10 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-wider hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm whitespace-nowrap">
                                             <span class="material-symbols-outlined text-[16px]">visibility</span>
                                             Explorar Perfil
                                         </a>
@@ -367,7 +367,7 @@ $tipos = $db->query(
                         
                         <div class="w-full bg-surface-container-low rounded-2xl p-5 border border-surface-container-higher mb-6">
                             <p class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2">Novo Ticket</p>
-                            <p id="success-senha" class="text-3xl font-mono font-black text-on-surface tracking-widest bg-white py-2 rounded-xl shadow-sm border border-black/5">---</p>
+                            <p id="success-senha" class="text-3xl font-mono font-black text-on-surface tracking-widest bg-white py-2 rounded-xl shadow-sm border border-primary/5">---</p>
                         </div>
                         
                         <button type="button" onclick="resetQuickAdmission()" class="bg-surface-container-low hover:bg-surface-container text-on-surface rounded-xl font-bold text-xs py-3.5 px-6 transition-colors w-full border border-surface-container mb-3 active:scale-[0.98]">

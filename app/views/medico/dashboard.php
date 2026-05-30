@@ -75,12 +75,12 @@ $totalFila = array_sum($distribuicao);
     <?php ob_start(); ?>
         <div class="hidden md:flex items-center gap-3">
             <?php if ($especialidade): ?>
-                <div class="px-3 py-1.5 bg-surface-container-low rounded-full flex items-center gap-1.5 border border-black/5">
+                <div class="px-3 py-1.5 bg-surface-container-low rounded-full flex items-center gap-1.5 border border-primary/5">
                     <span class="text-[12px]">🩺</span>
                     <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant"><?= htmlspecialchars($especialidade['nome']) ?></span>
                 </div>
             <?php endif; ?>
-            <div class="px-3 py-1.5 bg-surface-container-low rounded-full flex items-center gap-1.5 border border-black/5">
+            <div class="px-3 py-1.5 bg-surface-container-low rounded-full flex items-center gap-1.5 border border-primary/5">
                 <span class="text-[12px]">📍</span>
                 <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant"><?= $consultorio ? htmlspecialchars($consultorio['nome']) : 'Não Definido' ?></span>
             </div>
@@ -121,7 +121,7 @@ $totalFila = array_sum($distribuicao);
                                 Em Consulta
                             </div>
                         <?php else: ?>
-                            <div class="flex items-center gap-2 bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest border border-black/5">
+                            <div class="flex items-center gap-2 bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest border border-primary/5">
                                 <span class="w-2 h-2 bg-surface-container-highest rounded-full"></span>
                                 Disponível
                             </div>
@@ -220,10 +220,10 @@ $totalFila = array_sum($distribuicao);
                         <!-- Chart area -->
                         <div class="relative" style="height: 150px;">
                             <!-- Horizontal guides -->
-                            <div class="absolute inset-x-0 top-0 border-b border-dashed border-black/[0.04]"></div>
-                            <div class="absolute inset-x-0 top-1/3 border-b border-dashed border-black/[0.04]"></div>
-                            <div class="absolute inset-x-0 top-2/3 border-b border-dashed border-black/[0.04]"></div>
-                            <div class="absolute inset-x-0 bottom-0 border-b border-black/[0.06]"></div>
+                            <div class="absolute inset-x-0 top-0 border-b border-dashed border-primary/[0.04]"></div>
+                            <div class="absolute inset-x-0 top-1/3 border-b border-dashed border-primary/[0.04]"></div>
+                            <div class="absolute inset-x-0 top-2/3 border-b border-dashed border-primary/[0.04]"></div>
+                            <div class="absolute inset-x-0 bottom-0 border-b border-primary/[0.06]"></div>
 
                             <!-- Bars container -->
                             <div class="h-full flex items-end justify-between px-6">
@@ -234,7 +234,7 @@ $totalFila = array_sum($distribuicao);
                                 ?>
                                     <div class="flex flex-col items-center gap-1.5" style="width: 48px;">
                                         <span class="text-[10px] font-black tabular-nums <?= $isToday ? 'text-black' : ($val > 0 ? 'text-on-surface-variant' : 'text-on-surface-variant/30') ?>"><?= $val ?></span>
-                                        <div class="w-5 rounded-full <?= $isToday ? 'bg-[#007aff]' : ($val > 0 ? 'bg-black/15' : 'bg-black/[0.05]') ?> bar-grow"
+                                        <div class="w-5 rounded-full <?= $isToday ? 'bg-[#007aff]' : ($val > 0 ? 'bg-primary/15' : 'bg-primary/[0.05]') ?> bar-grow"
                                              style="height: <?= $barH ?>px; animation-delay: <?= $i * 0.08 ?>s;"></div>
                                     </div>
                                 <?php endforeach; ?>

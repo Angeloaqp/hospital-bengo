@@ -143,7 +143,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
             </div>
             
             <div id="container-medicos" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="col-span-full text-center py-6 text-on-surface-variant text-sm font-bold bg-surface-container-low rounded-2xl border border-dashed border-black/10">
+                <div class="col-span-full text-center py-6 text-on-surface-variant text-sm font-bold bg-surface-container-low rounded-2xl border border-dashed border-primary/10">
                     Seleccione a Especialidade ou Tipo de Atendimento acima para ver os médicos disponíveis.
                 </div>
             </div>
@@ -224,7 +224,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
                     </div>
                 </div>
                 
-                <div id="area-data-auto" class="hidden p-5 bg-surface-container-low rounded-2xl border border-black/10 text-center">
+                <div id="area-data-auto" class="hidden p-5 bg-surface-container-low rounded-2xl border border-primary/10 text-center">
                     <p class="text-sm font-bold text-on-surface-variant mb-1">A procurar vaga automaticamente...</p>
                     <p class="text-xs font-bold text-on-surface" id="data-auto-resultado">Por favor seleccione o médico primeiro.</p>
                 </div>
@@ -296,7 +296,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
             <div id="contactos-container" class="space-y-3">
                 <!-- Vazio inicialmente, populado via JS -->
             </div>
-            <div id="contactos-vazio" class="hidden text-center py-6 bg-surface-container-low/50 rounded-2xl border border-dashed border-black/10 text-xs font-bold text-on-surface-variant">
+            <div id="contactos-vazio" class="hidden text-center py-6 bg-surface-container-low/50 rounded-2xl border border-dashed border-primary/10 text-xs font-bold text-on-surface-variant">
                 Nenhum contacto associado para receber lembretes.
             </div>
         </section>
@@ -323,7 +323,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
         <p class="text-on-surface-variant font-medium text-sm max-w-sm mb-6">A marcação foi registada e a senha foi gerada automaticamente.</p>
         
         <!-- Senha em destaque -->
-        <div class="bg-surface-container-low rounded-2xl px-10 py-6 mb-8 border border-black/5 inline-block">
+        <div class="bg-surface-container-low rounded-2xl px-10 py-6 mb-8 border border-primary/5 inline-block">
             <p class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2">Senha do Paciente</p>
             <p class="text-5xl font-headline font-extrabold text-on-surface tracking-tight" id="sucesso-senha-codigo">---</p>
         </div>
@@ -444,7 +444,7 @@ function carregarMedicos() {
     let espId = selEsp.value;
     
     if(!espId) {
-        contMedicos.innerHTML = `<div class="col-span-full text-center py-6 text-on-surface-variant text-sm font-bold bg-surface-container-low rounded-2xl border border-dashed border-black/10">Seleccione a Especialidade para ver os médicos disponíveis.</div>`;
+        contMedicos.innerHTML = `<div class="col-span-full text-center py-6 text-on-surface-variant text-sm font-bold bg-surface-container-low rounded-2xl border border-dashed border-primary/10">Seleccione a Especialidade para ver os médicos disponíveis.</div>`;
         return;
     }
     
@@ -464,9 +464,9 @@ function carregarMedicos() {
         contMedicos.innerHTML = d.medicos.map(m=>
             `<label class="relative cursor-pointer group">
                 <input class="peer sr-only custom-radio" name="medico_seleccao" type="radio" value="${m.id}" data-cons="${m.consultorio_id||''}" onchange="seleccionarMedico(this)" />
-                <div class="p-4 rounded-2xl bg-surface-container-low border-2 border-transparent hover:border-black/20 transition-all">
+                <div class="p-4 rounded-2xl bg-surface-container-low border-2 border-transparent hover:border-primary/20 transition-all">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-on-surface font-black border border-black/10">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-on-surface font-black border border-primary/10">
                             Dr
                         </div>
                         <div>
@@ -582,7 +582,7 @@ function adicionarContacto(tipo='', valor='', nome='', consent=0) {
     const checked = consent == 1 ? 'checked' : (tipo === 'whatsapp' ? 'checked' : '');
     
     c.insertAdjacentHTML('beforeend',`
-        <div class="p-4 bg-surface-container-low rounded-xl border border-black/5" id="contacto-${i}">
+        <div class="p-4 bg-surface-container-low rounded-xl border border-primary/5" id="contacto-${i}">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
                 <div class="md:col-span-3">
                     <label class="block text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-1 ml-1">Tipo</label>
@@ -603,7 +603,7 @@ function adicionarContacto(tipo='', valor='', nome='', consent=0) {
                 </div>
                 <div class="md:col-span-2 flex items-center justify-between gap-2 pb-1">
                     <label class="flex items-center gap-1.5 text-[10px] font-bold cursor-pointer">
-                        <input type="checkbox" name="contactos[${i}][consentimento]" value="1" ${checked} class="rounded text-on-surface border-black/30 focus:ring-[#007aff]"> 
+                        <input type="checkbox" name="contactos[${i}][consentimento]" value="1" ${checked} class="rounded text-on-surface border-primary/30 focus:ring-[#007aff]"> 
                         Lembretes
                     </label>
                     <button type="button" onclick="document.getElementById('contacto-${i}').remove()" class="text-error hover:text-error/80 transition-colors">

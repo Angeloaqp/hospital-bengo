@@ -240,7 +240,7 @@ $avatarColors = [
     $tituloPagina = 'Gestão de Utilizadores';
     ob_start(); ?>
     <div class="hidden md:flex items-center gap-3">
-        <div class="px-3 py-1.5 bg-surface-container-low rounded-full flex items-center gap-1.5 border border-black/5">
+        <div class="px-3 py-1.5 bg-surface-container-low rounded-full flex items-center gap-1.5 border border-primary/5">
             <span class="material-symbols-outlined text-[14px] text-on-surface-variant">group</span>
             <span
                 class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant"><?= count($utilizadores) ?>
@@ -399,7 +399,7 @@ $avatarColors = [
                                     <span
                                         class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Utilizador</span>
                                 </div>
-                                <div class="flex flex-col gap-1 px-4 border-x border-black/5">
+                                <div class="flex flex-col gap-1 px-4 border-x border-primary/5">
                                     <div class="flex items-center h-5">
                                         <span
                                             class="text-xs font-extrabold text-on-surface"><?= $isActivo ? 'Activo' : 'Off' ?></span>

@@ -202,7 +202,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
     <?php
     $tituloPagina = 'Utilizadores';
     ob_start(); ?>
-    <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-black/5 shadow-sm">
+    <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-primary/5 shadow-sm">
         <span class="material-symbols-outlined text-[16px] text-on-surface-variant">person_add</span>
         <span class="text-xs font-bold text-on-surface">Novo Registo</span>
     </div>
@@ -392,7 +392,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                             </div>
 
                             <!-- Actions -->
-                            <div class="flex items-center justify-end gap-4 mt-12 pt-6 border-t border-black/5">
+                            <div class="flex items-center justify-end gap-4 mt-12 pt-6 border-t border-primary/5">
                                 <a href="utilizadores.php" class="font-bold text-sm text-on-surface-variant hover:text-black transition-colors px-6 py-3 rounded-xl hover:bg-gray-50">
                                     Cancelar
                                 </a>

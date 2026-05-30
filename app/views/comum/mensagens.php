@@ -215,7 +215,7 @@ function tempoRelativo($data)
 
                 <!-- Quadro de Conteúdo (Col 9) -->
                 <div class="lg:col-span-9">
-                    <div class="bg-white rounded-[2rem] p-2 md:p-4 shadow-sm border border-black/5 min-h-[500px] flex flex-col">
+                    <div class="bg-white rounded-[2rem] p-2 md:p-4 shadow-sm border border-primary/5 min-h-[500px] flex flex-col">
                         
                         <!-- TAB: ENTRADA -->
                         <?php if ($tab === 'entrada'): ?>
@@ -287,7 +287,7 @@ function tempoRelativo($data)
                         <!-- TAB: LER -->
                         <?php elseif ($tab === 'ler' && $msgSelecionada): ?>
                             <div class="p-6 md:p-8 flex flex-col h-full">
-                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-6 border-b border-black/5">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-6 border-b border-primary/5">
                                     <div class="flex items-center gap-4">
                                         <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-lg text-white font-extrabold uppercase shrink-0">
                                             <?= substr(htmlspecialchars($msgSelecionada['remetente_nome']), 0, 1) ?>
@@ -313,7 +313,7 @@ function tempoRelativo($data)
                                 </div>
                                 <div class="text-sm font-medium text-gray-800 leading-relaxed whitespace-pre-wrap mb-10 pl-2 lg:pl-16"><?= htmlspecialchars($msgSelecionada['conteudo']) ?></div>
                                 
-                                <div class="mt-auto pt-6 border-t border-black/5 flex justify-end items-center gap-4">
+                                <div class="mt-auto pt-6 border-t border-primary/5 flex justify-end items-center gap-4">
                                     <form method="POST" action="<?= BASE_URL ?>app/controllers/mensagens.php" onsubmit="return confirm('Tem a certeza que deseja apagar esta mensagem?');">
                                         <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
                                         <input type="hidden" name="acao" value="apagar">
@@ -348,7 +348,7 @@ function tempoRelativo($data)
                                             <span class="material-symbols-outlined text-[16px] text-gray-400">group</span>
                                             Enviar Para
                                         </label>
-                                        <div class="bg-gray-50/50 border border-black/5 rounded-2xl p-4 max-h-[300px] overflow-y-auto custom-scrollbar">
+                                        <div class="bg-gray-50/50 border border-primary/5 rounded-2xl p-4 max-h-[300px] overflow-y-auto custom-scrollbar">
                                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                                 <?php foreach ($utilizadores as $u): ?>
                                                     <label class="custom-checkbox flex items-center p-3 rounded-xl bg-white border border-gray-200 hover:border-[#007aff] transition-colors cursor-pointer gap-3 shadow-sm">

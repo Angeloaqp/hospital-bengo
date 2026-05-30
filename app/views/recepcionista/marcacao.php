@@ -295,7 +295,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
 
                             <!-- Grid State -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="container-medicos">
-                                <div class="col-span-full text-center py-6 text-on-surface-variant text-sm font-bold bg-surface-container-low rounded-[24px] border border-dashed border-black/10">
+                                <div class="col-span-full text-center py-6 text-on-surface-variant text-sm font-bold bg-surface-container-low rounded-[24px] border border-dashed border-primary/10">
                                     Seleccione a Especialidade acima para ver os médicos disponíveis.
                                 </div>
                             </div>
@@ -404,7 +404,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
                             <div id="contactos-container" class="space-y-3">
                                 <!-- Populated via JS -->
                             </div>
-                            <div id="contactos-vazio" class="hidden text-center py-6 bg-surface-container-low/50 rounded-[24px] border border-dashed border-black/10 text-xs font-bold text-on-surface-variant">
+                            <div id="contactos-vazio" class="hidden text-center py-6 bg-surface-container-low/50 rounded-[24px] border border-dashed border-primary/10 text-xs font-bold text-on-surface-variant">
                                 Nenhum contacto associado para receber lembretes.
                             </div>
                         </section>
@@ -746,7 +746,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
             updateIndicator('step3-indicator', false);
 
             if (!espId) {
-                contMedicos.innerHTML = `<div class="col-span-full text-center py-6 text-on-surface-variant text-sm font-bold bg-surface-container-low rounded-[24px] border border-dashed border-black/10">Seleccione a Especialidade acima para ver os médicos disponíveis.</div>`;
+                contMedicos.innerHTML = `<div class="col-span-full text-center py-6 text-on-surface-variant text-sm font-bold bg-surface-container-low rounded-[24px] border border-dashed border-primary/10">Seleccione a Especialidade acima para ver os médicos disponíveis.</div>`;
                 return;
             }
 
@@ -865,7 +865,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
 
             html += `
         </div>
-        <div class="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-black/5">
+        <div class="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-primary/5">
             <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-green-500"></div><span class="text-[9px] font-bold text-on-surface-variant uppercase">Vagas</span></div>
             <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-error"></div><span class="text-[9px] font-bold text-on-surface-variant uppercase">Lotado</span></div>
         </div>
@@ -1037,21 +1037,21 @@ $subtituloPagina = 'Agendar consulta para data futura';
             }
 
             c.insertAdjacentHTML('beforeend', `
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-surface-container-low rounded-[24px] border border-transparent hover:border-black/5 transition-colors group gap-4" id="contacto-${i}">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-surface-container-low rounded-[24px] border border-transparent hover:border-primary/5 transition-colors group gap-4" id="contacto-${i}">
             <div class="flex items-center gap-4 flex-1">
                 <div class="w-10 h-10 rounded-full ${bg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                     <span class="material-symbols-outlined ${iconColor} text-[20px]">${icon}</span>
                 </div>
                 <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" name="contactos[${i}][valor]" value="${valor}" class="w-full bg-transparent border-b border-black/10 focus:border-[#007aff] px-1 py-1 text-sm font-bold text-on-surface" placeholder="Contacto..." required>
+                    <input type="text" name="contactos[${i}][valor]" value="${valor}" class="w-full bg-transparent border-b border-primary/10 focus:border-[#007aff] px-1 py-1 text-sm font-bold text-on-surface" placeholder="Contacto..." required>
                     <div class="flex gap-2">
-                        <select name="contactos[${i}][tipo]" class="bg-transparent border-b border-black/10 focus:border-[#007aff] px-1 py-1 text-[10px] uppercase font-semibold text-on-surface-variant w-1/2">
+                        <select name="contactos[${i}][tipo]" class="bg-transparent border-b border-primary/10 focus:border-[#007aff] px-1 py-1 text-[10px] uppercase font-semibold text-on-surface-variant w-1/2">
                             <option value="telefone" ${tipo==='telefone'?'selected':''}>Telefone</option>
                             <option value="whatsapp" ${tipo==='whatsapp'?'selected':''}>WhatsApp</option>
                             <option value="email" ${tipo==='email'?'selected':''}>Email</option>
                             <option value="emergencia" ${tipo==='emergencia'?'selected':''}>Emerg.</option>
                         </select>
-                        <input type="text" name="contactos[${i}][nome_contacto]" value="${nome}" class="w-1/2 bg-transparent border-b border-black/10 focus:border-[#007aff] px-1 py-1 text-xs font-semibold text-on-surface-variant" placeholder="Nome (Opcional)">
+                        <input type="text" name="contactos[${i}][nome_contacto]" value="${nome}" class="w-1/2 bg-transparent border-b border-primary/10 focus:border-[#007aff] px-1 py-1 text-xs font-semibold text-on-surface-variant" placeholder="Nome (Opcional)">
                     </div>
                 </div>
             </div>

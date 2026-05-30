@@ -45,22 +45,22 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
 
     <!-- Info Básica -->
     <div class="grid grid-cols-2 gap-3">
-        <div class="bg-surface-container-low p-3 rounded-2xl border border-black/5">
+        <div class="bg-surface-container-low p-3 rounded-2xl border border-primary/5">
             <span class="block text-[9px] uppercase font-black tracking-widest text-on-surface-variant mb-1">ID</span>
             <span class="font-bold text-on-surface text-sm">#<?= $dados['id'] ?></span>
         </div>
-        <div class="bg-surface-container-low p-3 rounded-2xl border border-black/5">
+        <div class="bg-surface-container-low p-3 rounded-2xl border border-primary/5">
             <span class="block text-[9px] uppercase font-black tracking-widest text-on-surface-variant mb-1">Username</span>
             <span class="font-bold text-on-surface text-sm">@<?= htmlspecialchars($dados['nome_utilizador']) ?></span>
         </div>
-        <div class="col-span-2 bg-surface-container-low p-3 rounded-2xl border border-black/5">
+        <div class="col-span-2 bg-surface-container-low p-3 rounded-2xl border border-primary/5">
             <span class="block text-[9px] uppercase font-black tracking-widest text-on-surface-variant mb-1">Telefone</span>
             <span class="font-bold text-on-surface text-sm"><?= htmlspecialchars($dados['telefone'] ?: 'Não definido') ?></span>
         </div>
     </div>
 
     <!-- KPIs Rápidos -->
-    <h4 class="font-black text-sm uppercase tracking-widest text-on-surface-variant mt-2 border-b border-black/5 pb-2">Actividade</h4>
+    <h4 class="font-black text-sm uppercase tracking-widest text-on-surface-variant mt-2 border-b border-primary/5 pb-2">Actividade</h4>
     <div class="grid grid-cols-2 gap-3">
         <div class="bg-white p-4 rounded-2xl border border-surface-container shadow-sm flex flex-col items-center justify-center text-center">
             <span class="text-3xl font-black tactile-mono text-on-surface"><?= $estatisticas['hoje'] ?></span>
@@ -76,7 +76,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
         <a href="ver_utilizador.php?id=<?= $dados['id'] ?>" class="w-full bg-primary text-white rounded-xl py-3 font-bold text-sm text-center hover:scale-[1.02] transition-transform shadow-md">
             Ver Perfil Completo
         </a>
-        <a href="editar_utilizador.php?id=<?= $dados['id'] ?>" class="w-full bg-surface-container-low text-on-surface border border-black/5 rounded-xl py-3 font-bold text-sm text-center hover:bg-surface-container transition-colors">
+        <a href="editar_utilizador.php?id=<?= $dados['id'] ?>" class="w-full bg-surface-container-low text-on-surface border border-primary/5 rounded-xl py-3 font-bold text-sm text-center hover:bg-surface-container transition-colors">
             Editar Conta
         </a>
     </div>

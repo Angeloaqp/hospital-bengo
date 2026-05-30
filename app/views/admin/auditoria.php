@@ -90,7 +90,7 @@ $iconeAccao = [
     <?php
     $tituloPagina = 'Auditoria';
     ob_start(); ?>
-    <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-black/5 shadow-sm">
+    <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-primary/5 shadow-sm">
         <span class="material-symbols-outlined text-[16px] text-on-surface-variant">monitoring</span>
         <span class="text-xs font-bold text-on-surface"><?= $totalHoje ?> acções hoje</span>
     </div>
@@ -216,7 +216,7 @@ $iconeAccao = [
                                     </td>
                                     <td class="py-4 px-6 max-w-[300px]">
                                         <?php if ($l['detalhes']): ?>
-                                            <span class="text-xs font-semibold text-gray-500 truncate block w-full bg-gray-50 px-2 py-1 rounded border border-black/5" title="<?= htmlspecialchars($l['detalhes']) ?>">
+                                            <span class="text-xs font-semibold text-gray-500 truncate block w-full bg-gray-50 px-2 py-1 rounded border border-primary/5" title="<?= htmlspecialchars($l['detalhes']) ?>">
                                                 <?= htmlspecialchars($l['detalhes']) ?>
                                             </span>
                                         <?php else: ?>

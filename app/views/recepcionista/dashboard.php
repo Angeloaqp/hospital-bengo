@@ -96,7 +96,7 @@ include __DIR__ . '/../comum/header.php';
 
 <?php if ($ultimaSenha): ?>
 <!-- TICKET DE IMPRESSÃO (MODAL) -->
-<div id="ticket-modal" class="fixed inset-0 z-[100] flex justify-center items-center bg-black/60 backdrop-blur-sm no-print">
+<div id="ticket-modal" class="fixed inset-0 z-[100] flex justify-center items-center bg-primary/60 backdrop-blur-sm no-print">
     <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl flex flex-col items-center">
         <h3 class="font-black text-xl mb-6 tracking-tight">Imprimir Senha</h3>
         
@@ -113,7 +113,7 @@ include __DIR__ . '/../comum/header.php';
             <p class="text-lg font-black text-primary bg-surface-container px-3 py-1 rounded-md mb-2"><?= htmlspecialchars($ultimoProcesso) ?></p>
             <?php endif; ?>
             
-            <div class="w-full border-t border-black/10 my-4"></div>
+            <div class="w-full border-t border-primary/10 my-4"></div>
             <p class="text-[9px] font-bold text-on-surface-variant text-center">Data: <?= date('d/m/Y H:i') ?></p>
             <p class="text-[9px] font-bold text-on-surface-variant text-center mt-1">Aguarde ser chamado no painel.</p>
         </div>

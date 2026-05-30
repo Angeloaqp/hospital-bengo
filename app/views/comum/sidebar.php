@@ -70,7 +70,7 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
             <img src="<?= BASE_URL ?>public/assets/img/logo_hgb.png" alt="HGB Logo" class="h-10 w-auto sidebar-text transition-all object-contain">
             <img src="<?= BASE_URL ?>public/assets/img/logo_hgb.png" alt="H" class="h-8 w-auto hidden sidebar-mini-text transition-all object-contain" style="object-position: left;">
         </div>
-        <div class="w-10 h-[1.5px] bg-black/5"></div>
+        <div class="w-10 h-[1.5px] bg-primary/5"></div>
         <!-- Toggle Minimize (Abaixo do Logo) -->
         <button type="button" id="sidebar-toggle" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-full transition-all" title="Alternar Menu">
             <span class="material-symbols-outlined text-[18px] transition-transform duration-300" id="sidebar-toggle-icon">menu_open</span>
@@ -99,7 +99,7 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
     <!-- Bottom Section: Avatar & Logout -->
     <div id="sidebar-bottom" class="mt-auto flex flex-col gap-1.5 px-3 transition-all">
         <div class="px-4 mb-3 transition-all">
-            <div class="h-[1px] bg-black/5 w-full"></div>
+            <div class="h-[1px] bg-primary/5 w-full"></div>
         </div>
         <!-- Meu Perfil -->
         <a href="<?= $_basePerfil ?>index.php" class="flex items-center gap-3 px-4 py-2.5 w-full <?php echo $_paginaActual === 'perfil' ? 'bg-[#007aff] text-white' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-black' ?> rounded-2xl transition-all overflow-hidden sidebar-link">

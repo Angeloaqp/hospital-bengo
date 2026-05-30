@@ -146,7 +146,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
 
             <!-- STAT CARDS (4-cols) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="bento-card delay-1 bg-white rounded-[2rem] p-6 border border-black/5 shadow-sm">
+                <div class="bento-card delay-1 bg-white rounded-[2rem] p-6 border border-primary/5 shadow-sm">
                     <div class="flex items-center justify-between mb-6 text-gray-400">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest">Total Período</span>
                         <span class="material-symbols-outlined text-[18px]">bar_chart</span>
@@ -155,7 +155,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                     <div class="text-xs font-bold text-gray-400 mt-2"><?= $periodoLabel ?></div>
                 </div>
 
-                <div class="bento-card delay-2 bg-white rounded-[2rem] p-6 border border-black/5 shadow-sm">
+                <div class="bento-card delay-2 bg-white rounded-[2rem] p-6 border border-primary/5 shadow-sm">
                     <div class="flex items-center justify-between mb-6 text-gray-400">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest">Concluídos</span>
                         <span class="material-symbols-outlined text-[18px]">check_circle</span>
@@ -164,7 +164,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                     <div class="text-xs font-bold text-green-400 mt-2">Atendimentos completos</div>
                 </div>
 
-                <div class="bento-card delay-3 bg-white rounded-[2rem] p-6 border border-black/5 shadow-sm">
+                <div class="bento-card delay-3 bg-white rounded-[2rem] p-6 border border-primary/5 shadow-sm">
                     <div class="flex items-center justify-between mb-6 text-gray-400">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest">Cancelados</span>
                         <span class="material-symbols-outlined text-[18px]">cancel</span>
@@ -173,7 +173,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                     <div class="text-xs font-bold text-red-300 mt-2">Ausências / Desistências</div>
                 </div>
 
-                <div class="bento-card delay-4 bg-white rounded-[2rem] p-6 border border-black/5 shadow-sm relative overflow-hidden group">
+                <div class="bento-card delay-4 bg-white rounded-[2rem] p-6 border border-primary/5 shadow-sm relative overflow-hidden group">
                     <div class="absolute -right-4 -bottom-4 text-green-500 opacity-5 transition-transform duration-500 group-hover:scale-110">
                         <span class="material-symbols-outlined" style="font-size: 88px;">trending_up</span>
                     </div>
@@ -191,7 +191,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
             </div>
 
             <!-- GRÁFICO PRINCIPAL: Fluxo Diário (Full-width) -->
-            <div class="bento-card delay-5 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm mb-8">
+            <div class="bento-card delay-5 bg-white rounded-[2.5rem] p-8 border border-primary/5 shadow-sm mb-8">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">show_chart</span>
@@ -207,7 +207,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
             <!-- GRÁFICOS SECUNDÁRIOS (2-cols) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <!-- Produtividade Médico (Donut) -->
-                <div class="bento-card delay-5 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm">
+                <div class="bento-card delay-5 bg-white rounded-[2.5rem] p-8 border border-primary/5 shadow-sm">
                     <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">donut_large</span>
                         Distribuição por Médico
@@ -218,7 +218,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                 </div>
 
                 <!-- Pico de Horas (Bar Chart) -->
-                <div class="bento-card delay-6 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm">
+                <div class="bento-card delay-6 bg-white rounded-[2.5rem] p-8 border border-primary/5 shadow-sm">
                     <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">schedule</span>
                         Horas de Pico
@@ -233,7 +233,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
 
                 <!-- Card: Distribuição Etária (Doughnut) -->
-                <div class="bento-card delay-5 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm lg:col-span-1">
+                <div class="bento-card delay-5 bg-white rounded-[2.5rem] p-8 border border-primary/5 shadow-sm lg:col-span-1">
                     <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">demography</span>
                         Faixas Etárias
@@ -261,7 +261,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                 </div>
 
                 <!-- Card: Prioridades -->
-                <div class="bento-card delay-6 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm">
+                <div class="bento-card delay-6 bg-white rounded-[2.5rem] p-8 border border-primary/5 shadow-sm">
                     <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">priority_high</span>
                         Distribuição por Prioridade
@@ -288,7 +288,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                 </div>
 
                 <!-- Card: Top Especialidades -->
-                <div class="bento-card delay-6 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm">
+                <div class="bento-card delay-6 bg-white rounded-[2.5rem] p-8 border border-primary/5 shadow-sm">
                     <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">clinical_notes</span>
                         Top Especialidades
@@ -326,7 +326,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
             </div>
 
             <!-- TABELA RANKING DE MÉDICOS -->
-            <div class="bento-card delay-6 bg-white rounded-[2.5rem] border border-black/5 shadow-sm overflow-hidden">
+            <div class="bento-card delay-6 bg-white rounded-[2.5rem] border border-primary/5 shadow-sm overflow-hidden">
                 <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
                     <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">leaderboard</span>

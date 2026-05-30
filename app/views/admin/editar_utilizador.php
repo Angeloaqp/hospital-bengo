@@ -79,7 +79,7 @@ unset($_SESSION['erro']);
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
     <?php ob_start(); ?>
-        <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="text-xs px-4 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-black rounded-full font-bold transition-all border border-black/5 flex items-center gap-1">
+        <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="text-xs px-4 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-black rounded-full font-bold transition-all border border-primary/5 flex items-center gap-1">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Voltar ao Perfil
         </a>
     <?php $accoesPagina = ob_get_clean(); ?>

@@ -62,7 +62,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
     <?php ob_start(); ?>
-        <a href="<?= BASE_URL ?>app/views/admin/utilizadores.php" class="text-xs px-4 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-black rounded-full font-bold transition-all border border-black/5 flex items-center gap-1">
+        <a href="<?= BASE_URL ?>app/views/admin/utilizadores.php" class="text-xs px-4 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-black rounded-full font-bold transition-all border border-primary/5 flex items-center gap-1">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Voltar à Lista
         </a>
     <?php $accoesPagina = ob_get_clean(); ?>
@@ -90,7 +90,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                                 <?= htmlspecialchars($dados['nome']) ?>
                             </h2>
                             <div class="flex items-center gap-3 text-on-surface-variant text-sm font-semibold mb-3">
-                                <span class="px-3 py-1 bg-surface-container-low rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface border border-black/5">
+                                <span class="px-3 py-1 bg-surface-container-low rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface border border-primary/5">
                                     <?= ucfirst($dados['perfil']) ?>
                                 </span>
                                 <?php if ($dados['especialidade']): ?>
