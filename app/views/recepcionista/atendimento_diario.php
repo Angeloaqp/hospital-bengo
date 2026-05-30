@@ -603,7 +603,7 @@ function adicionarContacto(tipo='', valor='', nome='', consent=0) {
                 </div>
                 <div class="md:col-span-2 flex items-center justify-between gap-2 pb-1">
                     <label class="flex items-center gap-1.5 text-[10px] font-bold cursor-pointer">
-                        <input type="checkbox" name="contactos[${i}][consentimento]" value="1" ${checked} class="rounded text-on-surface border-black/30 focus:ring-black"> 
+                        <input type="checkbox" name="contactos[${i}][consentimento]" value="1" ${checked} class="rounded text-on-surface border-black/30 focus:ring-[#007aff]"> 
                         Lembretes
                     </label>
                     <button type="button" onclick="document.getElementById('contacto-${i}').remove()" class="text-error hover:text-error/80 transition-colors">

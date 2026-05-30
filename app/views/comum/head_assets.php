@@ -23,7 +23,7 @@ tailwind.config = {
                 "surface-dim": "#dadada",
                 "surface-container": "#eeeeee",
                 "on-error": "#ffffff",
-                "primary": "#000000",
+                "primary": "#007aff",
                 "primary-container": "#3c3b3b",
                 "secondary": "#5e5e5e",
                 "outline-variant": "#c6c6c6",

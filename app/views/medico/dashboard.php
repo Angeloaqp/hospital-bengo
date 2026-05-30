@@ -234,7 +234,7 @@ $totalFila = array_sum($distribuicao);
                                 ?>
                                     <div class="flex flex-col items-center gap-1.5" style="width: 48px;">
                                         <span class="text-[10px] font-black tabular-nums <?= $isToday ? 'text-black' : ($val > 0 ? 'text-on-surface-variant' : 'text-on-surface-variant/30') ?>"><?= $val ?></span>
-                                        <div class="w-5 rounded-full <?= $isToday ? 'bg-black' : ($val > 0 ? 'bg-black/15' : 'bg-black/[0.05]') ?> bar-grow"
+                                        <div class="w-5 rounded-full <?= $isToday ? 'bg-[#007aff]' : ($val > 0 ? 'bg-black/15' : 'bg-black/[0.05]') ?> bar-grow"
                                              style="height: <?= $barH ?>px; animation-delay: <?= $i * 0.08 ?>s;"></div>
                                     </div>
                                 <?php endforeach; ?>
@@ -254,7 +254,7 @@ $totalFila = array_sum($distribuicao);
                     </section>
 
                     <!-- Atalho Fila Actual -->
-                    <section class="lg:col-span-2 bg-black rounded-[2rem] p-8 floating-card border border-white/10 text-white flex flex-col justify-between fade-in-delay-3 relative overflow-hidden">
+                    <section class="lg:col-span-2 bg-[#007aff] rounded-[2rem] p-8 floating-card border border-white/10 text-white flex flex-col justify-between fade-in-delay-3 relative overflow-hidden">
                         <div class="absolute -top-16 -right-16 w-48 h-48 bg-white/5 rounded-full pointer-events-none"></div>
                         <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-white/5 rounded-full pointer-events-none"></div>
                         

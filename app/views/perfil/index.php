@@ -215,7 +215,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                                 <span class="material-symbols-outlined text-[18px]">history</span>
                                 Registo de Atividade
                             </h3>
-                            <a href="historico.php" class="px-4 py-2 bg-white border border-gray-200 text-on-surface hover:bg-primary hover:text-white hover:border-black rounded-full flex items-center gap-2 transition-all shadow-sm text-[10px] font-extrabold uppercase tracking-widest">
+                            <a href="historico.php" class="px-4 py-2 bg-white border border-gray-200 text-on-surface hover:bg-primary hover:text-white hover:border-[#007aff] rounded-full flex items-center gap-2 transition-all shadow-sm text-[10px] font-extrabold uppercase tracking-widest">
                                 Ver Completo
                                 <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                             </a>

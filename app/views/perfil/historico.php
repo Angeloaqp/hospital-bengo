@@ -67,7 +67,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
     <?php $tituloPagina = 'Métricas e Histórico'; ob_start(); ?>
-    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-on-surface hover:bg-primary hover:text-white hover:border-black rounded-full flex items-center gap-2 transition-all shadow-sm">
+    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-on-surface hover:bg-primary hover:text-white hover:border-[#007aff] rounded-full flex items-center gap-2 transition-all shadow-sm">
         <span class="material-symbols-outlined text-[18px]">arrow_back</span>
         <span class="text-xs font-bold">Resumo do Perfil</span>
     </a>
