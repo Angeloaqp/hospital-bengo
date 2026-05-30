@@ -42,6 +42,14 @@
                     "on-surface-variant": "var(--cor-on-surface-variant)",
                     "error": "var(--cor-error)",
                 },
+                boxShadow: {
+                    "sm": "var(--shadow-sm)",
+                    "DEFAULT": "var(--shadow-md)",
+                    "md": "var(--shadow-md)",
+                    "lg": "var(--shadow-lg)",
+                    "xl": "var(--shadow-floating)",
+                    "2xl": "var(--shadow-floating)",
+                },
                 borderRadius: {
                     DEFAULT: "1rem",
                     lg: "1rem",
@@ -63,6 +71,7 @@
     body {
         font-family: 'Inter', sans-serif;
         background-color: var(--cor-background);
+        color: var(--cor-text-primary);
     }
 
     h1,
@@ -72,6 +81,7 @@
     h5,
     h6 {
         font-family: 'Manrope', sans-serif;
+        color: var(--cor-text-primary);
     }
 
     /* Scrollbar Global & Custom */
@@ -126,18 +136,6 @@
 
     body {
         animation: simpleFadeIn 0.4s ease-out forwards;
-    }
-
-    /* Retirar sombras de todo o design, preservando o header */
-    .floating-card,
-    .shadow-sm,
-    .shadow,
-    .shadow-md,
-    .shadow-lg,
-    .shadow-xl,
-    .shadow-2xl,
-    .ambient-shadow {
-        box-shadow: none !important;
     }
 </style>
 
