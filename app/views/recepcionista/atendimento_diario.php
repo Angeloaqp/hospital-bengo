@@ -41,7 +41,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
     </style>
 </head>
 
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
 
 <?php $paginaActual = 'marcacao'; ?>
 <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -69,7 +69,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
         <section class="bg-white rounded-[2rem] p-8 floating-card border border-white mb-6">
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                    <span class="material-symbols-outlined text-black">person_search</span>
+                    <span class="material-symbols-outlined text-on-surface">person_search</span>
                 </div>
                 <h3 class="text-xl font-black tracking-tight">Identificação do Paciente</h3>
             </div>
@@ -90,7 +90,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg" id="paciente-iniciais">P</div>
                         <div>
-                            <h4 id="paciente-nome-display" class="font-black text-base text-black leading-tight">N/A</h4>
+                            <h4 id="paciente-nome-display" class="font-black text-base text-on-surface leading-tight">N/A</h4>
                             <p id="paciente-extra" class="text-blue-800 text-xs font-bold tracking-wide mt-0.5">N/A</p>
                         </div>
                     </div>
@@ -105,7 +105,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
         <section class="bg-white rounded-[2rem] p-8 floating-card border border-white mb-6">
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                    <span class="material-symbols-outlined text-black">medical_services</span>
+                    <span class="material-symbols-outlined text-on-surface">medical_services</span>
                 </div>
                 <h3 class="text-xl font-black tracking-tight">Tipo de Consulta</h3>
             </div>
@@ -135,7 +135,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                        <span class="material-symbols-outlined text-black">stethoscope</span>
+                        <span class="material-symbols-outlined text-on-surface">stethoscope</span>
                     </div>
                     <h3 class="text-xl font-black tracking-tight">Médico Responsável</h3>
                 </div>
@@ -157,7 +157,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                        <span class="material-symbols-outlined text-black">calendar_clock</span>
+                        <span class="material-symbols-outlined text-on-surface">calendar_clock</span>
                     </div>
                     <h3 class="text-xl font-black tracking-tight">Data e Horário</h3>
                 </div>
@@ -226,7 +226,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
                 
                 <div id="area-data-auto" class="hidden p-5 bg-surface-container-low rounded-2xl border border-black/10 text-center">
                     <p class="text-sm font-bold text-on-surface-variant mb-1">A procurar vaga automaticamente...</p>
-                    <p class="text-xs font-bold text-black" id="data-auto-resultado">Por favor seleccione o médico primeiro.</p>
+                    <p class="text-xs font-bold text-on-surface" id="data-auto-resultado">Por favor seleccione o médico primeiro.</p>
                 </div>
             <?php endif; ?>
             
@@ -245,7 +245,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
         <section class="bg-white rounded-[2rem] p-8 floating-card border border-white mb-6">
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                    <span class="material-symbols-outlined text-black">priority_high</span>
+                    <span class="material-symbols-outlined text-on-surface">priority_high</span>
                 </div>
                 <h3 class="text-xl font-black tracking-tight">Prioridade & Observações</h3>
             </div>
@@ -281,14 +281,14 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                        <span class="material-symbols-outlined text-black">notifications_active</span>
+                        <span class="material-symbols-outlined text-on-surface">notifications_active</span>
                     </div>
                     <div>
                         <h3 class="text-xl font-black tracking-tight">Lembretes & Contactos</h3>
                         <p class="text-xs text-on-surface-variant font-bold mt-0.5">Contactos para enviar notificações automáticas</p>
                     </div>
                 </div>
-                <button type="button" onclick="adicionarContacto()" class="bg-surface-container-low text-black px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors flex items-center gap-1">
+                <button type="button" onclick="adicionarContacto()" class="bg-surface-container-low text-on-surface px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-colors flex items-center gap-1">
                     <span class="material-symbols-outlined text-base">add</span> Novo
                 </button>
             </div>
@@ -303,10 +303,10 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
 
         <!-- Ações -->
         <div class="flex flex-col sm:flex-row justify-end gap-4" id="form-actions">
-            <a href="agenda.php" class="px-8 py-4 rounded-xl font-black text-sm bg-surface-container-low text-black hover:bg-surface-container transition-colors text-center shadow-sm">
+            <a href="agenda.php" class="px-8 py-4 rounded-xl font-black text-sm bg-surface-container-low text-on-surface hover:bg-surface-container transition-colors text-center shadow-sm">
                 Cancelar
             </a>
-            <button type="submit" id="btn-submit" class="bg-black text-white px-8 py-4 rounded-xl font-black text-sm hover:scale-[1.02] transition-transform shadow-lg flex items-center justify-center gap-2">
+            <button type="submit" id="btn-submit" class="bg-primary text-white px-8 py-4 rounded-xl font-black text-sm hover:scale-[1.02] transition-transform shadow-lg flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-[18px]"><?= $mesmoDia ? 'assignment_turned_in' : 'event_available' ?></span>
                 <span id="btn-text"><?= $mesmoDia ? 'Confirmar & Ir para Check-in' : 'Agendar Consulta' ?></span>
             </button>
@@ -319,32 +319,32 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
         <div class="w-24 h-24 rounded-full bg-green-50 flex items-center justify-center mb-6 shadow-sm border border-green-100">
             <span class="material-symbols-outlined text-green-500 text-5xl font-bold">check_circle</span>
         </div>
-        <h3 class="text-3xl font-headline font-extrabold text-black tracking-tight mb-2">Consulta Agendada!</h3>
+        <h3 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2">Consulta Agendada!</h3>
         <p class="text-on-surface-variant font-medium text-sm max-w-sm mb-6">A marcação foi registada e a senha foi gerada automaticamente.</p>
         
         <!-- Senha em destaque -->
         <div class="bg-surface-container-low rounded-2xl px-10 py-6 mb-8 border border-black/5 inline-block">
             <p class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2">Senha do Paciente</p>
-            <p class="text-5xl font-headline font-extrabold text-black tracking-tight" id="sucesso-senha-codigo">---</p>
+            <p class="text-5xl font-headline font-extrabold text-on-surface tracking-tight" id="sucesso-senha-codigo">---</p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-            <a href="agenda.php" class="group p-6 bg-surface-container-low rounded-2xl hover:bg-black hover:text-white transition-all text-left flex flex-col justify-between border border-transparent">
+            <a href="agenda.php" class="group p-6 bg-surface-container-low rounded-2xl hover:bg-primary hover:text-white transition-all text-left flex flex-col justify-between border border-transparent">
                 <div>
-                    <span class="material-symbols-outlined text-black group-hover:text-white mb-4 text-3xl">calendar_month</span>
+                    <span class="material-symbols-outlined text-on-surface group-hover:text-white mb-4 text-3xl">calendar_month</span>
                     <h4 class="text-lg font-black tracking-tight mb-1">Ir para a Agenda</h4>
                     <p class="text-xs text-on-surface-variant group-hover:text-white/70 font-semibold leading-relaxed">Consultar marcações do dia e fazer triagens.</p>
                 </div>
-                <span class="material-symbols-outlined self-end mt-4 text-black group-hover:text-white">arrow_forward</span>
+                <span class="material-symbols-outlined self-end mt-4 text-on-surface group-hover:text-white">arrow_forward</span>
             </a>
             
-            <button type="button" onclick="window.location.reload()" class="group p-6 bg-surface-container-low rounded-2xl hover:bg-black hover:text-white transition-all text-left flex flex-col justify-between border border-transparent">
+            <button type="button" onclick="window.location.reload()" class="group p-6 bg-surface-container-low rounded-2xl hover:bg-primary hover:text-white transition-all text-left flex flex-col justify-between border border-transparent">
                 <div>
-                    <span class="material-symbols-outlined text-black group-hover:text-white mb-4 text-3xl">add_circle</span>
+                    <span class="material-symbols-outlined text-on-surface group-hover:text-white mb-4 text-3xl">add_circle</span>
                     <h4 class="text-lg font-black tracking-tight mb-1">Nova Marcação</h4>
                     <p class="text-xs text-on-surface-variant group-hover:text-white/70 font-semibold leading-relaxed">Agendar outra consulta para outro paciente.</p>
                 </div>
-                <span class="material-symbols-outlined self-end mt-4 text-black group-hover:text-white">arrow_forward</span>
+                <span class="material-symbols-outlined self-end mt-4 text-on-surface group-hover:text-white">arrow_forward</span>
             </button>
         </div>
     </section>
@@ -381,7 +381,7 @@ inputPesq.addEventListener('input', function(){
             divResult.innerHTML = d.resultados.map(p=>
                 `<div class="px-5 py-3 hover:bg-surface-container-low cursor-pointer transition-colors border-b border-surface-container-low/50 last:border-0" onclick="seleccionarPaciente(${p.id},'${p.nome.replace(/'/g,"\\'")}','${p.bi_nif||''}','${p.idade||''}')">
                     <div class="flex items-center justify-between">
-                        <span class="font-black text-sm text-black">${p.nome}</span>
+                        <span class="font-black text-sm text-on-surface">${p.nome}</span>
                         <span class="text-xs font-bold text-on-surface-variant bg-surface-container px-2 py-1 rounded-md">${p.idade||'?'} anos</span>
                     </div>
                     <div class="text-[10px] text-on-surface-variant font-bold mt-1 uppercase tracking-widest">${p.bi_nif ? 'BI: '+p.bi_nif : ''}</div>
@@ -466,14 +466,14 @@ function carregarMedicos() {
                 <input class="peer sr-only custom-radio" name="medico_seleccao" type="radio" value="${m.id}" data-cons="${m.consultorio_id||''}" onchange="seleccionarMedico(this)" />
                 <div class="p-4 rounded-2xl bg-surface-container-low border-2 border-transparent hover:border-black/20 transition-all">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black font-black border border-black/10">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-on-surface font-black border border-black/10">
                             Dr
                         </div>
                         <div>
-                            <p class="text-sm font-black text-black leading-tight">${m.nome}</p>
+                            <p class="text-sm font-black text-on-surface leading-tight">${m.nome}</p>
                             <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest mt-0.5">${m.especialidade_nome || 'Clínico Geral'} • ${m.consultorio_nome || 'Sem Consultório Base'}</p>
                         </div>
-                        <span class="material-symbols-outlined ml-auto text-black opacity-0 peer-checked:opacity-100 radio-icon">check_circle</span>
+                        <span class="material-symbols-outlined ml-auto text-on-surface opacity-0 peer-checked:opacity-100 radio-icon">check_circle</span>
                     </div>
                 </div>
             </label>`
@@ -603,7 +603,7 @@ function adicionarContacto(tipo='', valor='', nome='', consent=0) {
                 </div>
                 <div class="md:col-span-2 flex items-center justify-between gap-2 pb-1">
                     <label class="flex items-center gap-1.5 text-[10px] font-bold cursor-pointer">
-                        <input type="checkbox" name="contactos[${i}][consentimento]" value="1" ${checked} class="rounded text-black border-black/30 focus:ring-black"> 
+                        <input type="checkbox" name="contactos[${i}][consentimento]" value="1" ${checked} class="rounded text-on-surface border-black/30 focus:ring-black"> 
                         Lembretes
                     </label>
                     <button type="button" onclick="document.getElementById('contacto-${i}').remove()" class="text-error hover:text-error/80 transition-colors">

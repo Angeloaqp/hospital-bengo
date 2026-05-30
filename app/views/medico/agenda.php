@@ -74,7 +74,7 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
     .floating-card{box-shadow:0 4px 20px -2px rgba(0,0,0,.05),0 2px 10px -2px rgba(0,0,0,.03)}
     </style>
 </head>
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
 <?php $paginaActual='agenda'; include __DIR__.'/../comum/sidebar.php'; ?>
 <?php $tituloPagina='Minha Agenda'; $subtituloPagina=''; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
 
@@ -83,7 +83,7 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
 
 <!-- Date Header -->
 <section class="mb-2">
-    <h2 class="font-headline font-black text-3xl text-black tracking-tight"><?= dataFormatoPT($dataFiltro) ?></h2>
+    <h2 class="font-headline font-black text-3xl text-on-surface tracking-tight"><?= dataFormatoPT($dataFiltro) ?></h2>
     <p class="font-body text-sm font-semibold text-on-surface-variant mt-1 uppercase tracking-wider">Agenda do Dia</p>
 </section>
 
@@ -91,10 +91,10 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
 <section class="grid grid-cols-2 md:grid-cols-5 gap-4">
     <?php
     $metricas = [
-        ['label'=>'Total Pacientes','valor'=>$estatsMedico['total'],'icon'=>'groups','cor'=>'text-black'],
-        ['label'=>'Marcados','valor'=>$estatsMedico['marcadas'],'icon'=>'event_available','cor'=>'text-black'],
-        ['label'=>'Check-in','valor'=>$estatsMedico['confirmadas'],'icon'=>'how_to_reg','cor'=>'text-black'],
-        ['label'=>'Concluídas','valor'=>$estatsMedico['concluidas'],'icon'=>'check_circle','cor'=>'text-black'],
+        ['label'=>'Total Pacientes','valor'=>$estatsMedico['total'],'icon'=>'groups','cor'=>'text-on-surface'],
+        ['label'=>'Marcados','valor'=>$estatsMedico['marcadas'],'icon'=>'event_available','cor'=>'text-on-surface'],
+        ['label'=>'Check-in','valor'=>$estatsMedico['confirmadas'],'icon'=>'how_to_reg','cor'=>'text-on-surface'],
+        ['label'=>'Concluídas','valor'=>$estatsMedico['concluidas'],'icon'=>'check_circle','cor'=>'text-on-surface'],
         ['label'=>'Faltas','valor'=>$estatsMedico['faltas'],'icon'=>'person_cancel','cor'=>'text-error'],
     ];
     foreach($metricas as $m): ?>
@@ -103,7 +103,7 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
             <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider"><?= $m['label'] ?></span>
             <span class="material-symbols-outlined <?= $m['cor'] ?>" data-icon="<?= $m['icon'] ?>"><?= $m['icon'] ?></span>
         </div>
-        <div class="font-headline font-black text-3xl text-black"><?= $m['valor'] ?></div>
+        <div class="font-headline font-black text-3xl text-on-surface"><?= $m['valor'] ?></div>
     </div>
     <?php endforeach; ?>
 </section>
@@ -116,7 +116,7 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
             <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' -1 day')) ?>" class="p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors inline-flex">
                 <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
             </a>
-            <a href="?data=<?= date('Y-m-d') ?>" class="px-4 py-1.5 font-body text-xs font-bold text-black uppercase tracking-wider hover:bg-surface-container rounded-xl transition-colors">
+            <a href="?data=<?= date('Y-m-d') ?>" class="px-4 py-1.5 font-body text-xs font-bold text-on-surface uppercase tracking-wider hover:bg-surface-container rounded-xl transition-colors">
                 Hoje
             </a>
             <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' +1 day')) ?>" class="p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors inline-flex">
@@ -126,7 +126,7 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
         <!-- Date Picker -->
         <div class="relative group custom-calendar-dropdown" id="cal-filtro-medico-dropdown">
             <input type="hidden" name="data" id="cal-filtro-medico-input" value="<?= $dataFiltro ?>" onchange="this.form.submit()">
-            <button type="button" class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-xl hover:bg-surface-container transition-colors text-xs font-bold text-black uppercase tracking-wider" onclick="if(typeof HospitalCalendar !== 'undefined') HospitalCalendar.toggleDropdown('cal-filtro-medico', event)">
+            <button type="button" class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-xl hover:bg-surface-container transition-colors text-xs font-bold text-on-surface uppercase tracking-wider" onclick="if(typeof HospitalCalendar !== 'undefined') HospitalCalendar.toggleDropdown('cal-filtro-medico', event)">
                 <span class="material-symbols-outlined text-[16px]" data-icon="calendar_today">calendar_today</span>
                 <span id="cal-filtro-medico-text"><?= date('d M Y', strtotime($dataFiltro)) ?></span>
             </button>
@@ -215,29 +215,29 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
         $prioIcon = $m['prioridade'] == 1 ? 'warning' : ($m['prioridade'] == 2 ? 'elderly' : 'person');
         $prioLabel = $m['prioridade'] == 1 ? 'Urgente' : ($m['prioridade'] == 2 ? 'Alta' : 'Normal');
 
-        $estDot = 'bg-black';
+        $estDot = 'bg-primary';
         if($m['estado'] === 'em_espera' || $m['estado'] === 'marcada') $estDot = 'bg-[#FF8F00]';
         if($m['estado'] === 'confirmada') $estDot = 'border border-outline-variant';
-        if($m['estado'] === 'em_atendimento') $estDot = 'bg-black';
+        if($m['estado'] === 'em_atendimento') $estDot = 'bg-primary';
         if($m['estado'] === 'urgente' || $m['estado'] === 'falta' || $m['estado'] === 'cancelada') $estDot = 'bg-error';
 
         $opacityClass = ($m['estado'] === 'concluida' || $m['estado'] === 'cancelada') ? 'opacity-70' : '';
     ?>
     <div class="grid grid-cols-[auto_2fr_1.5fr_1fr_1.5fr_1.5fr_1fr] gap-4 items-center bg-white p-5 rounded-[24px] floating-card border border-white hover:shadow-lg transition-shadow cursor-pointer <?= $opacityClass ?>">
         <div class="w-12 flex flex-col items-center justify-center text-on-surface-variant">
-            <span class="font-headline font-black text-black"><?= $m['turno'] === 'manha' ? 'Manhã' : 'Tarde' ?></span>
+            <span class="font-headline font-black text-on-surface"><?= $m['turno'] === 'manha' ? 'Manhã' : 'Tarde' ?></span>
             <span class="material-symbols-outlined text-[14px] mt-1" data-icon="<?= $m['turno'] === 'manha' ? 'light_mode' : 'routine' ?>"><?= $m['turno'] === 'manha' ? 'light_mode' : 'routine' ?></span>
         </div>
         <div class="flex items-center gap-3">
             <div>
-                <h3 class="font-headline font-black text-black text-sm line-clamp-1"><?= htmlspecialchars($m['paciente_nome']) ?></h3>
+                <h3 class="font-headline font-black text-on-surface text-sm line-clamp-1"><?= htmlspecialchars($m['paciente_nome']) ?></h3>
                 <p class="font-body text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant mt-0.5"><?= $m['paciente_idade'] ?> anos</p>
             </div>
         </div>
         <div class="text-xs font-semibold text-on-surface-variant truncate"><?= htmlspecialchars($m['especialidade_nome']) ?></div>
         <div>
             <?php if(!empty($m['senha_codigo'])): ?>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-[10px] text-xs font-bold bg-surface-container-low text-black">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-[10px] text-xs font-bold bg-surface-container-low text-on-surface">
                     <?= htmlspecialchars($m['senha_codigo']) ?>
                 </span>
             <?php else: ?>

@@ -31,7 +31,7 @@ if ($meuPerfil === 'medico') {
     $corCargoBg = 'bg-amber-50 text-amber-700';
     $iconeCargo = 'front_desk';
 } elseif ($meuPerfil === 'admin') {
-    $corCargoBg = 'bg-black text-white';
+    $corCargoBg = 'bg-primary text-white';
     $iconeCargo = 'admin_panel_settings';
 }
 
@@ -75,7 +75,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
     </style>
 </head>
 
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
 
     <?php $paginaActual = 'perfil'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -90,7 +90,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
         <div class="pb-32">
 
             <div class="mb-10 bento-card">
-                <h2 class="text-[2rem] font-headline font-black text-black tracking-tight leading-none">Visão Pessoal</h2>
+                <h2 class="text-[2rem] font-headline font-black text-on-surface tracking-tight leading-none">Visão Pessoal</h2>
                 <p class="text-[0.9rem] font-bold text-gray-400 mt-2">Os seus dados, actividade, e definições de segurança.</p>
             </div>
 
@@ -104,7 +104,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                     <div class="bento-card delay-1 bg-white rounded-[2.5rem] p-10 border border-black/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col items-center">
                         
                         <div class="relative mb-6">
-                            <div class="w-28 h-28 rounded-[2rem] bg-black flex items-center justify-center overflow-hidden shadow-lg shadow-black/10 transition-transform duration-500 hover:scale-[1.03]">
+                            <div class="w-28 h-28 rounded-[2rem] bg-primary flex items-center justify-center overflow-hidden shadow-lg shadow-black/10 transition-transform duration-500 hover:scale-[1.03]">
                                 <?php if (!empty($_fotoPath)): ?>
                                     <img src="<?= BASE_URL . 'public/' . $_fotoPath ?>" class="w-full h-full object-cover" alt="Foto Avatar">
                                 <?php else: ?>
@@ -117,7 +117,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                             </div>
                         </div>
 
-                        <h1 class="text-2xl font-headline font-black text-center text-black mb-1 line-clamp-2"><?= htmlspecialchars($dados['nome']) ?></h1>
+                        <h1 class="text-2xl font-headline font-black text-center text-on-surface mb-1 line-clamp-2"><?= htmlspecialchars($dados['nome']) ?></h1>
                         <p class="text-[13px] font-extrabold text-gray-400 mb-6">@<?= htmlspecialchars($_username) ?></p>
 
                         <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
@@ -127,7 +127,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                             </span>
 
                             <?php if (!empty($dados['especialidade'])): ?>
-                                <span class="px-3 py-1.5 bg-gray-50 border border-black/5 text-black rounded-full text-[10px] font-black uppercase tracking-widest">
+                                <span class="px-3 py-1.5 bg-gray-50 border border-black/5 text-on-surface rounded-full text-[10px] font-black uppercase tracking-widest">
                                     <?= htmlspecialchars($dados['especialidade']) ?>
                                 </span>
                             <?php endif; ?>
@@ -141,17 +141,17 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                                 <span class="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest flex items-center gap-2">
                                     <span class="material-symbols-outlined text-[14px]">event</span> Empregado a
                                 </span>
-                                <span class="text-xs font-bold text-black"><?= $criadoA ?></span>
+                                <span class="text-xs font-bold text-on-surface"><?= $criadoA ?></span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest flex items-center gap-2">
                                     <span class="material-symbols-outlined text-[14px]">login</span> Último Acesso
                                 </span>
-                                <span class="text-xs font-bold text-black truncate ml-2 text-right"><?= $ultimoAcesso ?></span>
+                                <span class="text-xs font-bold text-on-surface truncate ml-2 text-right"><?= $ultimoAcesso ?></span>
                             </div>
                         </div>
 
-                        <a href="editar.php" class="w-full bg-black text-white px-6 py-4 rounded-[1.25rem] font-bold text-sm flex items-center justify-center gap-2 btn-black">
+                        <a href="editar.php" class="w-full bg-primary text-white px-6 py-4 rounded-[1.25rem] font-bold text-sm flex items-center justify-center gap-2 btn-black">
                             <span class="material-symbols-outlined text-[18px]">edit_square</span>
                             Editar Perfil Completo
                         </a>
@@ -175,7 +175,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                                     </span>
                                 </div>
                                 <div>
-                                    <div class="text-[4rem] font-headline font-black text-black leading-none tracking-tighter mb-2">
+                                    <div class="text-[4rem] font-headline font-black text-on-surface leading-none tracking-tighter mb-2">
                                         <?= htmlspecialchars($estatisticas['hoje']['total'] ?? 0) ?>
                                     </div>
                                     <div class="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">
@@ -197,7 +197,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                                     </span>
                                 </div>
                                 <div>
-                                    <div class="text-[4rem] font-headline font-black text-black leading-none tracking-tighter mb-2">
+                                    <div class="text-[4rem] font-headline font-black text-on-surface leading-none tracking-tighter mb-2">
                                         <?= htmlspecialchars($estatisticas['pendentes'] ?? 0) ?>
                                     </div>
                                     <div class="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">
@@ -211,11 +211,11 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                     <!-- CARTÃO FEED DE ATIVIDADE -->
                     <div class="bento-card delay-4 bg-white rounded-[2.5rem] border border-black/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex-1 overflow-hidden flex flex-col min-h-[400px]">
                         <div class="px-10 py-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/30">
-                            <h3 class="text-sm font-extrabold text-black uppercase tracking-widest flex items-center gap-2">
+                            <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2">
                                 <span class="material-symbols-outlined text-[18px]">history</span>
                                 Registo de Atividade
                             </h3>
-                            <a href="historico.php" class="px-4 py-2 bg-white border border-gray-200 text-black hover:bg-black hover:text-white hover:border-black rounded-full flex items-center gap-2 transition-all shadow-sm text-[10px] font-extrabold uppercase tracking-widest">
+                            <a href="historico.php" class="px-4 py-2 bg-white border border-gray-200 text-on-surface hover:bg-primary hover:text-white hover:border-black rounded-full flex items-center gap-2 transition-all shadow-sm text-[10px] font-extrabold uppercase tracking-widest">
                                 Ver Completo
                                 <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                             </a>
@@ -236,7 +236,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                                         
                                         // Mapeamento dinâmico de ícones premium e cores
                                         $ic = 'bolt';
-                                        $corBg = 'bg-gray-100 text-black';
+                                        $corBg = 'bg-gray-100 text-on-surface';
                                         if (stripos($desc, 'senha') !== false || stripos($desc, 'chamou') !== false) {
                                             $ic = 'campaign'; $corBg = 'bg-blue-50 text-blue-600';
                                         } elseif (stripos($desc, 'cancelar') !== false) {
@@ -252,7 +252,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
                                                 <span class="material-symbols-outlined text-[20px]"><?= $ic ?></span>
                                             </div>
                                             <div class="flex-1">
-                                                <div class="text-[0.95rem] font-bold text-black mb-1"><?= $desc ?></div>
+                                                <div class="text-[0.95rem] font-bold text-on-surface mb-1"><?= $desc ?></div>
                                                 <div class="text-[11px] font-extrabold text-gray-400 tracking-widest uppercase">
                                                     <?= date('H:i \· d/m', strtotime($accao['data_hora'] ?? 'now')) ?>
                                                 </div>

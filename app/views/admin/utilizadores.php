@@ -25,7 +25,7 @@ $perfilConfig = [
 
 // Avatar color palette (sofisticada, skeumorphic)
 $avatarColors = [
-    'bg-black text-white',
+    'bg-primary text-white',
     'bg-blue-600 text-white',
     'bg-purple-600 text-white',
     'bg-emerald-600 text-white',
@@ -230,7 +230,7 @@ $avatarColors = [
     </style>
 </head>
 
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface h-screen overflow-hidden bg-background">
 
     <?php $paginaActual = 'utilizadores'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -277,13 +277,13 @@ $avatarColors = [
                 <!-- Page Title + CTA -->
                 <div class="mb-10 flex justify-between items-end glide-in">
                     <div>
-                        <h2 class="text-3xl font-headline font-extrabold text-black tracking-tight">Utilizadores do
+                        <h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Utilizadores do
                             Sistema</h2>
                         <p class="text-on-surface-variant font-medium mt-1 text-sm">Gerencie permissões e visualize a
                             actividade dos profissionais de saúde.</p>
                     </div>
                     <a href="criar_utilizador.php"
-                        class="bg-black text-white px-8 py-3.5 rounded-full font-bold text-sm flex items-center gap-2 hover:shadow-xl transition-all btn-action">
+                        class="bg-primary text-white px-8 py-3.5 rounded-full font-bold text-sm flex items-center gap-2 hover:shadow-xl transition-all btn-action">
                         <span class="material-symbols-outlined text-[20px]">person_add</span>
                         Novo Utilizador
                     </a>
@@ -301,7 +301,7 @@ $avatarColors = [
                                 placeholder="Procurar por nome ou login..." autocomplete="off">
                         </div>
                         <button type="button"
-                            class="bg-black text-white rounded-xl font-black flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg h-[46px] px-6 text-sm shrink-0">
+                            class="bg-primary text-white rounded-xl font-black flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg h-[46px] px-6 text-sm shrink-0">
                             <span class="material-symbols-outlined text-xl">search</span>
                             Procurar
                         </button>
@@ -316,7 +316,7 @@ $avatarColors = [
                         $sel_size = 'sm';
                         $sel_options = [
                             '' => ['label' => 'Todos os perfis', 'icon' => 'groups', 'color' => 'text-on-surface-variant'],
-                            'admin' => ['label' => 'Administrador', 'icon' => 'shield_person', 'color' => 'text-black'],
+                            'admin' => ['label' => 'Administrador', 'icon' => 'shield_person', 'color' => 'text-on-surface'],
                             'medico' => ['label' => 'Médico', 'icon' => 'stethoscope', 'color' => 'text-blue-600'],
                             'recepcionista' => ['label' => 'Recepcionista', 'icon' => 'badge', 'color' => 'text-purple-600'],
                         ];
@@ -362,7 +362,7 @@ $avatarColors = [
                                         <?php endif; ?>
                                     </div>
                                     <div class="flex flex-col pt-1">
-                                        <h3 class="text-lg font-extrabold text-black leading-tight">
+                                        <h3 class="text-lg font-extrabold text-on-surface leading-tight">
                                             <?= htmlspecialchars($u['nome']) ?>
                                             <?php if ($isSelf): ?>
                                                 <span class="text-[10px] font-bold text-blue-500">(eu)</span>
@@ -376,14 +376,14 @@ $avatarColors = [
                             <!-- Tags -->
                             <div class="flex flex-wrap gap-2 mb-8">
                                 <span
-                                    class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full"><?= $conf['label'] ?></span>
+                                    class="px-3 py-1 bg-gray-100 text-on-surface text-[10px] font-bold rounded-full"><?= $conf['label'] ?></span>
                                 <?php if ($u['especialidade']): ?>
                                     <span
-                                        class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full"><?= htmlspecialchars($u['especialidade']) ?></span>
+                                        class="px-3 py-1 bg-gray-100 text-on-surface text-[10px] font-bold rounded-full"><?= htmlspecialchars($u['especialidade']) ?></span>
                                 <?php endif; ?>
                                 <?php if ($u['consultorio']): ?>
                                     <span
-                                        class="px-3 py-1 bg-gray-100 text-black text-[10px] font-bold rounded-full"><?= htmlspecialchars($u['consultorio']) ?></span>
+                                        class="px-3 py-1 bg-gray-100 text-on-surface text-[10px] font-bold rounded-full"><?= htmlspecialchars($u['consultorio']) ?></span>
                                 <?php endif; ?>
                             </div>
 
@@ -394,7 +394,7 @@ $avatarColors = [
                                         <span
                                             class="material-symbols-outlined text-[16px] text-on-surface-variant/70 transition-all duration-300 meta-icon">alternate_email</span>
                                         <span
-                                            class="text-xs font-extrabold text-black truncate">@<?= htmlspecialchars($u['nome_utilizador']) ?></span>
+                                            class="text-xs font-extrabold text-on-surface truncate">@<?= htmlspecialchars($u['nome_utilizador']) ?></span>
                                     </div>
                                     <span
                                         class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Utilizador</span>
@@ -402,7 +402,7 @@ $avatarColors = [
                                 <div class="flex flex-col gap-1 px-4 border-x border-black/5">
                                     <div class="flex items-center h-5">
                                         <span
-                                            class="text-xs font-extrabold text-black"><?= $isActivo ? 'Activo' : 'Off' ?></span>
+                                            class="text-xs font-extrabold text-on-surface"><?= $isActivo ? 'Activo' : 'Off' ?></span>
                                     </div>
                                     <span
                                         class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Estado</span>
@@ -410,7 +410,7 @@ $avatarColors = [
                                 <div class="flex flex-col gap-1 pl-4">
                                     <div class="flex items-center h-5">
                                         <span
-                                            class="text-xs font-extrabold text-black"><?= date('d/m/y', strtotime($u['criado_em'])) ?></span>
+                                            class="text-xs font-extrabold text-on-surface"><?= date('d/m/y', strtotime($u['criado_em'])) ?></span>
                                     </div>
                                     <span
                                         class="text-[9px] uppercase font-extrabold text-on-surface-variant tracking-[0.1em]">Registado</span>
@@ -420,7 +420,7 @@ $avatarColors = [
                             <!-- Action Buttons -->
                             <div class="flex gap-3">
                                 <button type="button" onclick="carregarPerfilLateral(<?= $u['id'] ?>, '<?= htmlspecialchars(addslashes($u['nome'])) ?>')"
-                                    class="flex-1 bg-black text-white py-3 rounded-xl font-bold text-xs text-center btn-action btn-primary-action transition-all flex items-center justify-center gap-2">
+                                    class="flex-1 bg-primary text-white py-3 rounded-xl font-bold text-xs text-center btn-action btn-primary-action transition-all flex items-center justify-center gap-2">
                                     <span class="material-symbols-outlined text-[16px]">bar_chart</span>
                                     Detalhes Rápidos
                                 </button>
@@ -444,7 +444,7 @@ $avatarColors = [
 
                 <!-- Pagination -->
                 <div class="flex justify-between items-center px-4 mb-16">
-                    <p class="text-sm font-bold text-on-surface-variant/60">A mostrar <span class="text-black"
+                    <p class="text-sm font-bold text-on-surface-variant/60">A mostrar <span class="text-on-surface"
                             id="visibleCount">3</span> de <span id="totalFiltered"><?= count($utilizadores) ?></span>
                         utilizadores</p>
                     <div class="flex gap-3" id="paginationControls"></div>
@@ -455,20 +455,20 @@ $avatarColors = [
                     <div
                         class="info-card bg-white/40 p-8 rounded-[2.5rem] shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] cursor-default group">
                         <div
-                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-black group-hover:bg-black group-hover:text-white transition-all duration-300">
+                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-on-surface group-hover:bg-black group-hover:text-white transition-all duration-300">
                             <span class="material-symbols-outlined">verified_user</span>
                         </div>
-                        <h4 class="font-extrabold text-lg text-black mb-3 tracking-tight">Acessos Seguros</h4>
+                        <h4 class="font-extrabold text-lg text-on-surface mb-3 tracking-tight">Acessos Seguros</h4>
                         <p class="text-sm font-medium text-on-surface-variant leading-relaxed">Todos os colaboradores
                             utilizam autenticação segura para garantir a máxima protecção dos dados clínicos.</p>
                     </div>
                     <div
                         class="info-card bg-white/40 p-8 rounded-[2.5rem] shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] cursor-default group">
                         <div
-                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-black group-hover:bg-black group-hover:text-white transition-all duration-300">
+                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-on-surface group-hover:bg-black group-hover:text-white transition-all duration-300">
                             <span class="material-symbols-outlined">history</span>
                         </div>
-                        <h4 class="font-extrabold text-lg text-black mb-3 tracking-tight">Histórico de Auditoria</h4>
+                        <h4 class="font-extrabold text-lg text-on-surface mb-3 tracking-tight">Histórico de Auditoria</h4>
                         <p class="text-sm font-medium text-on-surface-variant leading-relaxed">Registo completo e
                             imutável de todas as alterações feitas em perfis de utilizador, em conformidade com as
                             normas hospitalares.</p>
@@ -476,10 +476,10 @@ $avatarColors = [
                     <div
                         class="info-card bg-white/40 p-8 rounded-[2.5rem] shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] cursor-default group">
                         <div
-                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-black group-hover:bg-black group-hover:text-white transition-all duration-300">
+                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-on-surface group-hover:bg-black group-hover:text-white transition-all duration-300">
                             <span class="material-symbols-outlined">badge</span>
                         </div>
-                        <h4 class="font-extrabold text-lg text-black mb-3 tracking-tight">Controlo de Funções</h4>
+                        <h4 class="font-extrabold text-lg text-on-surface mb-3 tracking-tight">Controlo de Funções</h4>
                         <p class="text-sm font-medium text-on-surface-variant leading-relaxed">Permissões baseadas na
                             hierarquia do Hospital do Bengo, garantindo que cada profissional aceda apenas ao
                             necessário.</p>
@@ -574,7 +574,7 @@ $avatarColors = [
                 // Page numbers
                 for (let i = 1; i <= totalPages; i++) {
                     const btn = document.createElement('button');
-                    btn.className = `w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-bold shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] btn-action transition-all ${i === currentPage ? 'bg-black text-white' : 'bg-white text-black hover:bg-black hover:text-white'
+                    btn.className = `w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-bold shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] btn-action transition-all ${i === currentPage ? 'bg-primary text-white' : 'bg-white text-on-surface hover:bg-black hover:text-white'
                         }`;
                     btn.textContent = i;
                     btn.onclick = () => goTo(i);

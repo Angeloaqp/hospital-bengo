@@ -62,12 +62,12 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
     </style>
 </head>
 
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
     <?php $paginaActual = 'perfil'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
     <?php $tituloPagina = 'Métricas e Histórico'; ob_start(); ?>
-    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-black hover:bg-black hover:text-white hover:border-black rounded-full flex items-center gap-2 transition-all shadow-sm">
+    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-on-surface hover:bg-primary hover:text-white hover:border-black rounded-full flex items-center gap-2 transition-all shadow-sm">
         <span class="material-symbols-outlined text-[18px]">arrow_back</span>
         <span class="text-xs font-bold">Resumo do Perfil</span>
     </a>
@@ -80,12 +80,12 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
 
             <div class="mb-10 bento-card flex items-end justify-between">
                 <div>
-                    <h2 class="text-3xl font-headline font-black text-black tracking-tight leading-none">Análise de Produtividade</h2>
+                    <h2 class="text-3xl font-headline font-black text-on-surface tracking-tight leading-none">Análise de Produtividade</h2>
                     <p class="text-sm font-bold text-gray-400 mt-2">Visão geral do seu histórico de volume e tempos no sistema.</p>
                 </div>
                 <div class="px-4 py-2 bg-gray-100/50 rounded-xl">
                     <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Cargo Operacional: </span>
-                    <span class="text-sm font-bold text-black ml-1"><?= ($meuPerfil === 'medico' && $dados['especialidade'] ? htmlspecialchars($dados['especialidade']) : ucfirst($meuPerfil)) ?></span>
+                    <span class="text-sm font-bold text-on-surface ml-1"><?= ($meuPerfil === 'medico' && $dados['especialidade'] ? htmlspecialchars($dados['especialidade']) : ucfirst($meuPerfil)) ?></span>
                 </div>
             </div>
 
@@ -97,7 +97,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                         <span class="text-[10px] font-extrabold uppercase tracking-widest">Realizados Hoje</span>
                         <span class="material-symbols-outlined text-[18px]">today</span>
                     </div>
-                    <div class="text-5xl font-headline font-black text-black">
+                    <div class="text-5xl font-headline font-black text-on-surface">
                         <?= $estatisticas['hoje'] ?>
                     </div>
                 </div>
@@ -107,7 +107,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                         <span class="text-[10px] font-extrabold uppercase tracking-widest">Esta Semana</span>
                         <span class="material-symbols-outlined text-[18px]">date_range</span>
                     </div>
-                    <div class="text-5xl font-headline font-black text-black">
+                    <div class="text-5xl font-headline font-black text-on-surface">
                         <?= $estatisticas['semana'] ?>
                     </div>
                 </div>
@@ -117,7 +117,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                         <span class="text-[10px] font-extrabold uppercase tracking-widest">Total Histórico</span>
                         <span class="material-symbols-outlined text-[18px]">functions</span>
                     </div>
-                    <div class="text-5xl font-headline font-black text-black">
+                    <div class="text-5xl font-headline font-black text-on-surface">
                         <?= $estatisticas['total'] ?>
                     </div>
                 </div>
@@ -140,7 +140,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
 
             <!-- BLOCO 2: GRÁFICO TENDÊNCIA BENTO -->
             <div class="bento-card delay-4 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm mb-8">
-                <h3 class="text-sm font-extrabold text-black uppercase tracking-widest mb-6">Tendência Produtiva (Últimos 7 dias)</h3>
+                <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest mb-6">Tendência Produtiva (Últimos 7 dias)</h3>
                 <div class="w-full h-48">
                     <canvas id="meuGrafico"></canvas>
                 </div>
@@ -149,7 +149,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
             <!-- BLOCO 3: DATATABLE HISTÓRICO -->
             <div class="bento-card delay-5 bg-white rounded-[2.5rem] border border-black/5 shadow-sm overflow-hidden">
                 <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
-                    <h3 class="text-sm font-extrabold text-black uppercase tracking-widest">Registo em Detalhe (Últimos 20)</h3>
+                    <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest">Registo em Detalhe (Últimos 20)</h3>
                 </div>
 
                 <div class="overflow-x-auto custom-scrollbar">
@@ -168,7 +168,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                             <tbody>
                                 <?php foreach ($historico as $h): ?>
                                     <tr class="form-row">
-                                        <td class="py-4 px-8 font-bold text-sm text-black"><?= htmlspecialchars($h['paciente_nome']) ?></td>
+                                        <td class="py-4 px-8 font-bold text-sm text-on-surface"><?= htmlspecialchars($h['paciente_nome']) ?></td>
                                         <td class="py-4 px-8"><span class="px-2 py-1 bg-gray-100 rounded text-xs font-mono font-bold text-gray-500"><?= htmlspecialchars($h['codigo']) ?></span></td>
                                         <td class="py-4 px-8 text-sm font-bold text-gray-500"><?= htmlspecialchars($h['atendimento_tipo']) ?></td>
                                         <td class="py-4 px-8">
@@ -202,7 +202,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                             <tbody>
                                 <?php foreach ($historico as $h): ?>
                                     <tr class="form-row">
-                                        <td class="py-4 px-8 font-bold text-sm text-black flex items-center gap-3">
+                                        <td class="py-4 px-8 font-bold text-sm text-on-surface flex items-center gap-3">
                                             <span class="material-symbols-outlined text-[16px] text-gray-300">person</span>
                                             <?= htmlspecialchars($h['paciente_nome']) ?>
                                         </td>
@@ -233,7 +233,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                                 <?php foreach ($historico as $h): ?>
                                     <tr class="form-row">
                                         <td class="py-4 px-8">
-                                            <span class="px-3 py-1.5 bg-black text-white rounded-md text-[10px] font-extrabold uppercase tracking-widest">
+                                            <span class="px-3 py-1.5 bg-primary text-white rounded-md text-[10px] font-extrabold uppercase tracking-widest">
                                                 <?= htmlspecialchars($h['accao']) ?>
                                             </span>
                                         </td>
@@ -244,7 +244,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                                             <?= htmlspecialchars($h['ip']) ?>
                                         </td>
                                         <td class="py-4 px-8 text-right">
-                                            <div class="text-sm font-bold text-black"><?= dataFormatoPT($h['criado_em'], 'curto') ?></div>
+                                            <div class="text-sm font-bold text-on-surface"><?= dataFormatoPT($h['criado_em'], 'curto') ?></div>
                                             <div class="text-[11px] font-extrabold text-gray-400"><?= date('H:i:s', strtotime($h['criado_em'])) ?></div>
                                         </td>
                                     </tr>

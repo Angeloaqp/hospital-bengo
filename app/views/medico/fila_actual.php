@@ -80,7 +80,7 @@ $prioridades = [
         .crossfade-in { opacity: 0; animation: fadeIn 0.5s ease-out 0.1s forwards; }
     </style>
 </head>
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
 
     <?php $paginaActual = 'fila_actual'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -95,10 +95,10 @@ $prioridades = [
                 </div>
                 <label class="flex items-center gap-2 cursor-pointer bg-surface-container-low px-3 py-1.5 rounded-full border border-black/5 transition-all hover:bg-surface-container" title="Ligar/Desligar para receber pacientes sem marcação (Encaixes)">
                     <input type="checkbox" id="toggle-walkins" class="peer sr-only" <?= (isset($especialidade['aceitar_walkins']) && $especialidade['aceitar_walkins'] == 1) ? 'checked' : '' ?> onchange="toggleWalkins(this.checked)">
-                    <div class="w-8 h-4 bg-surface-container-highest rounded-full peer-checked:bg-black transition-colors relative">
+                    <div class="w-8 h-4 bg-surface-container-highest rounded-full peer-checked:bg-primary transition-colors relative">
                         <div class="w-3 h-3 bg-white rounded-full absolute top-0.5 left-0.5 peer-checked:translate-x-4 transition-transform shadow-sm"></div>
                     </div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant peer-checked:text-black">Receber Encaixes</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant peer-checked:text-on-surface">Receber Encaixes</span>
                 </label>
             <?php endif; ?>
             
@@ -209,7 +209,7 @@ $prioridades = [
                                                 <span class="material-symbols-outlined text-[18px]">save</span>
                                                 Guardar Rascunho
                                             </button>
-                                            <button type="submit" name="acao" value="concluir_com_prontuario" class="flex-1 bg-black text-white py-4 px-6 rounded-2xl font-black text-sm btn-press shadow hover:bg-neutral-800 transition-all flex items-center justify-center gap-2">
+                                            <button type="submit" name="acao" value="concluir_com_prontuario" class="flex-1 bg-primary text-white py-4 px-6 rounded-2xl font-black text-sm btn-press shadow hover:bg-neutral-800 transition-all flex items-center justify-center gap-2">
                                                 <span class="material-symbols-outlined text-[18px]">task_alt</span>
                                                 Concluir Consulta
                                             </button>
@@ -259,7 +259,7 @@ $prioridades = [
                                                         <span class="text-[9px] font-bold text-primary"><?= htmlspecialchars($h['medico_nome']) ?></span>
                                                     </div>
                                                     <?php if ($h['diagnostico']): ?>
-                                                        <p class="text-xs font-extrabold text-black mb-1"><?= htmlspecialchars($h['diagnostico']) ?></p>
+                                                        <p class="text-xs font-extrabold text-on-surface mb-1"><?= htmlspecialchars($h['diagnostico']) ?></p>
                                                     <?php endif; ?>
                                                     <?php if ($h['notas_clinicas']): ?>
                                                         <p class="text-[11px] text-on-surface-variant font-medium line-clamp-3"><?= nl2br(htmlspecialchars(mb_substr($h['notas_clinicas'], 0, 150))) ?><?= mb_strlen($h['notas_clinicas']) > 150 ? '…' : '' ?></p>
@@ -304,7 +304,7 @@ $prioridades = [
                                     </div>
                                 </div>
                                 <?php if (!$emAtend): ?>
-                                    <button class="w-full bg-white text-black py-6 px-6 rounded-2xl font-black text-xl flex items-center justify-center gap-3 border border-surface-container-highest btn-press shadow hover:bg-black hover:text-white transition-all group relative overflow-hidden" onclick="handleChamar(this, <?= $proxima['id'] ?>, '<?= addslashes(htmlspecialchars($proxima['paciente_nome'])) ?>', '<?= htmlspecialchars($proxima['codigo']) ?>')">
+                                    <button class="w-full bg-white text-on-surface py-6 px-6 rounded-2xl font-black text-xl flex items-center justify-center gap-3 border border-surface-container-highest btn-press shadow hover:bg-black hover:text-white transition-all group relative overflow-hidden" onclick="handleChamar(this, <?= $proxima['id'] ?>, '<?= addslashes(htmlspecialchars($proxima['paciente_nome'])) ?>', '<?= htmlspecialchars($proxima['codigo']) ?>')">
                                         <span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform" id="chamar-icon">volume_up</span>
                                         <span id="chamar-text">Chamar Próximo</span>
                                     </button>
@@ -339,7 +339,7 @@ $prioridades = [
                 <?php if (!empty($filaRestante)): ?>
                     <section class="bg-white rounded-[2rem] overflow-hidden floating-card border border-white fade-in-delay-2">
                         <div class="p-8 pb-4 flex items-center justify-between">
-                            <h4 class="text-xl font-headline font-extrabold tracking-tight text-black">Restantes pacientes na fila (<?= count($filaRestante) ?>)</h4>
+                            <h4 class="text-xl font-headline font-extrabold tracking-tight text-on-surface">Restantes pacientes na fila (<?= count($filaRestante) ?>)</h4>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
@@ -358,9 +358,9 @@ $prioridades = [
                                     ?>
                                         <tr class="hover:bg-surface-container-low/20 transition-colors group cursor-pointer">
                                             <td class="px-8 py-6">
-                                                <span class="tactile-mono text-lg px-2.5 py-1 bg-surface-container-high rounded text-black group-hover:bg-black group-hover:text-white transition-all"><?= htmlspecialchars($s['codigo']) ?></span>
+                                                <span class="tactile-mono text-lg px-2.5 py-1 bg-surface-container-high rounded text-on-surface group-hover:bg-primary group-hover:text-white transition-all"><?= htmlspecialchars($s['codigo']) ?></span>
                                             </td>
-                                            <td class="px-8 py-6 font-bold text-black text-sm"><?= htmlspecialchars($s['paciente_nome']) ?></td>
+                                            <td class="px-8 py-6 font-bold text-on-surface text-sm"><?= htmlspecialchars($s['paciente_nome']) ?></td>
                                             <td class="px-8 py-6">
                                                 <span class="px-3 py-1 <?= $p['bg'] ?> <?= $p['text'] ?> rounded-full text-[10px] font-black uppercase tracking-wider"><?= $p['label'] ?></span>
                                             </td>
@@ -425,7 +425,7 @@ $prioridades = [
                             <span class="material-symbols-outlined text-white text-6xl">check</span>
                         </div>
                         <h3 class="text-3xl font-headline font-extrabold tracking-tight mb-2 text-center">Atendimento Concluído</h3>
-                        <p class="text-on-surface-variant font-semibold text-center max-w-[280px]">O paciente <b class="text-black">${nome}</b> foi finalizado com sucesso.</p>
+                        <p class="text-on-surface-variant font-semibold text-center max-w-[280px]">O paciente <b class="text-on-surface">${nome}</b> foi finalizado com sucesso.</p>
                     </div>
                 `;
                 setTimeout(() => window.location.reload(), 2000);
@@ -450,7 +450,7 @@ $prioridades = [
                             <span class="material-symbols-outlined text-on-surface-variant text-6xl">person_off</span>
                         </div>
                         <h3 class="text-3xl font-headline font-extrabold tracking-tight mb-2 text-center text-on-surface-variant">Paciente Ausente</h3>
-                        <p class="text-on-surface-variant/60 font-semibold text-center max-w-[280px]">O registo de <b class="text-black">${nome}</b> foi marcado como ausente.</p>
+                        <p class="text-on-surface-variant/60 font-semibold text-center max-w-[280px]">O registo de <b class="text-on-surface">${nome}</b> foi marcado como ausente.</p>
                     </div>
                 `;
                 setTimeout(() => window.location.reload(), 2000);
@@ -502,12 +502,12 @@ $prioridades = [
                         </div>
                         
                         <div class="mb-8 flex-1">
-                            <p class="text-3xl font-headline font-extrabold tracking-tight mb-2 text-black">${nome}</p>
+                            <p class="text-3xl font-headline font-extrabold tracking-tight mb-2 text-on-surface">${nome}</p>
                             <p class="text-on-surface-variant font-semibold text-sm">Paciente encaminhado para consulta.</p>
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-4 relative z-10">
-                            <button class="flex-1 bg-black text-white py-5 px-6 rounded-2xl font-black text-lg shadow text-center cursor-default opacity-60">
+                            <button class="flex-1 bg-primary text-white py-5 px-6 rounded-2xl font-black text-lg shadow text-center cursor-default opacity-60">
                                 Concluir Atendimento
                             </button>
                             <button class="bg-surface-container-low text-on-surface-variant py-5 px-8 rounded-2xl font-black text-sm shadow cursor-default opacity-60">

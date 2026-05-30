@@ -102,12 +102,12 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
     </style>
 </head>
 
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
     <?php $paginaActual = 'perfil'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
     <?php $tituloPagina = 'Editar Perfil'; ob_start(); ?>
-    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-black rounded-full flex items-center gap-2 btn-action shadow-sm">
+    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-on-surface rounded-full flex items-center gap-2 btn-action shadow-sm">
         <span class="material-symbols-outlined text-[18px]">arrow_back</span>
         <span class="text-xs font-bold">Voltar ao Perfil</span>
     </a>
@@ -120,7 +120,7 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
             
             <div class="mb-10 flex justify-between items-end glide-in">
                 <div>
-                    <h2 class="text-3xl font-headline font-extrabold text-black tracking-tight">Definições da Conta</h2>
+                    <h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Definições da Conta</h2>
                     <p class="text-sm font-semibold text-on-surface-variant mt-1 max-w-xl">Mantenha as suas informações atualizadas e a sua conta segura.</p>
                 </div>
             </div>
@@ -152,7 +152,7 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
                             </div>
                         </form>
 
-                        <h3 class="text-2xl font-headline font-black text-black mb-1"><?= htmlspecialchars($dados['nome']) ?></h3>
+                        <h3 class="text-2xl font-headline font-black text-on-surface mb-1"><?= htmlspecialchars($dados['nome']) ?></h3>
                         <div class="px-3 py-1 rounded-md text-[10px] font-extrabold uppercase tracking-widest bg-gray-100 text-gray-500 mb-3">
                             <?= htmlspecialchars($dados['perfil']) ?>
                         </div>
@@ -171,7 +171,7 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
                     
                     <!-- Bloco Dados Básicos -->
                     <div class="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm">
-                        <h4 class="flex items-center gap-3 text-lg font-headline font-extrabold text-black mb-8 border-b border-gray-100 pb-4">
+                        <h4 class="flex items-center gap-3 text-lg font-headline font-extrabold text-on-surface mb-8 border-b border-gray-100 pb-4">
                             <span class="material-symbols-outlined text-gray-400">person</span>
                             Informação Pessoal
                         </h4>
@@ -218,7 +218,7 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
                             </div>
 
                             <div class="flex justify-end mt-4">
-                                <button type="submit" class="bg-black text-white px-8 py-3.5 rounded-full font-extrabold text-sm flex items-center gap-2 btn-action shadow-lg shadow-black/10">
+                                <button type="submit" class="bg-primary text-white px-8 py-3.5 rounded-full font-extrabold text-sm flex items-center gap-2 btn-action shadow-lg shadow-black/10">
                                     <span class="material-symbols-outlined text-[18px]">save</span>
                                     Guardar Pessoais
                                 </button>
@@ -228,7 +228,7 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
 
                     <!-- Bloco Alterar Senha -->
                     <div id="password" class="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm">
-                        <h4 class="flex items-center gap-3 text-lg font-headline font-extrabold text-black mb-8 border-b border-gray-100 pb-4">
+                        <h4 class="flex items-center gap-3 text-lg font-headline font-extrabold text-on-surface mb-8 border-b border-gray-100 pb-4">
                             <span class="material-symbols-outlined text-gray-400">lock</span>
                             Segurança & Palavra-passe
                         </h4>

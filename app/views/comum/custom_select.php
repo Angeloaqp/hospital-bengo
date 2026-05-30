@@ -68,7 +68,7 @@ foreach ($sel_options as $val => $opt) {
         $selectedLabel = $label;
         $selectedIcon  = $isRich ? ($opt['icon'] ?? $sel_icon) : $sel_icon;
         $selectedColor = $isRich ? ($opt['color'] ?? 'text-on-surface-variant') : 'text-on-surface-variant';
-        $textClass     = 'text-black';
+        $textClass     = 'text-on-surface';
         break;
     }
 }

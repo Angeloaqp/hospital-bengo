@@ -134,14 +134,14 @@ function tempoRelativo($data)
         }
     </style>
 </head>
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
     <?php $paginaActual = 'mensagens'; ?>
     <?php include __DIR__ . '/sidebar.php'; ?>
 
     <?php
     $tituloPagina = 'Mensagens';
     ob_start(); ?>
-    <a href="?tab=escrever" class="px-5 py-2.5 bg-white border border-gray-200 text-black rounded-full flex items-center gap-2 btn-action shadow-sm">
+    <a href="?tab=escrever" class="px-5 py-2.5 bg-white border border-gray-200 text-on-surface rounded-full flex items-center gap-2 btn-action shadow-sm">
         <span class="material-symbols-outlined text-[18px]">edit_square</span>
         <span class="text-xs font-bold">Compor</span>
     </a>
@@ -172,7 +172,7 @@ function tempoRelativo($data)
 
             <div class="mb-10 flex justify-between items-end glide-in">
                 <div>
-                    <h2 class="text-3xl font-headline font-extrabold text-black tracking-tight">Comunicação Interna</h2>
+                    <h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Comunicação Interna</h2>
                     <p class="text-sm font-semibold text-on-surface-variant mt-1 max-w-xl">Troque mensagens com administração, receção ou outros médicos com total confidencialidade.</p>
                 </div>
             </div>
@@ -182,7 +182,7 @@ function tempoRelativo($data)
                 
                 <!-- Menu Lateral (Col 3) -->
                 <div class="lg:col-span-3 flex flex-col gap-2">
-                    <a href="?tab=entrada" class="flex items-center justify-between px-5 py-4 rounded-2xl font-bold text-sm transition-all <?= $tab === 'entrada' ? 'bg-black text-white shadow-xl shadow-black/10' : 'bg-white text-gray-500 hover:bg-gray-50' ?>">
+                    <a href="?tab=entrada" class="flex items-center justify-between px-5 py-4 rounded-2xl font-bold text-sm transition-all <?= $tab === 'entrada' ? 'bg-primary text-white shadow-xl shadow-black/10' : 'bg-white text-gray-500 hover:bg-gray-50' ?>">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-[20px] <?= $tab === 'entrada' ? 'text-white' : 'text-gray-400' ?>" style="<?= $tab === 'entrada' ? 'font-variation-settings: \'FILL\' 1;' : '' ?>">inbox</span>
                             Caixa de Entrada
@@ -192,17 +192,17 @@ function tempoRelativo($data)
                         <?php endif; ?>
                     </a>
                     
-                    <a href="?tab=saida" class="flex items-center gap-3 px-5 py-4 rounded-2xl font-bold text-sm transition-all <?= $tab === 'saida' ? 'bg-black text-white shadow-xl shadow-black/10' : 'bg-white text-gray-500 hover:bg-gray-50' ?>">
+                    <a href="?tab=saida" class="flex items-center gap-3 px-5 py-4 rounded-2xl font-bold text-sm transition-all <?= $tab === 'saida' ? 'bg-primary text-white shadow-xl shadow-black/10' : 'bg-white text-gray-500 hover:bg-gray-50' ?>">
                         <span class="material-symbols-outlined text-[20px] <?= $tab === 'saida' ? 'text-white' : 'text-gray-400' ?>" style="<?= $tab === 'saida' ? 'font-variation-settings: \'FILL\' 1;' : '' ?>">send</span>
                         Enviadas
                     </a>
                     
-                    <a href="?tab=escrever" class="flex items-center gap-3 px-5 py-4 rounded-2xl font-bold text-sm transition-all <?= $tab === 'escrever' ? 'bg-black text-white shadow-xl shadow-black/10' : 'bg-white text-gray-500 hover:bg-gray-50' ?>">
+                    <a href="?tab=escrever" class="flex items-center gap-3 px-5 py-4 rounded-2xl font-bold text-sm transition-all <?= $tab === 'escrever' ? 'bg-primary text-white shadow-xl shadow-black/10' : 'bg-white text-gray-500 hover:bg-gray-50' ?>">
                         <span class="material-symbols-outlined text-[20px] <?= $tab === 'escrever' ? 'text-white' : 'text-gray-400' ?>" style="<?= $tab === 'escrever' ? 'font-variation-settings: \'FILL\' 1;' : '' ?>">edit_square</span>
                         Nova Mensagem
                     </a>
                     
-                    <a href="?tab=lixo" class="flex items-center justify-between px-5 py-4 rounded-2xl font-bold text-sm transition-all <?= $tab === 'lixo' ? 'bg-black text-white shadow-xl shadow-black/10' : 'bg-white text-gray-500 hover:bg-gray-50' ?>">
+                    <a href="?tab=lixo" class="flex items-center justify-between px-5 py-4 rounded-2xl font-bold text-sm transition-all <?= $tab === 'lixo' ? 'bg-primary text-white shadow-xl shadow-black/10' : 'bg-white text-gray-500 hover:bg-gray-50' ?>">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-[20px] <?= $tab === 'lixo' ? 'text-white' : 'text-gray-400' ?>" style="<?= $tab === 'lixo' ? 'font-variation-settings: \'FILL\' 1;' : '' ?>">delete</span>
                             Lixo
@@ -233,13 +233,13 @@ function tempoRelativo($data)
                                 <div class="flex flex-col">
                                     <?php foreach ($recebidas as $m): $isNaoLida = (int) $m['lida'] === 0; ?>
                                         <a href="?tab=ler&id=<?= $m['id'] ?>" class="msg-row flex flex-col md:flex-row items-start md:items-center p-4 border-b border-gray-50/50 cursor-pointer <?= $isNaoLida ? 'nao-lida' : '' ?>">
-                                            <div class="w-full md:w-1/4 font-bold text-sm flex items-center gap-3 mb-2 md:mb-0 <?= $isNaoLida ? 'text-black' : 'text-gray-500' ?>">
-                                                <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center text-xs text-white font-extrabold uppercase shrink-0">
+                                            <div class="w-full md:w-1/4 font-bold text-sm flex items-center gap-3 mb-2 md:mb-0 <?= $isNaoLida ? 'text-on-surface' : 'text-gray-500' ?>">
+                                                <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs text-white font-extrabold uppercase shrink-0">
                                                     <?= substr(htmlspecialchars($m['remetente_nome']), 0, 1) ?>
                                                 </div>
                                                 <span class="truncate block w-full"><?= htmlspecialchars($m['remetente_nome']) ?></span>
                                             </div>
-                                            <div class="w-full md:w-2/4 px-0 md:px-4 text-sm truncate mb-2 md:mb-0 <?= $isNaoLida ? 'font-extrabold text-black' : 'font-medium text-gray-500' ?>">
+                                            <div class="w-full md:w-2/4 px-0 md:px-4 text-sm truncate mb-2 md:mb-0 <?= $isNaoLida ? 'font-extrabold text-on-surface' : 'font-medium text-gray-500' ?>">
                                                 <?= htmlspecialchars($m['assunto']) ?>
                                             </div>
                                             <div class="w-full md:w-1/4 text-xs font-bold text-left md:text-right <?= $isNaoLida ? 'text-gray-600' : 'text-gray-400' ?>">
@@ -268,7 +268,7 @@ function tempoRelativo($data)
                                         <a href="?tab=ler&id=<?= $m['id'] ?>" class="msg-row flex flex-col md:flex-row items-start md:items-center p-4 border-b border-gray-50/50 cursor-pointer">
                                             <div class="w-full md:w-1/4 font-bold text-sm text-gray-500 flex items-center gap-3 mb-2 md:mb-0">
                                                 <span class="text-xs text-gray-300 font-extrabold uppercase">Para</span>
-                                                <span class="truncate block w-full text-black"><?= htmlspecialchars($m['destinatario_nome']) ?></span>
+                                                <span class="truncate block w-full text-on-surface"><?= htmlspecialchars($m['destinatario_nome']) ?></span>
                                             </div>
                                             <div class="w-full md:w-2/4 px-0 md:px-4 text-sm font-semibold text-gray-500 truncate mb-2 md:mb-0 flex items-center gap-2">
                                                 <?= htmlspecialchars($m['assunto']) ?>
@@ -289,13 +289,13 @@ function tempoRelativo($data)
                             <div class="p-6 md:p-8 flex flex-col h-full">
                                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-6 border-b border-black/5">
                                     <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 rounded-full bg-black flex items-center justify-center text-lg text-white font-extrabold uppercase shrink-0">
+                                        <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-lg text-white font-extrabold uppercase shrink-0">
                                             <?= substr(htmlspecialchars($msgSelecionada['remetente_nome']), 0, 1) ?>
                                         </div>
                                         <div>
-                                            <h3 class="text-xl font-headline font-extrabold text-black mb-1"><?= htmlspecialchars($msgSelecionada['assunto']) ?></h3>
+                                            <h3 class="text-xl font-headline font-extrabold text-on-surface mb-1"><?= htmlspecialchars($msgSelecionada['assunto']) ?></h3>
                                             <div class="flex items-center gap-2">
-                                                <span class="text-sm font-extrabold text-black"><?= htmlspecialchars($msgSelecionada['remetente_nome']) ?></span>
+                                                <span class="text-sm font-extrabold text-on-surface"><?= htmlspecialchars($msgSelecionada['remetente_nome']) ?></span>
                                                 <span class="text-xs font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-md uppercase">
                                                     <?= htmlspecialchars($msgSelecionada['remetente_perfil']) ?>
                                                 </span>
@@ -325,7 +325,7 @@ function tempoRelativo($data)
                                     </form>
                                     <?php if ($msgSelecionada['remetente_id'] !== $meuId): ?>
                                         <a href="?tab=escrever&re=<?= urlencode('Re: ' . $msgSelecionada['assunto']) ?>&to=<?= $msgSelecionada['remetente_id'] ?>" 
-                                           class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-black text-black hover:bg-black hover:text-white rounded-full text-sm font-extrabold btn-action transition-colors">
+                                           class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-primary text-on-surface hover:bg-primary hover:text-white rounded-full text-sm font-extrabold btn-action transition-colors">
                                             <span class="material-symbols-outlined text-[18px]">reply</span>
                                             Responder
                                         </a>
@@ -344,7 +344,7 @@ function tempoRelativo($data)
                                     <input type="hidden" name="acao" value="enviar">
 
                                     <div class="mb-10">
-                                        <label class="block text-[11px] font-extrabold text-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <label class="block text-[11px] font-extrabold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
                                             <span class="material-symbols-outlined text-[16px] text-gray-400">group</span>
                                             Enviar Para
                                         </label>
@@ -354,7 +354,7 @@ function tempoRelativo($data)
                                                     <label class="custom-checkbox flex items-center p-3 rounded-xl bg-white border border-gray-200 hover:border-black transition-colors cursor-pointer gap-3 shadow-sm">
                                                         <input type="checkbox" name="destinatarios[]" value="<?= $u['id'] ?>" <?= $toId === $u['id'] ? 'checked' : '' ?>>
                                                         <div class="flex flex-col truncate">
-                                                            <span class="text-sm font-extrabold text-black truncate"><?= htmlspecialchars($u['nome']) ?></span>
+                                                            <span class="text-sm font-extrabold text-on-surface truncate"><?= htmlspecialchars($u['nome']) ?></span>
                                                             <span class="text-[10px] font-bold text-gray-500 uppercase mt-0.5"><?= ucfirst($u['perfil']) ?></span>
                                                         </div>
                                                     </label>
@@ -374,7 +374,7 @@ function tempoRelativo($data)
                                     </div>
 
                                     <div class="flex justify-end mt-4">
-                                        <button type="submit" class="bg-black text-white px-8 py-4 rounded-full font-extrabold text-sm flex items-center gap-2 btn-action shadow-lg shadow-black/10">
+                                        <button type="submit" class="bg-primary text-white px-8 py-4 rounded-full font-extrabold text-sm flex items-center gap-2 btn-action shadow-lg shadow-black/10">
                                             <span class="material-symbols-outlined text-[18px]">send</span>
                                             Enviar Documento
                                         </button>

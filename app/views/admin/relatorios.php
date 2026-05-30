@@ -101,7 +101,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
     </style>
 </head>
 
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
     <?php $paginaActual = 'relatorios'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
@@ -109,7 +109,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
     $tituloPagina = 'Relatórios';
     ob_start(); ?>
     <a href="<?= BASE_URL ?>app/controllers/exportar.php?acao=csv_medicos&di=<?= $dataInicio ?>&df=<?= $dataFim ?>"
-       class="px-5 py-2.5 bg-black text-white rounded-full flex items-center gap-2 transition-all shadow-sm hover:shadow-lg hover:shadow-black/20 hover:-translate-y-0.5">
+       class="px-5 py-2.5 bg-primary text-white rounded-full flex items-center gap-2 transition-all shadow-sm hover:shadow-lg hover:shadow-black/20 hover:-translate-y-0.5">
         <span class="material-symbols-outlined text-[18px]">download</span>
         <span class="text-xs font-bold">Exportar CSV</span>
     </a>
@@ -123,7 +123,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
             <!-- TÍTULO + FILTRO DE DATAS -->
             <div class="bento-card flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
                 <div>
-                    <h2 class="text-[2rem] font-headline font-black text-black tracking-tight leading-none">Análise Organizacional</h2>
+                    <h2 class="text-[2rem] font-headline font-black text-on-surface tracking-tight leading-none">Análise Organizacional</h2>
                     <p class="text-sm font-bold text-gray-400 mt-2">Resumos, tendências e produtividade do hospital no período seleccionado.</p>
                 </div>
                 
@@ -137,7 +137,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                         <label>Data Fim</label>
                         <input type="date" name="df" value="<?= htmlspecialchars($dataFim) ?>" required>
                     </div>
-                    <button type="submit" class="px-6 py-3 bg-black text-white rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-gray-800 transition-colors shrink-0">
+                    <button type="submit" class="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-gray-800 transition-colors shrink-0">
                         <span class="material-symbols-outlined text-[18px]">filter_alt</span>
                         Aplicar
                     </button>
@@ -151,7 +151,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                         <span class="text-[10px] font-extrabold uppercase tracking-widest">Total Período</span>
                         <span class="material-symbols-outlined text-[18px]">bar_chart</span>
                     </div>
-                    <div class="text-5xl font-headline font-black text-black tracking-tighter"><?= $totalPeriodo ?></div>
+                    <div class="text-5xl font-headline font-black text-on-surface tracking-tighter"><?= $totalPeriodo ?></div>
                     <div class="text-xs font-bold text-gray-400 mt-2"><?= $periodoLabel ?></div>
                 </div>
 
@@ -193,7 +193,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
             <!-- GRÁFICO PRINCIPAL: Fluxo Diário (Full-width) -->
             <div class="bento-card delay-5 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm mb-8">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-sm font-extrabold text-black uppercase tracking-widest flex items-center gap-2">
+                    <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">show_chart</span>
                         Fluxo Diário de Pacientes
                     </h3>
@@ -208,7 +208,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <!-- Produtividade Médico (Donut) -->
                 <div class="bento-card delay-5 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm">
-                    <h3 class="text-sm font-extrabold text-black uppercase tracking-widest flex items-center gap-2 mb-6">
+                    <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">donut_large</span>
                         Distribuição por Médico
                     </h3>
@@ -219,7 +219,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
 
                 <!-- Pico de Horas (Bar Chart) -->
                 <div class="bento-card delay-6 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm">
-                    <h3 class="text-sm font-extrabold text-black uppercase tracking-widest flex items-center gap-2 mb-6">
+                    <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">schedule</span>
                         Horas de Pico
                     </h3>
@@ -234,7 +234,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
 
                 <!-- Card: Distribuição Etária (Doughnut) -->
                 <div class="bento-card delay-5 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm lg:col-span-1">
-                    <h3 class="text-sm font-extrabold text-black uppercase tracking-widest flex items-center gap-2 mb-6">
+                    <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">demography</span>
                         Faixas Etárias
                     </h3>
@@ -254,7 +254,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                         ?>
                             <div class="flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:<?= $f['cor'] ?>"></span>
-                                <span class="text-[11px] font-bold text-gray-500"><?= $f['label'] ?>: <strong class="text-black"><?= (int)($demografiaIdade[$f['key']] ?? 0) ?></strong></span>
+                                <span class="text-[11px] font-bold text-gray-500"><?= $f['label'] ?>: <strong class="text-on-surface"><?= (int)($demografiaIdade[$f['key']] ?? 0) ?></strong></span>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -262,7 +262,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
 
                 <!-- Card: Prioridades -->
                 <div class="bento-card delay-6 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm">
-                    <h3 class="text-sm font-extrabold text-black uppercase tracking-widest flex items-center gap-2 mb-6">
+                    <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">priority_high</span>
                         Distribuição por Prioridade
                     </h3>
@@ -289,7 +289,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
 
                 <!-- Card: Top Especialidades -->
                 <div class="bento-card delay-6 bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-sm">
-                    <h3 class="text-sm font-extrabold text-black uppercase tracking-widest flex items-center gap-2 mb-6">
+                    <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-[18px]">clinical_notes</span>
                         Top Especialidades
                     </h3>
@@ -301,16 +301,16 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                                 $pctEsp = round(((int)$esp['total'] / $maxEsp) * 100);
                             ?>
                                 <div class="flex items-center gap-4">
-                                    <div class="w-8 h-8 rounded-lg <?= $ei === 0 ? 'bg-black text-white' : 'bg-gray-100 text-gray-500' ?> flex items-center justify-center font-black text-xs shrink-0">
+                                    <div class="w-8 h-8 rounded-lg <?= $ei === 0 ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500' ?> flex items-center justify-center font-black text-xs shrink-0">
                                         <?= $ei + 1 ?>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between mb-1">
                                             <span class="text-xs font-bold text-gray-700 truncate"><?= htmlspecialchars($esp['especialidade']) ?></span>
-                                            <span class="text-sm font-black text-black shrink-0 ml-2"><?= $esp['total'] ?></span>
+                                            <span class="text-sm font-black text-on-surface shrink-0 ml-2"><?= $esp['total'] ?></span>
                                         </div>
                                         <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                            <div class="rank-bar h-full bg-black rounded-full" style="width:<?= $pctEsp ?>%"></div>
+                                            <div class="rank-bar h-full bg-primary rounded-full" style="width:<?= $pctEsp ?>%"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -328,7 +328,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
             <!-- TABELA RANKING DE MÉDICOS -->
             <div class="bento-card delay-6 bg-white rounded-[2.5rem] border border-black/5 shadow-sm overflow-hidden">
                 <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
-                    <h3 class="text-sm font-extrabold text-black uppercase tracking-widest flex items-center gap-2">
+                    <h3 class="text-sm font-extrabold text-on-surface uppercase tracking-widest flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">leaderboard</span>
                         Ranking de Produtividade Médica
                     </h3>
@@ -344,22 +344,22 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                         ?>
                             <div class="flex items-center gap-6">
                                 <!-- Posição -->
-                                <div class="w-10 h-10 rounded-xl <?= $idx === 0 ? 'bg-black text-white' : 'bg-gray-100 text-gray-500' ?> flex items-center justify-center font-black text-sm shrink-0">
+                                <div class="w-10 h-10 rounded-xl <?= $idx === 0 ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500' ?> flex items-center justify-center font-black text-sm shrink-0">
                                     <?= $idx + 1 ?>º
                                 </div>
                                 <!-- Info + Barra -->
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center justify-between mb-2">
-                                        <span class="text-sm font-bold text-black truncate"><?= htmlspecialchars($med['medico']) ?></span>
+                                        <span class="text-sm font-bold text-on-surface truncate"><?= htmlspecialchars($med['medico']) ?></span>
                                         <div class="flex items-center gap-4 shrink-0 ml-4">
                                             <span class="text-xs font-bold text-gray-400">
                                                 ~<?= htmlspecialchars($med['tempo_medio_espera']) ?> min
                                             </span>
-                                            <span class="text-lg font-black text-black"><?= $med['total_atendidos'] ?></span>
+                                            <span class="text-lg font-black text-on-surface"><?= $med['total_atendidos'] ?></span>
                                         </div>
                                     </div>
                                     <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                                        <div class="rank-bar h-full bg-black rounded-full" style="width: <?= $pct ?>%;"></div>
+                                        <div class="rank-bar h-full bg-primary rounded-full" style="width: <?= $pct ?>%;"></div>
                                     </div>
                                 </div>
                             </div>

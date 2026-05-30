@@ -123,7 +123,7 @@ $tabs = [
     .status-pulse { animation: pulse-glow 2s infinite; }
 </style>
 </head>
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
 <?php $paginaActual='configuracao'; include __DIR__.'/../comum/sidebar.php'; ?>
 <?php $tituloPagina='Configuração'; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
 

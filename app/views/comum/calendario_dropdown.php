@@ -18,7 +18,7 @@ if (!isset($GLOBALS['calendar_widget_loaded'])) {
     <button type="button" class="w-full h-10 px-3 bg-white border border-surface-container-high rounded-xl font-bold text-sm cursor-pointer hover:bg-zinc-50 transition-colors flex items-center justify-between" onclick="HospitalCalendar.toggleDropdown('<?= $cal_id ?>', event)">
         <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-on-surface-variant text-[18px]">calendar_month</span>
-            <span class="text-black whitespace-nowrap" id="<?= $cal_id ?>-text">
+            <span class="text-on-surface whitespace-nowrap" id="<?= $cal_id ?>-text">
                 <?= !empty($cal_value) ? date('d/m/Y', strtotime($cal_value)) : ($cal_label ?? 'Seleccione a data') ?>
             </span>
         </div>

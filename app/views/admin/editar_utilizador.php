@@ -73,7 +73,7 @@ unset($_SESSION['erro']);
     </style>
 </head>
 
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface h-screen overflow-hidden bg-background">
 
     <?php $paginaActual = 'utilizadores'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -92,7 +92,7 @@ unset($_SESSION['erro']);
             <main class="w-full max-w-[800px] mx-auto px-8 pb-24 pt-8">
 
                 <div class="mb-8 fade-in">
-                    <h2 class="text-4xl font-headline font-extrabold tracking-tighter mb-2 text-black">Editar Utilizador</h2>
+                    <h2 class="text-4xl font-headline font-extrabold tracking-tighter mb-2 text-on-surface">Editar Utilizador</h2>
                     <p class="text-on-surface-variant font-medium">Modifique as credenciais, dados pessoais ou nível de acesso.</p>
                 </div>
 
@@ -148,7 +148,7 @@ unset($_SESSION['erro']);
                             $sel_options = [
                                 'recepcionista' => ['label' => 'Recepcionista', 'icon' => 'badge', 'color' => 'text-purple-600'],
                                 'medico' => ['label' => 'Médico', 'icon' => 'stethoscope', 'color' => 'text-blue-600'],
-                                'admin' => ['label' => 'Administrador', 'icon' => 'shield_person', 'color' => 'text-black'],
+                                'admin' => ['label' => 'Administrador', 'icon' => 'shield_person', 'color' => 'text-on-surface'],
                             ];
                             include __DIR__ . '/../comum/custom_select.php';
                             ?>
@@ -191,7 +191,7 @@ unset($_SESSION['erro']);
 
                     <div class="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-surface-container-low">
                         <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="px-6 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container-low transition-all">Cancelar</a>
-                        <button type="submit" class="px-8 py-3 bg-black text-white rounded-xl font-bold text-sm shadow hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                        <button type="submit" class="px-8 py-3 bg-primary text-white rounded-xl font-bold text-sm shadow hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">save</span> Guardar Alterações
                         </button>
                     </div>

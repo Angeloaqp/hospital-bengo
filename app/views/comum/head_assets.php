@@ -73,13 +73,28 @@ tailwind.config = {
         background-color: #6b7280; 
     }
 
-    /* Animações Globais (Páginas, Dashboards e Cartões) */
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-    .fade-in-delay-1 { animation: fadeIn 0.5s ease-out 0.1s forwards; opacity: 0; }
-    .fade-in-delay-2 { animation: fadeIn 0.5s ease-out 0.2s forwards; opacity: 0; }
-    .fade-in-delay-3 { animation: fadeIn 0.5s ease-out 0.3s forwards; opacity: 0; }
-    .fade-in-delay-4 { animation: fadeIn 0.5s ease-out 0.4s forwards; opacity: 0; }
+    /* Remoção Global de Sombras (exceto no Header e elementos focados) */
+    *:not(#header-wrapper):not(#header-wrapper *):not(:focus) {
+        box-shadow: none !important;
+    }
+
+    /* Animação Única de Abertura da Página */
+    @keyframes pageEnter { 
+        from { opacity: 0; transform: translateY(15px); } 
+        to { opacity: 1; transform: translateY(0); } 
+    }
+    body { 
+        animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+    }
+    
+    /* Desativar animações individuais em cascata (staggering) para usar apenas a global */
+    .fade-in, .fade-in-delay-1, .fade-in-delay-2, .fade-in-delay-3, .fade-in-delay-4,
+    .glide-in, .stagger-1, .stagger-2, .stagger-3, .stagger-4, .stagger-5 {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+    }
 </style>
 
 <!-- Tactile UX Scripts -->

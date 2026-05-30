@@ -59,7 +59,7 @@ $tipos = $db->query(
     <!-- Estilos controlados de forma centralizada pelo Tailwind (ver header.php) -->
 </head>
 
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
 
 <?php $paginaActual = 'pesquisar'; ?>
 <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -74,10 +74,10 @@ $tipos = $db->query(
     <!-- Hero Header Section -->
     <section class="mb-4 mt-2 flex items-center justify-between">
         <div>
-            <h2 class="font-extrabold text-black tracking-tight mb-1 text-3xl">Base de Dados de Pacientes</h2>
+            <h2 class="font-extrabold text-on-surface tracking-tight mb-1 text-3xl">Base de Dados de Pacientes</h2>
             <p class="text-on-surface-variant font-semibold text-sm">Consulte o arquivo ou faça a admissão rápida.</p>
         </div>
-        <a href="dashboard.php" class="bg-surface-container-low text-black px-5 py-2.5 rounded-full font-bold text-xs hover:bg-surface-container transition-colors no-underline">← Visão geral</a>
+        <a href="dashboard.php" class="bg-surface-container-low text-on-surface px-5 py-2.5 rounded-full font-bold text-xs hover:bg-surface-container transition-colors no-underline">← Visão geral</a>
     </section>
 
     <?php if ($mensagem): ?>
@@ -105,7 +105,7 @@ $tipos = $db->query(
                 <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
                 <input name="q" value="<?= htmlspecialchars($termo) ?>" minlength="2" class="w-full rounded-xl bg-surface-container-low border-none font-semibold placeholder:text-on-surface-variant/50 font-['Manrope'] pl-12 pr-6 py-3 text-sm focus:ring-2 focus:ring-black/10 transition-all outline-none" placeholder="Pesquise por Nome do Paciente (mín. 2 letras) ..." type="text" autofocus autocomplete="off" />
             </div>
-            <button type="submit" class="bg-black text-white rounded-xl font-black flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg h-[46px] px-6 text-sm shrink-0">
+            <button type="submit" class="bg-primary text-white rounded-xl font-black flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg h-[46px] px-6 text-sm shrink-0">
                 <span class="material-symbols-outlined text-xl">search</span>
                 Procurar
             </button>
@@ -120,15 +120,15 @@ $tipos = $db->query(
                 <div class="absolute inset-0 bg-surface-container-high/40 rounded-full blur-3xl opacity-50"></div>
                 <span class="material-symbols-outlined text-[80px] text-on-surface-variant/30" style="font-variation-settings: 'wght' 200;">search_off</span>
             </div>
-            <h3 class="text-xl font-black text-black mb-2">Nenhum resultado encontrado</h3>
-            <p class="max-w-md text-on-surface-variant font-semibold text-xs leading-relaxed">Não encontrámos nenhum paciente na base de dados para "<strong><?= htmlspecialchars($termo) ?></strong>". Recomendamos efetuar o registo através da janela <a href="registar.php" class="text-black font-bold underline underline-offset-2 hover:text-blue-600 transition-colors">Novo Paciente</a>.</p>
+            <h3 class="text-xl font-black text-on-surface mb-2">Nenhum resultado encontrado</h3>
+            <p class="max-w-md text-on-surface-variant font-semibold text-xs leading-relaxed">Não encontrámos nenhum paciente na base de dados para "<strong><?= htmlspecialchars($termo) ?></strong>". Recomendamos efetuar o registo através da janela <a href="registar.php" class="text-on-surface font-bold underline underline-offset-2 hover:text-blue-600 transition-colors">Novo Paciente</a>.</p>
         </section>
 
     <?php elseif (!empty($resultados)): ?>
         <section class="mb-12">
             <div class="bg-white rounded-[2rem] floating-card overflow-hidden border border-white">
                 <div class="px-8 py-5 border-b border-surface-container-low/50 flex justify-between items-center bg-surface-bright">
-                    <span class="font-black text-xs uppercase tracking-widest text-black"><?= count($resultados) ?> resultado(s) de pesquisa</span>
+                    <span class="font-black text-xs uppercase tracking-widest text-on-surface"><?= count($resultados) ?> resultado(s) de pesquisa</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
@@ -145,7 +145,7 @@ $tipos = $db->query(
                             <?php foreach ($resultados as $r): ?>
                             <tr class="hover:bg-surface-container-low/20 transition-colors group">
                                 <td class="px-8 py-6">
-                                    <p class="font-bold text-black text-sm"><?= htmlspecialchars($r['nome']) ?></p>
+                                    <p class="font-bold text-on-surface text-sm"><?= htmlspecialchars($r['nome']) ?></p>
                                 </td>
                                 <td class="px-6 py-6">
                                     <p class="text-on-surface-variant text-sm font-semibold"><?= $r['idade'] ?> anos</p>
@@ -158,7 +158,7 @@ $tipos = $db->query(
                                 </td>
                                 <td class="px-8 py-6 text-right">
                                     <div class="flex items-center justify-end gap-3">
-                                        <a href="pesquisar.php?ver=<?= $r['id'] ?>&q=<?= urlencode($termo) ?>#paciente-painel" class="flex items-center gap-2 border border-black/10 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-wider hover:bg-black hover:text-white transition-all active:scale-95 shadow-sm whitespace-nowrap">
+                                        <a href="pesquisar.php?ver=<?= $r['id'] ?>&q=<?= urlencode($termo) ?>#paciente-painel" class="flex items-center gap-2 border border-black/10 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-wider hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm whitespace-nowrap">
                                             <span class="material-symbols-outlined text-[16px]">visibility</span>
                                             Explorar Perfil
                                         </a>
@@ -179,7 +179,7 @@ $tipos = $db->query(
                 <div class="absolute inset-0 bg-surface-container-high/40 rounded-full blur-3xl opacity-50"></div>
                 <span class="material-symbols-outlined text-[80px] text-on-surface-variant/20" style="font-variation-settings: 'wght' 200;">assignment_ind</span>
             </div>
-            <h3 class="text-xl font-black text-black mb-2">Procurar Histórico de Pacientes</h3>
+            <h3 class="text-xl font-black text-on-surface mb-2">Procurar Histórico de Pacientes</h3>
             <p class="max-w-md text-on-surface-variant font-semibold text-xs leading-relaxed">Utilize o campo de busca acima para encontrar rapidamente históricos clínicos ou preencher senhas de admissão para pacientes recorrentes.</p>
         </section>
     <?php endif; ?>
@@ -187,7 +187,7 @@ $tipos = $db->query(
     <!-- HISTÓRICO E DETALHES DO PACIENTE SELECIONADO -->
     <?php if ($paciente): ?>
         <!-- Overlay Modal Effect -->
-        <div id="paciente-modal" class="fixed inset-0 z-[100] flex justify-center items-center px-4 py-8 sm:p-8 bg-black/40 backdrop-blur-sm overflow-hidden opacity-0 transition-opacity duration-500 pointer-events-none">
+        <div id="paciente-modal" class="fixed inset-0 z-[100] flex justify-center items-center px-4 py-8 sm:p-8 bg-primary/40 backdrop-blur-sm overflow-hidden opacity-0 transition-opacity duration-500 pointer-events-none">
             
             <div id="paciente-modal-content" class="w-full max-w-6xl grid grid-cols-1 xl:grid-cols-3 gap-6 items-start my-auto translate-y-8 transition-transform duration-500 relative opacity-0">
                 
@@ -205,9 +205,9 @@ $tipos = $db->query(
                 <section class="bg-white rounded-[2rem] p-8 floating-card border border-white flex flex-col flex-1 overflow-hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-8 border-b border-surface-container-low gap-4">
                         <div>
-                            <h3 class="text-2xl font-extrabold text-black tracking-tight mb-3"><?= htmlspecialchars($paciente['nome']) ?></h3>
+                            <h3 class="text-2xl font-extrabold text-on-surface tracking-tight mb-3"><?= htmlspecialchars($paciente['nome']) ?></h3>
                             <div class="flex items-center gap-3 text-xs font-semibold text-on-surface-variant flex-wrap">
-                                <span class="bg-surface-container-low px-3 py-1.5 rounded-lg text-black font-bold"><?= $paciente['idade'] ?> anos</span>
+                                <span class="bg-surface-container-low px-3 py-1.5 rounded-lg text-on-surface font-bold"><?= $paciente['idade'] ?> anos</span>
                                 <?php if ($paciente['peso']): ?>
                                     <span class="bg-surface-container-low px-3 py-1.5 rounded-lg font-bold"><?= $paciente['peso'] ?> kg</span>
                                 <?php endif; ?>
@@ -216,15 +216,15 @@ $tipos = $db->query(
                         </div>
                         <div class="text-right shrink-0">
                             <p class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest mb-1">Paciente no Sistema desde:</p>
-                            <p class="font-mono text-xs text-black font-bold"><?= date('d/m/Y \à\s H:i', strtotime($paciente['registado_em'])) ?></p>
+                            <p class="font-mono text-xs text-on-surface font-bold"><?= date('d/m/Y \à\s H:i', strtotime($paciente['registado_em'])) ?></p>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                            <span class="material-symbols-outlined text-black">history</span>
+                            <span class="material-symbols-outlined text-on-surface">history</span>
                         </div>
-                        <h4 class="text-lg font-black tracking-tight text-black">Histórico de Senhas <span class="text-on-surface-variant font-semibold text-sm ml-2">(<?= count($historico) ?>)</span></h4>
+                        <h4 class="text-lg font-black tracking-tight text-on-surface">Histórico de Senhas <span class="text-on-surface-variant font-semibold text-sm ml-2">(<?= count($historico) ?>)</span></h4>
                     </div>
                     
                     <?php if (!empty($historico)): ?>
@@ -246,12 +246,12 @@ $tipos = $db->query(
                                     ?>
                                         <tr class="hover:bg-surface-container-low/20 transition-colors">
                                             <td class="px-6 py-4">
-                                                <span class="inline-flex items-center gap-1.5 font-black font-mono text-black text-[13px] bg-white border border-surface-container-highest shadow-sm px-2.5 py-1 rounded-md">
+                                                <span class="inline-flex items-center gap-1.5 font-black font-mono text-on-surface text-[13px] bg-white border border-surface-container-highest shadow-sm px-2.5 py-1 rounded-md">
                                                     <?= htmlspecialchars($h['codigo']) ?>
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4">
-                                                <p class="font-bold text-black text-xs"><?= htmlspecialchars($h['tipo_atendimento']) ?></p>
+                                                <p class="font-bold text-on-surface text-xs"><?= htmlspecialchars($h['tipo_atendimento']) ?></p>
                                                 <?php if($h['medico_nome']): ?>
                                                     <p class="text-[10px] text-on-surface-variant flex items-center gap-1 mt-1 opacity-80"><span class="material-symbols-outlined text-[13px]">stethoscope</span> Dr/a <?= htmlspecialchars($h['medico_nome']) ?> &bull; <?= htmlspecialchars($h['consultorio']) ?></p>
                                                 <?php endif ?>
@@ -280,7 +280,7 @@ $tipos = $db->query(
                     <?php else: ?>
                         <div class="bg-surface-container-low/50 rounded-[1.5rem] p-10 flex flex-col justify-center items-center text-center border border-dashed border-surface-container-highest">
                             <span class="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3">history_toggle_off</span>
-                            <p class="text-sm font-bold text-black mb-1">Sem Histórico Encontrado</p>
+                            <p class="text-sm font-bold text-on-surface mb-1">Sem Histórico Encontrado</p>
                             <p class="text-xs font-semibold text-on-surface-variant">Este paciente ainda não passou por nenhum atendimento formal registado no HGB.</p>
                         </div>
                     <?php endif; ?>
@@ -294,7 +294,7 @@ $tipos = $db->query(
                     <!-- Painel Form: Admissão Rápida -->
                     <div id="quick-admission-panel" class="bg-white rounded-[2rem] p-6 floating-card border border-white transition-all duration-500 relative z-10 w-full opacity-100">
                         <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-4 flex items-center justify-center gap-2 text-center pb-4 border-b border-surface-container-low w-full">
-                            <span class="material-symbols-outlined text-black" style="font-variation-settings: 'FILL' 1;">bolt</span> Admissão Rápida
+                            <span class="material-symbols-outlined text-on-surface" style="font-variation-settings: 'FILL' 1;">bolt</span> Admissão Rápida
                         </h4>
                         <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed mb-6 text-center">Emita uma nova senha associada a este biótipo no sistema sem refazer o registo demográfico.</p>
                         
@@ -342,7 +342,7 @@ $tipos = $db->query(
                                 ?>
                             </div>
 
-                            <button type="submit" class="w-full mt-2 bg-black text-white rounded-2xl text-sm font-black tracking-tight py-4 hover:bg-zinc-800 active:scale-[0.98] transition-all flex flex-col justify-center items-center gap-1 shadow-lg group relative overflow-hidden">
+                            <button type="submit" class="w-full mt-2 bg-primary text-white rounded-2xl text-sm font-black tracking-tight py-4 hover:bg-zinc-800 active:scale-[0.98] transition-all flex flex-col justify-center items-center gap-1 shadow-lg group relative overflow-hidden">
                                 <span class="btn-text flex flex-col items-center gap-1">
                                     <div class="flex items-center justify-center gap-2">
                                         <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">print</span>
@@ -350,7 +350,7 @@ $tipos = $db->query(
                                     </div>
                                     <span class="text-[9px] font-bold opacity-60 uppercase tracking-widest mt-1">Imprimir e Encaminhar</span>
                                 </span>
-                                <span class="btn-loader absolute inset-0 flex items-center justify-center opacity-0 transition-opacity bg-black pointer-events-none">
+                                <span class="btn-loader absolute inset-0 flex items-center justify-center opacity-0 transition-opacity bg-primary pointer-events-none">
                                     <span class="material-symbols-outlined animate-spin text-white">autorenew</span>
                                 </span>
                             </button>
@@ -362,18 +362,18 @@ $tipos = $db->query(
                         <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
                             <span class="material-symbols-outlined text-green-500 text-3xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         </div>
-                        <h4 class="text-xl font-black text-black mb-1">Senha Gerada</h4>
+                        <h4 class="text-xl font-black text-on-surface mb-1">Senha Gerada</h4>
                         <p class="text-xs font-semibold text-on-surface-variant mb-5">Admissão registada no sistema.</p>
                         
                         <div class="w-full bg-surface-container-low rounded-2xl p-5 border border-surface-container-higher mb-6">
                             <p class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2">Novo Ticket</p>
-                            <p id="success-senha" class="text-3xl font-mono font-black text-black tracking-widest bg-white py-2 rounded-xl shadow-sm border border-black/5">---</p>
+                            <p id="success-senha" class="text-3xl font-mono font-black text-on-surface tracking-widest bg-white py-2 rounded-xl shadow-sm border border-black/5">---</p>
                         </div>
                         
-                        <button type="button" onclick="resetQuickAdmission()" class="bg-surface-container-low hover:bg-surface-container text-black rounded-xl font-bold text-xs py-3.5 px-6 transition-colors w-full border border-surface-container mb-3 active:scale-[0.98]">
+                        <button type="button" onclick="resetQuickAdmission()" class="bg-surface-container-low hover:bg-surface-container text-on-surface rounded-xl font-bold text-xs py-3.5 px-6 transition-colors w-full border border-surface-container mb-3 active:scale-[0.98]">
                             &larr; Nova Admissão
                         </button>
-                        <a href="pesquisar.php?ver=<?= $paciente['id'] ?>&q=<?= urlencode($termo) ?>#paciente-painel" class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant hover:text-black transition-colors underline underline-offset-4">
+                        <a href="pesquisar.php?ver=<?= $paciente['id'] ?>&q=<?= urlencode($termo) ?>#paciente-painel" class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors underline underline-offset-4">
                             Refresh ao Histórico
                         </a>
                     </div>

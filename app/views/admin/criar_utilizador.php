@@ -195,7 +195,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
     </style>
 </head>
 
-<body class="text-on-surface h-screen overflow-hidden bg-[#f3f4f6]">
+<body class="text-on-surface h-screen overflow-hidden bg-background">
     <?php $paginaActual = 'utilizadores'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
     
@@ -204,7 +204,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
     ob_start(); ?>
     <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-black/5 shadow-sm">
         <span class="material-symbols-outlined text-[16px] text-on-surface-variant">person_add</span>
-        <span class="text-xs font-bold text-black">Novo Registo</span>
+        <span class="text-xs font-bold text-on-surface">Novo Registo</span>
     </div>
     <?php $accoesPagina = ob_get_clean(); ?>
 
@@ -229,7 +229,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                         <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                         Voltar à Gestão
                     </a>
-                    <h2 class="text-3xl font-headline font-extrabold text-black tracking-tight">Criar Identidade</h2>
+                    <h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Criar Identidade</h2>
                 </div>
             </div>
 
@@ -238,7 +238,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                 
                 <!-- Left: Info Panel -->
                 <div class="lg:col-span-4 flex flex-col gap-6">
-                    <div class="bg-black text-white rounded-[2rem] p-8 shadow-lg relative overflow-hidden sticky top-8">
+                    <div class="bg-primary text-white rounded-[2rem] p-8 shadow-lg relative overflow-hidden sticky top-8">
                         <div class="absolute -right-10 -bottom-10 opacity-[0.07]">
                             <span class="material-symbols-outlined text-[160px]">health_and_safety</span>
                         </div>
@@ -273,9 +273,9 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                             <!-- Section: Identity -->
                             <div class="flex items-center gap-3 mb-8">
                                 <div class="w-9 h-9 bg-gray-100 rounded-xl flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[18px] text-black">badge</span>
+                                    <span class="material-symbols-outlined text-[18px] text-on-surface">badge</span>
                                 </div>
-                                <h4 class="font-extrabold text-lg text-black tracking-tight">Dados do Colaborador</h4>
+                                <h4 class="font-extrabold text-lg text-on-surface tracking-tight">Dados do Colaborador</h4>
                             </div>
 
                             <!-- Foto Upload -->
@@ -286,7 +286,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                                 </label>
                                 <input type="file" id="foto" name="foto" accept="image/*" class="hidden" onchange="previewAvatar(this)">
                                 <div>
-                                    <h5 class="text-sm font-extrabold text-black">Foto de Perfil</h5>
+                                    <h5 class="text-sm font-extrabold text-on-surface">Foto de Perfil</h5>
                                     <p class="text-xs font-bold text-on-surface-variant mt-1">Carregue uma imagem nítida (JPG ou PNG).</p>
                                 </div>
                             </div>
@@ -335,9 +335,9 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                             <!-- Section: Permissions -->
                             <div class="flex items-center gap-3 mb-8">
                                 <div class="w-9 h-9 bg-gray-100 rounded-xl flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[18px] text-black">tune</span>
+                                    <span class="material-symbols-outlined text-[18px] text-on-surface">tune</span>
                                 </div>
-                                <h4 class="font-extrabold text-lg text-black tracking-tight">Perfil e Especialidade</h4>
+                                <h4 class="font-extrabold text-lg text-on-surface tracking-tight">Perfil e Especialidade</h4>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -396,7 +396,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                                 <a href="utilizadores.php" class="font-bold text-sm text-on-surface-variant hover:text-black transition-colors px-6 py-3 rounded-xl hover:bg-gray-50">
                                     Cancelar
                                 </a>
-                                <button type="submit" class="bg-black text-white px-9 py-4 rounded-xl font-bold text-sm flex items-center gap-2.5 btn-action shadow-lg shadow-black/10">
+                                <button type="submit" class="bg-primary text-white px-9 py-4 rounded-xl font-bold text-sm flex items-center gap-2.5 btn-action shadow-lg shadow-black/10">
                                     <span class="material-symbols-outlined text-[20px]">person_add</span>
                                     Criar Utilizador
                                 </button>

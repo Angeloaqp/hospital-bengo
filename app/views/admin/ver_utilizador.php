@@ -56,7 +56,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
         .floating-card { box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 10px -2px rgba(0,0,0,0.03); }
     </style>
 </head>
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
 
     <?php $paginaActual = 'utilizadores'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -78,7 +78,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                 <!-- Header do Perfil -->
                 <header class="mb-8 flex items-center justify-between fade-in bg-white rounded-[2.5rem] p-8 floating-card border border-white">
                     <div class="flex items-center gap-8">
-                        <div class="w-28 h-28 rounded-full overflow-hidden bg-black text-white flex items-center justify-center font-bold text-5xl ring-4 ring-surface-container-low">
+                        <div class="w-28 h-28 rounded-full overflow-hidden bg-primary text-white flex items-center justify-center font-bold text-5xl ring-4 ring-surface-container-low">
                             <?php if (!empty($dados['foto_path'])): ?>
                                 <img src="<?= BASE_URL . 'public/' . $dados['foto_path'] ?>" class="w-full h-full object-cover" alt="Foto">
                             <?php else: ?>
@@ -86,11 +86,11 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                             <?php endif; ?>
                         </div>
                         <div>
-                            <h2 class="text-4xl font-headline font-extrabold tracking-tighter mb-2 text-black">
+                            <h2 class="text-4xl font-headline font-extrabold tracking-tighter mb-2 text-on-surface">
                                 <?= htmlspecialchars($dados['nome']) ?>
                             </h2>
                             <div class="flex items-center gap-3 text-on-surface-variant text-sm font-semibold mb-3">
-                                <span class="px-3 py-1 bg-surface-container-low rounded-full text-[10px] font-black uppercase tracking-widest text-black border border-black/5">
+                                <span class="px-3 py-1 bg-surface-container-low rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface border border-black/5">
                                     <?= ucfirst($dados['perfil']) ?>
                                 </span>
                                 <?php if ($dados['especialidade']): ?>
@@ -113,7 +113,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                         </div>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <a href="<?= BASE_URL ?>app/views/admin/editar_utilizador.php?id=<?= $dados['id'] ?>" class="px-6 py-3 bg-black text-white rounded-full font-bold text-sm hover:scale-105 transition-all text-center flex items-center gap-2 justify-center shadow">
+                        <a href="<?= BASE_URL ?>app/views/admin/editar_utilizador.php?id=<?= $dados['id'] ?>" class="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm hover:scale-105 transition-all text-center flex items-center gap-2 justify-center shadow">
                             <span class="material-symbols-outlined text-[18px]">edit</span> Editar Conta
                         </a>
                     </div>
@@ -125,11 +125,11 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                     <div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white fade-in-delay-1">
                         <div class="flex items-center justify-between mb-4">
                             <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                                <span class="material-symbols-outlined text-black">today</span>
+                                <span class="material-symbols-outlined text-on-surface">today</span>
                             </div>
                             <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">Hoje</span>
                         </div>
-                        <p class="text-4xl tactile-mono text-black mb-1"><?= $estatisticas['hoje'] ?></p>
+                        <p class="text-4xl tactile-mono text-on-surface mb-1"><?= $estatisticas['hoje'] ?></p>
                         <p class="text-[11px] font-bold text-on-surface-variant">Acções/Atendimentos</p>
                     </div>
 
@@ -137,11 +137,11 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                     <div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white fade-in-delay-1">
                         <div class="flex items-center justify-between mb-4">
                             <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                                <span class="material-symbols-outlined text-black">date_range</span>
+                                <span class="material-symbols-outlined text-on-surface">date_range</span>
                             </div>
                             <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">Semana</span>
                         </div>
-                        <p class="text-4xl tactile-mono text-black mb-1"><?= $estatisticas['semana'] ?></p>
+                        <p class="text-4xl tactile-mono text-on-surface mb-1"><?= $estatisticas['semana'] ?></p>
                         <p class="text-[11px] font-bold text-on-surface-variant">Nesta semana</p>
                     </div>
 
@@ -149,11 +149,11 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                     <div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white fade-in-delay-2">
                         <div class="flex items-center justify-between mb-4">
                             <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                                <span class="material-symbols-outlined text-black">calendar_month</span>
+                                <span class="material-symbols-outlined text-on-surface">calendar_month</span>
                             </div>
                             <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">Mês</span>
                         </div>
-                        <p class="text-4xl tactile-mono text-black mb-1"><?= $estatisticas['mes'] ?></p>
+                        <p class="text-4xl tactile-mono text-on-surface mb-1"><?= $estatisticas['mes'] ?></p>
                         <p class="text-[11px] font-bold text-on-surface-variant">Neste mês</p>
                     </div>
 
@@ -165,7 +165,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                             </div>
                             <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">Perdas</span>
                         </div>
-                        <p class="text-4xl tactile-mono <?= $estatisticas['ausencias'] > 0 ? 'text-error' : 'text-black' ?> mb-1"><?= $estatisticas['ausencias'] ?></p>
+                        <p class="text-4xl tactile-mono <?= $estatisticas['ausencias'] > 0 ? 'text-error' : 'text-on-surface' ?> mb-1"><?= $estatisticas['ausencias'] ?></p>
                         <p class="text-[11px] font-bold text-on-surface-variant">Cancelamentos/Fugas</p>
                     </div>
                 </div>
@@ -177,7 +177,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                     <section class="lg:col-span-2 bg-white rounded-[2rem] p-8 floating-card border border-white fade-in-delay-3 flex flex-col justify-between">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                                <span class="material-symbols-outlined text-black">show_chart</span>
+                                <span class="material-symbols-outlined text-on-surface">show_chart</span>
                             </div>
                             <div>
                                 <h3 class="text-lg font-headline font-extrabold tracking-tight">Produtividade (7 Dias)</h3>
@@ -194,9 +194,9 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                         <div class="p-8 pb-4 flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-2xl bg-surface-container-low flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-black">history</span>
+                                    <span class="material-symbols-outlined text-on-surface">history</span>
                                 </div>
-                                <h4 class="text-lg font-headline font-extrabold tracking-tight text-black">Últimas Acções</h4>
+                                <h4 class="text-lg font-headline font-extrabold tracking-tight text-on-surface">Últimas Acções</h4>
                             </div>
                             <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant"><?= count($historico) ?> registos visíveis</span>
                         </div>
@@ -217,7 +217,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                                             <?php foreach (array_slice($historico, 0, 10) as $h): ?>
                                                 <tr class="hover:bg-surface-container-low/20 transition-colors">
                                                     <td class="px-8 py-5">
-                                                        <div class="font-bold text-black text-sm"><?= htmlspecialchars($h['paciente_nome']) ?></div>
+                                                        <div class="font-bold text-on-surface text-sm"><?= htmlspecialchars($h['paciente_nome']) ?></div>
                                                         <div class="tactile-mono text-xs text-on-surface-variant mt-1"><?= htmlspecialchars($h['codigo']) ?></div>
                                                     </td>
                                                     <td class="px-8 py-5 text-xs text-on-surface-variant font-semibold">
@@ -249,7 +249,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                                             <?php foreach (array_slice($historico, 0, 10) as $h): ?>
                                                 <tr class="hover:bg-surface-container-low/20 transition-colors">
                                                     <td class="px-8 py-5">
-                                                        <div class="font-bold text-black text-sm"><?= htmlspecialchars($h['paciente_nome']) ?></div>
+                                                        <div class="font-bold text-on-surface text-sm"><?= htmlspecialchars($h['paciente_nome']) ?></div>
                                                         <div class="tactile-mono text-xs text-on-surface-variant mt-1"><?= htmlspecialchars($h['codigo']) ?></div>
                                                     </td>
                                                     <td class="px-8 py-5 text-xs text-on-surface-variant font-semibold">
@@ -257,7 +257,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                                                         <span class="text-[10px] text-on-surface-variant/70">Emitido: <?= date('d/m/Y H:i', strtotime($h['criado_em'])) ?></span>
                                                     </td>
                                                     <td class="px-8 py-5">
-                                                        <span class="px-3 py-1 bg-surface-container-low text-black rounded-full text-[10px] font-black uppercase tracking-wider"><?= ucfirst($h['estado']) ?></span>
+                                                        <span class="px-3 py-1 bg-surface-container-low text-on-surface rounded-full text-[10px] font-black uppercase tracking-wider"><?= ucfirst($h['estado']) ?></span>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -274,7 +274,7 @@ $inicial = strtoupper(substr($dados['nome'], 0, 1));
                                         <tbody class="divide-y divide-surface-container-low/50">
                                             <?php foreach (array_slice($historico, 0, 10) as $h): ?>
                                                 <tr class="hover:bg-surface-container-low/20 transition-colors">
-                                                    <td class="px-8 py-5 font-bold text-black text-xs uppercase tracking-wider">
+                                                    <td class="px-8 py-5 font-bold text-on-surface text-xs uppercase tracking-wider">
                                                         <?= htmlspecialchars($h['accao']) ?>
                                                     </td>
                                                     <td class="px-8 py-5 text-sm text-on-surface-variant font-medium">

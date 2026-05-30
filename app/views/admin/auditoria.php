@@ -83,7 +83,7 @@ $iconeAccao = [
     </style>
 </head>
 
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-background">
     <?php $paginaActual = 'auditoria'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
     
@@ -92,7 +92,7 @@ $iconeAccao = [
     ob_start(); ?>
     <div class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-black/5 shadow-sm">
         <span class="material-symbols-outlined text-[16px] text-on-surface-variant">monitoring</span>
-        <span class="text-xs font-bold text-black"><?= $totalHoje ?> acções hoje</span>
+        <span class="text-xs font-bold text-on-surface"><?= $totalHoje ?> acções hoje</span>
     </div>
     <?php $accoesPagina = ob_get_clean(); ?>
 
@@ -104,7 +104,7 @@ $iconeAccao = [
             
             <div class="mb-10 flex justify-between items-end glide-in">
                 <div>
-                    <h2 class="text-3xl font-headline font-extrabold text-black tracking-tight">Logs de Sistema</h2>
+                    <h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Logs de Sistema</h2>
                     <p class="text-sm font-semibold text-on-surface-variant mt-1 max-w-xl">Monitorização e rastreio de segurança de todas as atividades realizadas na plataforma.</p>
                 </div>
             </div>
@@ -124,7 +124,7 @@ $iconeAccao = [
                         $sel_class = 'w-48';
                         $sel_options = ['' => ['label' => 'Todas as acções', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant']];
                         foreach ($iconeAccao as $k => $ic) {
-                            $sel_options[$k] = ['label' => ucfirst(str_replace('_', ' ', $k)), 'icon' => $ic, 'color' => 'text-black'];
+                            $sel_options[$k] = ['label' => ucfirst(str_replace('_', ' ', $k)), 'icon' => $ic, 'color' => 'text-on-surface'];
                         }
                         include __DIR__ . '/../comum/custom_select.php';
                         ?>
@@ -164,7 +164,7 @@ $iconeAccao = [
                                 Limpar
                             </a>
                         <?php endif; ?>
-                        <button type="submit" class="bg-black text-white px-7 py-3 rounded-xl font-extrabold text-sm flex items-center gap-2 btn-action shadow-lg shadow-black/10">
+                        <button type="submit" class="bg-primary text-white px-7 py-3 rounded-xl font-extrabold text-sm flex items-center gap-2 btn-action shadow-lg shadow-black/10">
                             <span class="material-symbols-outlined text-[18px]">filter_list</span>
                             Aplicar Filtros
                         </button>
@@ -201,9 +201,9 @@ $iconeAccao = [
                                     <td class="py-4 px-6">
                                         <div class="flex items-center gap-3">
                                             <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                                                <span class="material-symbols-outlined text-[16px] text-black"><?= $ic ?></span>
+                                                <span class="material-symbols-outlined text-[16px] text-on-surface"><?= $ic ?></span>
                                             </div>
-                                            <span class="text-sm font-extrabold text-black">
+                                            <span class="text-sm font-extrabold text-on-surface">
                                                 <?= ucfirst(str_replace('_', ' ', $l['accao'])) ?>
                                             </span>
                                         </div>
