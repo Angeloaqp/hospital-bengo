@@ -81,8 +81,9 @@ tailwind.config = {
     .fade-in-delay-3 { animation: fadeIn 0.5s ease-out 0.3s forwards; opacity: 0; }
     .fade-in-delay-4 { animation: fadeIn 0.5s ease-out 0.4s forwards; opacity: 0; }
 
-    /* Animação única de abertura de página para todas as páginas */
-    body { animation: fadeIn 0.4s ease-out forwards; }
+    /* Animação única de abertura de página para todas as páginas (sem transform para não quebrar o position:fixed) */
+    @keyframes simpleFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    body { animation: simpleFadeIn 0.4s ease-out forwards; }
 
     /* Retirar sombras (sobras) de todo o design, preservando o header (que usa uma classe arbitrária shadow-[...]) */
     .floating-card, 
