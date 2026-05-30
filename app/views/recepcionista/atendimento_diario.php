@@ -35,9 +35,9 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
     <title><?= $tituloPagina ?> — <?= APP_NOME ?></title>
     <?php include __DIR__ . '/../comum/head_assets.php'; ?>
     <style>
-        .custom-radio:checked + div { border-color: #000; background-color: #fff; }
-        .custom-radio:checked + div .radio-icon { color: #000; }
-        .custom-radio:checked + div .radio-text { color: #000; }
+        .custom-radio:checked + div { border-color: var(--cor-toast-bg); background-color: var(--cor-surface-container-lowest); }
+        .custom-radio:checked + div .radio-icon { color: var(--cor-toast-bg); }
+        .custom-radio:checked + div .radio-text { color: var(--cor-toast-bg); }
     </style>
 </head>
 
@@ -603,7 +603,7 @@ function adicionarContacto(tipo='', valor='', nome='', consent=0) {
                 </div>
                 <div class="md:col-span-2 flex items-center justify-between gap-2 pb-1">
                     <label class="flex items-center gap-1.5 text-[10px] font-bold cursor-pointer">
-                        <input type="checkbox" name="contactos[${i}][consentimento]" value="1" ${checked} class="rounded text-on-surface border-primary/30 focus:ring-[#007aff]"> 
+                        <input type="checkbox" name="contactos[${i}][consentimento]" value="1" ${checked} class="rounded text-on-surface border-primary/30 focus:ring-primary"> 
                         Lembretes
                     </label>
                     <button type="button" onclick="document.getElementById('contacto-${i}').remove()" class="text-error hover:text-error/80 transition-colors">

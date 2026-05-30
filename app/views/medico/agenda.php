@@ -199,13 +199,13 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
     <?php foreach($agenda as $m):
         $iniciais = strtoupper(substr($m['paciente_nome'], 0, 1) . (strpos($m['paciente_nome'], ' ') !== false ? substr(strrchr($m['paciente_nome'], ' '), 1, 1) : substr($m['paciente_nome'], 1, 1)));
         
-        $prioCorBg = $m['prioridade'] == 1 ? 'bg-[#FFEBEE]' : ($m['prioridade'] == 2 ? 'bg-[#FFF8E1]' : 'bg-[#E3F2FD]');
-        $prioCorTexto = $m['prioridade'] == 1 ? 'text-[#D32F2F]' : ($m['prioridade'] == 2 ? 'text-[#FF8F00]' : 'text-[#1976D2]');
+        $prioCorBg = $m['prioridade'] == 1 ? 'bg-[var(--cor-priority-urgente-bg)]' : ($m['prioridade'] == 2 ? 'bg-[var(--cor-priority-idoso-bg)]' : 'bg-[var(--cor-priority-normal-bg)]');
+        $prioCorTexto = $m['prioridade'] == 1 ? 'text-[var(--cor-priority-urgente)]' : ($m['prioridade'] == 2 ? 'text-[var(--cor-priority-idoso)]' : 'text-[var(--cor-priority-normal)]');
         $prioIcon = $m['prioridade'] == 1 ? 'warning' : ($m['prioridade'] == 2 ? 'elderly' : 'person');
         $prioLabel = $m['prioridade'] == 1 ? 'Urgente' : ($m['prioridade'] == 2 ? 'Alta' : 'Normal');
 
         $estDot = 'bg-primary';
-        if($m['estado'] === 'em_espera' || $m['estado'] === 'marcada') $estDot = 'bg-[#FF8F00]';
+        if($m['estado'] === 'em_espera' || $m['estado'] === 'marcada') $estDot = 'bg-[var(--cor-priority-idoso)]';
         if($m['estado'] === 'confirmada') $estDot = 'border border-outline-variant';
         if($m['estado'] === 'em_atendimento') $estDot = 'bg-primary';
         if($m['estado'] === 'urgente' || $m['estado'] === 'falta' || $m['estado'] === 'cancelada') $estDot = 'bg-error';

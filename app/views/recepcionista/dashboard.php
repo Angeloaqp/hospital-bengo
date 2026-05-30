@@ -26,7 +26,7 @@ $ultimaChamada = Senha::emChamadaAgora();
 // Mapa de prioridades
 $prioridades = [
     1 => ['label' => 'Urgente',  'badge' => 'bg-error'],
-    2 => ['label' => 'Idoso',    'badge' => 'bg-[#F59E0B]'],
+    2 => ['label' => 'Idoso',    'badge' => 'bg-[var(--cor-priority-idoso)]'],
     3 => ['label' => 'Grávida',  'badge' => 'bg-purple-600'],
     4 => ['label' => 'Normal',   'badge' => 'bg-blue-600'],
 ];
@@ -157,7 +157,7 @@ include __DIR__ . '/../comum/header.php';
             <p class="text-4xl font-extrabold text-error mt-2"><?= $urgentes ?></p>
         </div>
         <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white fade-in-delay-3">
-            <p class="text-[#10B981] font-black uppercase tracking-widest text-[10px]">Atendidos hoje</p>
+            <p class="text-success font-black uppercase tracking-widest text-[10px]">Atendidos hoje</p>
             <p class="text-4xl font-extrabold text-black mt-2"><?= $atendidos ?></p>
         </div>
         <div class="bg-white px-6 py-5 rounded-[1.5rem] floating-card border border-white fade-in-delay-4">

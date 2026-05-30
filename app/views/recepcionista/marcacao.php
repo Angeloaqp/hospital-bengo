@@ -44,23 +44,23 @@ $subtituloPagina = 'Agendar consulta para data futura';
         select:focus,
         textarea:focus {
             outline: none;
-            border-color: #000;
+            border-color: var(--cor-toast-bg);
             ring: 1px;
-            ring-color: #000;
+            ring-color: var(--cor-toast-bg);
         }
 
         .toggle-checkbox:checked {
             right: 0;
-            border-color: #68D391;
+            border-color: var(--cor-success);
         }
 
         .toggle-checkbox:checked+.toggle-label {
-            background-color: #000;
+            background-color: var(--cor-toast-bg);
         }
 
         .toggle-checkbox:checked+.toggle-label:after {
             transform: translateX(100%);
-            border-color: #fff;
+            border-color: var(--cor-surface-container-lowest);
         }
 
         @keyframes scale-up {
@@ -241,7 +241,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
                                     <div class="relative custom-dropdown" id="priority-dropdown">
                                         <button type="button" class="w-full h-14 px-5 bg-surface-container-low border-none rounded-[24px] font-semibold text-sm cursor-pointer hover:bg-surface-container transition-colors flex items-center justify-between" onclick="toggleDropdown('priority-dropdown')">
                                             <div class="flex items-center gap-3">
-                                                <span class="material-symbols-outlined text-[#3B82F6]" id="priority-icon">check_circle</span>
+                                                <span class="material-symbols-outlined text-[var(--cor-priority-normal)]" id="priority-icon">check_circle</span>
                                                 <span class="text-on-surface" id="priority-text">Normal</span>
                                             </div>
                                             <span class="material-symbols-outlined text-on-surface-variant pointer-events-none transition-transform duration-200">expand_more</span>
@@ -257,20 +257,20 @@ $subtituloPagina = 'Agendar consulta para data futura';
                                         </div>
 
                                         <div class="custom-dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-[24px] p-2 floating-card border border-zinc-100 z-50">
-                                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low rounded-[16px] transition-colors text-left" onclick="selectOption('priority-dropdown', 'priority-text', 'priority-icon', 'Normal', 'check_circle', 'text-[#3B82F6]')">
-                                                <span class="material-symbols-outlined text-[#3B82F6] text-[20px]">check_circle</span>
+                                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low rounded-[16px] transition-colors text-left" onclick="selectOption('priority-dropdown', 'priority-text', 'priority-icon', 'Normal', 'check_circle', 'text-[var(--cor-priority-normal)]')">
+                                                <span class="material-symbols-outlined text-[var(--cor-priority-normal)] text-[20px]">check_circle</span>
                                                 <span class="text-sm font-semibold">Normal</span>
                                             </button>
-                                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low rounded-[16px] transition-colors text-left" onclick="selectOption('priority-dropdown', 'priority-text', 'priority-icon', 'Grávida', 'pregnant_woman', 'text-[#8B5CF6]')">
-                                                <span class="material-symbols-outlined text-[#8B5CF6] text-[20px]">pregnant_woman</span>
+                                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low rounded-[16px] transition-colors text-left" onclick="selectOption('priority-dropdown', 'priority-text', 'priority-icon', 'Grávida', 'pregnant_woman', 'text-[var(--cor-priority-gravida)]')">
+                                                <span class="material-symbols-outlined text-[var(--cor-priority-gravida)] text-[20px]">pregnant_woman</span>
                                                 <span class="text-sm font-semibold">Grávida</span>
                                             </button>
-                                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low rounded-[16px] transition-colors text-left" onclick="selectOption('priority-dropdown', 'priority-text', 'priority-icon', 'Idoso', 'elderly', 'text-[#F59E0B]')">
-                                                <span class="material-symbols-outlined text-[#F59E0B] text-[20px]">elderly</span>
+                                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low rounded-[16px] transition-colors text-left" onclick="selectOption('priority-dropdown', 'priority-text', 'priority-icon', 'Idoso', 'elderly', 'text-[var(--cor-priority-idoso)]')">
+                                                <span class="material-symbols-outlined text-[var(--cor-priority-idoso)] text-[20px]">elderly</span>
                                                 <span class="text-sm font-semibold">Idoso</span>
                                             </button>
-                                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low rounded-[16px] transition-colors text-left" onclick="selectOption('priority-dropdown', 'priority-text', 'priority-icon', 'Urgente', 'notification_important', 'text-[#EF4444]')">
-                                                <span class="material-symbols-outlined text-[#EF4444] text-[20px]">notification_important</span>
+                                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low rounded-[16px] transition-colors text-left" onclick="selectOption('priority-dropdown', 'priority-text', 'priority-icon', 'Urgente', 'notification_important', 'text-[var(--cor-priority-urgente)]')">
+                                                <span class="material-symbols-outlined text-[var(--cor-priority-urgente)] text-[20px]">notification_important</span>
                                                 <span class="text-sm font-semibold">Urgente</span>
                                             </button>
                                         </div>
@@ -327,7 +327,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
                                     </label>
                                     <style>
                                         #auto-mode-toggle:checked~#auto-toggle-bg {
-                                            background-color: #000;
+                                            background-color: var(--cor-toast-bg);
                                         }
 
                                         #auto-mode-toggle:checked~#auto-toggle-dot {

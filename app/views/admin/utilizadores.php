@@ -53,12 +53,12 @@ $avatarColors = [
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #e5e7eb;
+            background: var(--cor-scrollbar-light);
             border-radius: 10px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #d1d5db;
+            background: var(--cor-scrollbar-light-hover);
         }
 
         .tactile-mono {
@@ -69,7 +69,7 @@ $avatarColors = [
 
         /* User Card — Premium SaaS */
         .user-card {
-            background: #ffffff;
+            background: var(--cor-surface-container-lowest);
             border-radius: 2rem;
             border: 1px solid rgba(0, 0, 0, 0.03);
             transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -87,18 +87,18 @@ $avatarColors = [
         }
 
         .user-card:hover .btn-primary-action {
-            background: #1a1a1a;
+            background: var(--cor-on-background);
             transform: translateY(-2px);
         }
 
         .user-card:hover .edit-icon-btn {
-            background: #000;
-            color: #fff;
+            background: var(--cor-toast-bg);
+            color: var(--cor-surface-container-lowest);
             transform: rotate(5deg);
         }
 
         .user-card:hover .meta-icon {
-            color: #000;
+            color: var(--cor-toast-bg);
             transform: scale(1.1);
         }
 
@@ -220,12 +220,12 @@ $avatarColors = [
         }
 
         .info-card:hover {
-            background: #ffffff;
+            background: var(--cor-surface-container-lowest);
         }
 
         .info-card:hover .info-icon {
-            background: #000;
-            color: #fff;
+            background: var(--cor-toast-bg);
+            color: var(--cor-surface-container-lowest);
         }
     </style>
 </head>

@@ -38,8 +38,8 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
 
         @keyframes bentoIn {
             0% { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(5px); }
@@ -58,7 +58,7 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
         .btn-black:active { transform: scale(0.98); box-shadow: none; }
 
         .form-row { transition: all 0.2s ease; border-bottom: 1px solid rgba(0,0,0,0.03); }
-        .form-row:hover { background-color: #f8fafc; }
+        .form-row:hover { background-color: var(--cor-input-hover); }
     </style>
 </head>
 
@@ -279,19 +279,19 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
                         datasets: [{
                             label: 'Volume Diário',
                             data: DADOS_CHART.data,
-                            backgroundColor: '#111827', // Preto profundo tátil
+                            backgroundColor: 'var(--cor-chart-dark)', // Preto profundo tátil
                             borderRadius: 6,
                             borderSkipped: false,
-                            hoverBackgroundColor: '#374151'
+                            hoverBackgroundColor: 'var(--cor-outline)'
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#000', padding: 12, titleFont: { size: 14, family: 'Manrope' } } },
+                        plugins: { legend: { display: false }, tooltip: { backgroundColor: 'var(--cor-chart-tooltip)', padding: 12, titleFont: { size: 14, family: 'Manrope' } } },
                         scales: {
-                            y: { beginAtZero: true, grid: { color: '#f3f4f6', drawBorder: false }, border: { display: false }, ticks: { stepSize: 1, font: { weight: 'bold', color: '#9ca3af' } } },
-                            x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 'bold', color: '#6b7280' } } }
+                            y: { beginAtZero: true, grid: { color: 'var(--cor-surface-container-low)', drawBorder: false }, border: { display: false }, ticks: { stepSize: 1, font: { weight: 'bold', color: 'var(--cor-scrollbar)' } } },
+                            x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 'bold', color: 'var(--cor-scrollbar-hover)' } } }
                         },
                         animation: {
                             y: { duration: 1500, easing: 'easeOutQuart' }

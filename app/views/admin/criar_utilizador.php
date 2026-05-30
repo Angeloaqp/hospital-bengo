@@ -29,8 +29,8 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
 
         /* ─── Entrance Animations ─── */
         @keyframes glideIn {
@@ -53,7 +53,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
             top: 50%;
             transform: translateY(-50%);
             font-size: 22px;
-            color: #a1a1aa;
+            color: var(--cor-input-placeholder);
             pointer-events: none;
             transition: color 0.3s ease;
             z-index: 2;
@@ -61,13 +61,13 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
         .field-wrap .fi {
             width: 100%;
             height: 100%;
-            background: #f4f5f7;
+            background: var(--cor-input-bg);
             border: 2px solid transparent;
             border-radius: 0.75rem;
             padding: 1.6rem 1.25rem 0.5rem 3.5rem;
             font-size: 0.95rem;
             font-weight: 600;
-            color: #111;
+            color: var(--cor-on-surface);
             font-family: 'Manrope', sans-serif;
             outline: none;
             transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -77,11 +77,11 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
         }
         .field-wrap .fi::placeholder { color: transparent; }
         .field-wrap .fi:focus {
-            background: #fff;
-            border-color: #111;
+            background: var(--cor-surface-container-lowest);
+            border-color: var(--cor-on-surface);
             box-shadow: 0 6px 24px -4px rgba(0,0,0,0.06);
         }
-        .field-wrap .fi:focus ~ .field-icon { color: #111; }
+        .field-wrap .fi:focus ~ .field-icon { color: var(--cor-on-surface); }
 
         /* Floating label */
         .field-wrap .fl {
@@ -91,7 +91,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
             transform: translateY(-50%);
             font-size: 0.9rem;
             font-weight: 600;
-            color: #71717a;
+            color: var(--cor-input-label);
             pointer-events: none;
             transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
             transform-origin: left center;
@@ -103,7 +103,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
             top: 0.85rem;
             transform: translateY(-50%) scale(0.75);
             font-weight: 800;
-            color: #111;
+            color: var(--cor-on-surface);
             letter-spacing: 0.04em;
         }
 
@@ -114,11 +114,11 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
             top: 50%;
             transform: translateY(-50%);
             font-size: 22px;
-            color: #a1a1aa;
+            color: var(--cor-input-placeholder);
             pointer-events: none;
             transition: all 0.3s ease;
         }
-        .field-wrap .fi:focus ~ .select-arrow { color: #111; transform: translateY(-50%) rotate(180deg); }
+        .field-wrap .fi:focus ~ .select-arrow { color: var(--cor-on-surface); transform: translateY(-50%) rotate(180deg); }
 
         /* Hint text below field */
         .field-hint {
@@ -126,7 +126,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
             margin-left: 1rem;
             font-size: 0.7rem;
             font-weight: 700;
-            color: #a1a1aa;
+            color: var(--cor-input-placeholder);
             letter-spacing: 0.02em;
         }
 
@@ -136,8 +136,8 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: #f4f5f7;
-            border: 2px dashed #d4d4d8;
+            background: var(--cor-input-bg);
+            border: 2px dashed var(--cor-outline-variant);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -147,8 +147,8 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
             flex-shrink: 0;
         }
         .avatar-upload:hover {
-            border-color: #111;
-            background: #f8fafc;
+            border-color: var(--cor-on-surface);
+            background: var(--cor-input-hover);
         }
         .avatar-preview {
             width: 100%;
@@ -190,7 +190,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
         .section-divider span {
             font-size: 0.7rem; font-weight: 800;
             text-transform: uppercase; letter-spacing: 0.12em;
-            color: #a1a1aa; white-space: nowrap;
+            color: var(--cor-input-placeholder); white-space: nowrap;
         }
     </style>
 </head>
@@ -281,7 +281,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                             <!-- Foto Upload -->
                             <div class="flex items-center gap-5 mb-8">
                                 <label for="foto" class="avatar-upload group" id="avatar-container">
-                                    <span class="material-symbols-outlined text-[#a1a1aa] text-2xl avatar-icon group-hover:text-black transition-colors">add_a_photo</span>
+                                    <span class="material-symbols-outlined text-[var(--cor-input-placeholder)] text-2xl avatar-icon group-hover:text-black transition-colors">add_a_photo</span>
                                     <img id="avatar-preview-img" src="" alt="Foto" class="avatar-preview">
                                 </label>
                                 <input type="file" id="foto" name="foto" accept="image/*" class="hidden" onchange="previewAvatar(this)">

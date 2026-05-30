@@ -52,8 +52,8 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
 
         @keyframes bentoIn {
             0% { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(5px); }
@@ -71,7 +71,7 @@ $_inicial = strtoupper(substr($dados['nome'] ?? 'U', 0, 1));
         .btn-black:active { transform: scale(0.98); box-shadow: none; }
 
         .feed-row { transition: all 0.3s ease; }
-        .feed-row:hover { background-color: #fafafa; border-radius: 1rem; padding-left: 0.5rem; padding-right: 0.5rem; margin-left: -0.5rem; margin-right: -0.5rem; }
+        .feed-row:hover { background-color: var(--cor-surface-container-lowest); border-radius: 1rem; padding-left: 0.5rem; padding-right: 0.5rem; margin-left: -0.5rem; margin-right: -0.5rem; }
     </style>
 </head>
 

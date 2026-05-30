@@ -40,10 +40,10 @@ $diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
 // Prioridades
 $prioridades = [
-    1 => ['label' => 'Urgente', 'color' => '#DC2626', 'bg' => 'bg-red-500', 'light' => 'bg-red-50 text-red-700'],
-    2 => ['label' => 'Idoso', 'color' => '#F59E0B', 'bg' => 'bg-amber-500', 'light' => 'bg-amber-50 text-amber-700'],
-    3 => ['label' => 'Grávida', 'color' => '#7C3AED', 'bg' => 'bg-purple-500', 'light' => 'bg-purple-50 text-purple-700'],
-    4 => ['label' => 'Normal', 'color' => '#2563EB', 'bg' => 'bg-blue-500', 'light' => 'bg-blue-50 text-blue-700'],
+    1 => ['label' => 'Urgente', 'color' => 'var(--cor-priority-urgente)', 'bg' => 'bg-red-500', 'light' => 'bg-red-50 text-red-700'],
+    2 => ['label' => 'Idoso', 'color' => 'var(--cor-priority-idoso)', 'bg' => 'bg-amber-500', 'light' => 'bg-amber-50 text-amber-700'],
+    3 => ['label' => 'Grávida', 'color' => 'var(--cor-priority-gravida)', 'bg' => 'bg-purple-500', 'light' => 'bg-purple-50 text-purple-700'],
+    4 => ['label' => 'Normal', 'color' => 'var(--cor-priority-normal)', 'bg' => 'bg-blue-500', 'light' => 'bg-blue-50 text-blue-700'],
 ];
 
 $totalFila = array_sum($distribuicao);
@@ -58,8 +58,8 @@ $totalFila = array_sum($distribuicao);
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
         .tactile-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-weight: 800; letter-spacing: -0.05em; }
         @keyframes growUp { from { transform: scaleY(0); } to { transform: scaleY(1); } }
         .bar-grow { animation: growUp 0.6s ease-out forwards; transform-origin: bottom; }

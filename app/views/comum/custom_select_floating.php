@@ -55,12 +55,12 @@ if ($sel_onchange) {
 <div class="field-wrap cs-dropdown relative <?= $sel_class ?>" id="<?= $sel_id ?>" data-placeholder="">
     <!-- Trigger Button mimicking .fi -->
     <button type="button"
-            class="fi w-full h-full text-left cursor-pointer flex items-center bg-[#f4f5f7] hover:bg-[#f8fafc] focus:bg-white focus:border-[#111] focus:shadow-[0_6px_24px_-4px_rgba(0,0,0,0.06)] border-2 border-transparent transition-all <?= $hasValue ? 'has-value' : '' ?>"
+            class="fi w-full h-full text-left cursor-pointer flex items-center bg-surface-container-low hover:bg-[var(--cor-input-hover)] focus:bg-white focus:border-primary focus:shadow-[0_6px_24px_-4px_rgba(0,0,0,0.06)] border-2 border-transparent transition-all <?= $hasValue ? 'has-value' : '' ?>"
             onclick="CustomSelect.toggle('<?= $sel_id ?>', event)">
         <span class="cs-text truncate block w-full outline-none"><?= htmlspecialchars($selectedLabel) ?></span>
     </button>
     
-    <span class="material-symbols-outlined field-icon cs-field-icon transition-colors <?= $hasValue ? 'text-[#111]' : '' ?>"><?= $sel_icon ?></span>
+    <span class="material-symbols-outlined field-icon cs-field-icon transition-colors <?= $hasValue ? 'text-on-surface' : '' ?>"><?= $sel_icon ?></span>
     <label for="<?= $sel_id ?>-native" class="fl pointer-events-none"><?= htmlspecialchars($sel_label) ?></label>
     <span class="material-symbols-outlined select-arrow cs-chevron transition-transform duration-200">expand_more</span>
 
@@ -97,7 +97,7 @@ if ($sel_onchange) {
             <button type="button"
                     class="cs-option w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-low transition-colors text-left <?= $isActive ? 'active bg-surface-container-low' : '' ?>"
                     data-value="<?= htmlspecialchars($val) ?>"
-                    onclick="CustomSelect.select('<?= $sel_id ?>', '<?= htmlspecialchars($val) ?>', '<?= htmlspecialchars($label, ENT_QUOTES) ?>', '', ''); document.getElementById('<?= $sel_id ?>').querySelector('button').classList.add('has-value'); document.getElementById('<?= $sel_id ?>').querySelector('.cs-field-icon').classList.add('text-[#111]');">
+                    onclick="CustomSelect.select('<?= $sel_id ?>', '<?= htmlspecialchars($val) ?>', '<?= htmlspecialchars($label, ENT_QUOTES) ?>', '', ''); document.getElementById('<?= $sel_id ?>').querySelector('button').classList.add('has-value'); document.getElementById('<?= $sel_id ?>').querySelector('.cs-field-icon').classList.add('text-on-surface');">
                 <?php if ($icon): ?>
                     <span class="material-symbols-outlined <?= $color ?> text-[20px]"><?= $icon ?></span>
                 <?php endif; ?>
@@ -116,10 +116,10 @@ if ($sel_onchange) {
                 const icon = wrapper.querySelector('.cs-field-icon');
                 if (selectEl.value && selectEl.value.trim() !== '' && selectEl.value !== '0') {
                     if (btn) btn.classList.add('has-value');
-                    if (icon) icon.classList.add('text-[#111]');
+                    if (icon) icon.classList.add('text-on-surface');
                 } else {
                     if (btn) btn.classList.remove('has-value');
-                    if (icon) icon.classList.remove('text-[#111]');
+                    if (icon) icon.classList.remove('text-on-surface');
                 }
             }
         }

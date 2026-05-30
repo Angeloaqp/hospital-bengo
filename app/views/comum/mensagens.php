@@ -75,8 +75,8 @@ function tempoRelativo($data)
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
 
         @keyframes glideIn {
             0% { opacity: 0; transform: translateY(20px); filter: blur(4px); }
@@ -89,20 +89,20 @@ function tempoRelativo($data)
         /* Floating Label Field */
         .field-wrap { position: relative; width: 100%; margin-bottom: 24px; }
         .field-wrap .fi {
-            width: 100%; background: #f4f5f7; border: 2px solid transparent; border-radius: 1.25rem;
-            padding: 1.6rem 1.25rem 0.5rem 1.25rem; font-size: 0.95rem; font-weight: 600; color: #111;
+            width: 100%; background: var(--cor-input-bg); border: 2px solid transparent; border-radius: 1.25rem;
+            padding: 1.6rem 1.25rem 0.5rem 1.25rem; font-size: 0.95rem; font-weight: 600; color: var(--cor-on-surface);
             font-family: 'Manrope', sans-serif; outline: none; transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); line-height: 1.2;
         }
         .field-wrap textarea.fi { min-height: 180px; resize: vertical; padding-top: 1.6rem; }
         .field-wrap .fi::placeholder { color: transparent; }
-        .field-wrap .fi:focus { background: #fff; border-color: #111; box-shadow: 0 6px 24px -4px rgba(0,0,0,0.06); }
+        .field-wrap .fi:focus { background: var(--cor-surface-container-lowest); border-color: var(--cor-on-surface); box-shadow: 0 6px 24px -4px rgba(0,0,0,0.06); }
         
         .field-wrap .fl {
-            position: absolute; left: 1.25rem; top: 1.3rem; font-size: 0.9rem; font-weight: 600; color: #71717a;
+            position: absolute; left: 1.25rem; top: 1.3rem; font-size: 0.9rem; font-weight: 600; color: var(--cor-input-label);
             pointer-events: none; transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); transform-origin: left top; z-index: 2;
         }
         .field-wrap .fi:focus ~ .fl, .field-wrap .fi:not(:placeholder-shown) ~ .fl {
-            transform: translateY(-0.75rem) scale(0.75); font-weight: 800; color: #111;
+            transform: translateY(-0.75rem) scale(0.75); font-weight: 800; color: var(--cor-on-surface);
         }
 
         /* Buttons */
@@ -112,18 +112,18 @@ function tempoRelativo($data)
 
         /* Message Rows */
         .msg-row { border-left: 3px solid transparent; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .msg-row:hover { background: #fafafa; border-left-color: #e5e7eb; padding-left: calc(1rem + 2px); }
-        .msg-row.nao-lida { border-left-color: #111; background: #f8fafc; }
-        .msg-row.nao-lida:hover { border-left-color: #111; background: #f1f5f9; padding-left: calc(1rem + 2px); }
+        .msg-row:hover { background: var(--cor-surface-container-lowest); border-left-color: var(--cor-scrollbar-light); padding-left: calc(1rem + 2px); }
+        .msg-row.nao-lida { border-left-color: var(--cor-on-surface); background: var(--cor-input-hover); }
+        .msg-row.nao-lida:hover { border-left-color: var(--cor-on-surface); background: var(--cor-surface-container-low); padding-left: calc(1rem + 2px); }
         
         /* Custom Checkboxes */
         .custom-checkbox input[type="checkbox"] {
             appearance: none; width: 1.25rem; height: 1.25rem; min-width: 1.25rem;
-            border: 2px solid #d4d4d8; border-radius: 0.375rem;
+            border: 2px solid var(--cor-outline-variant); border-radius: 0.375rem;
             cursor: pointer; position: relative; transition: all 0.2s;
         }
         .custom-checkbox input[type="checkbox"]:checked {
-            background-color: #111; border-color: #111;
+            background-color: var(--cor-on-surface); border-color: var(--cor-on-surface);
         }
         .custom-checkbox input[type="checkbox"]:checked::after {
             content: '\e5ca'; /* Material Symbols check */

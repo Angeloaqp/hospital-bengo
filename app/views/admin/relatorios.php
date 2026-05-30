@@ -67,8 +67,8 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
 
         @keyframes bentoIn {
             0% { opacity: 0; transform: translateY(24px) scale(0.98); filter: blur(4px); }
@@ -85,14 +85,14 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
         /* Floating Label inputs para os Date Pickers */
         .field-wrap { position: relative; }
         .field-wrap input[type="date"] {
-            width: 100%; padding: 14px 16px 6px 16px; border: 2px solid #e5e7eb; border-radius: 1rem;
-            font-size: 14px; font-weight: 600; color: #111; background: #fff;
+            width: 100%; padding: 14px 16px 6px 16px; border: 2px solid var(--cor-scrollbar-light); border-radius: 1rem;
+            font-size: 14px; font-weight: 600; color: var(--cor-on-surface); background: var(--cor-surface-container-lowest);
             transition: border-color 0.3s, box-shadow 0.3s; outline: none; font-family: inherit;
         }
-        .field-wrap input[type="date"]:focus { border-color: #000; box-shadow: 0 0 0 4px rgba(0,0,0,0.06); }
+        .field-wrap input[type="date"]:focus { border-color: var(--cor-toast-bg); box-shadow: 0 0 0 4px rgba(0,0,0,0.06); }
         .field-wrap label {
             position: absolute; top: 6px; left: 16px;
-            font-size: 10px; font-weight: 800; color: #9ca3af;
+            font-size: 10px; font-weight: 800; color: var(--cor-scrollbar);
             text-transform: uppercase; letter-spacing: 0.1em; pointer-events: none;
         }
 
@@ -244,11 +244,11 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                     <div class="grid grid-cols-2 gap-3 mt-4">
                         <?php
                         $faixas = [
-                            ['label' => '<5 anos', 'key' => 'criancas', 'cor' => '#F59E0B'],
-                            ['label' => '5-17', 'key' => 'jovens', 'cor' => '#8B5CF6'],
-                            ['label' => '18-35', 'key' => 'adultos_jovens', 'cor' => '#3B82F6'],
-                            ['label' => '36-59', 'key' => 'adultos', 'cor' => '#10B981'],
-                            ['label' => '60+', 'key' => 'idosos', 'cor' => '#EF4444'],
+                            ['label' => '<5 anos', 'key' => 'criancas', 'cor' => 'var(--cor-priority-idoso)'],
+                            ['label' => '5-17', 'key' => 'jovens', 'cor' => 'var(--cor-priority-gravida)'],
+                            ['label' => '18-35', 'key' => 'adultos_jovens', 'cor' => 'var(--cor-priority-normal)'],
+                            ['label' => '36-59', 'key' => 'adultos', 'cor' => 'var(--cor-success)'],
+                            ['label' => '60+', 'key' => 'idosos', 'cor' => 'var(--cor-priority-urgente)'],
                         ];
                         foreach ($faixas as $f):
                         ?>
@@ -391,7 +391,7 @@ $periodoLabel = dataFormatoPT($dataInicio, 'dia_mes') . ' — ' . dataFormatoPT(
                 (int)($demografiaIdade['adultos'] ?? 0),
                 (int)($demografiaIdade['idosos'] ?? 0),
             ],
-            'cores' => ['#F59E0B', '#8B5CF6', '#3B82F6', '#10B981', '#EF4444']
+            'cores' => ['var(--cor-priority-idoso)', 'var(--cor-priority-gravida)', 'var(--cor-priority-normal)', 'var(--cor-success)', 'var(--cor-priority-urgente)']
         ]) ?>;
     </script>
 

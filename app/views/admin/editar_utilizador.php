@@ -40,8 +40,8 @@ unset($_SESSION['erro']);
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.5s ease-out forwards; }
         .fade-in-delay-1 { animation: fadeIn 0.5s ease-out 0.1s forwards; opacity: 0; }
@@ -49,23 +49,23 @@ unset($_SESSION['erro']);
         .tactile-input {
             width: 100%;
             padding: 14px 16px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid var(--cor-scrollbar-light);
             border-radius: 0.75rem;
             font-size: 14px;
-            color: #111827;
-            background: #fff;
+            color: var(--cor-chart-dark);
+            background: var(--cor-surface-container-lowest);
             transition: all 0.2s;
         }
         .tactile-input:focus {
             outline: none;
-            border-color: #000;
+            border-color: var(--cor-toast-bg);
             box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
         }
         .tactile-label {
             display: block;
             font-size: 12px;
             font-weight: 800;
-            color: #4b5563;
+            color: var(--cor-inactive-text);
             margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.05em;

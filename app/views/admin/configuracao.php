@@ -37,11 +37,11 @@ $tabs = [
     <?php include __DIR__ . '/../comum/head_assets.php'; ?>
     <style>
         .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
-        .bento-card { background: #ffffff; border-radius: 2rem; padding: 1.5rem; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid rgba(226, 226, 226, 0.5); box-shadow: none !important; }
+        .bento-card { background: var(--cor-surface-container-lowest); border-radius: 2rem; padding: 1.5rem; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid rgba(226, 226, 226, 0.5); box-shadow: none !important; }
         .bento-card:hover { transform: translateY(-4px) scale(1.02); border-color: rgba(196, 199, 201, 0.8); box-shadow: none !important; }
         .bento-card:hover .icon-shift { transform: translateY(-2px); }
-        .input-recessed { background-color: #f3f3f3; border: 1px solid transparent; transition: all 0.2s; }
-        .input-recessed:focus { background-color: #ffffff; border-color: transparent; outline: none; }
+        .input-recessed { background-color: var(--cor-surface-container-low); border: 1px solid transparent; transition: all 0.2s; }
+        .input-recessed:focus { background-color: var(--cor-surface-container-lowest); border-color: transparent; outline: none; }
         
         @keyframes fade-slide-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         .stagger-1 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.1s; }
@@ -113,12 +113,12 @@ $tabs = [
                             </p>
                             <div class="flex items-center justify-between pt-5 border-t border-surface-container-highest/50">
                                 <?php if($c['activo'] == 1): ?>
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#ecfdf5] text-[#059669]">
-                                        <span class="w-2 h-2 rounded-full bg-[#10b981] status-pulse"></span> Operacional
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[var(--cor-success-light)] text-[var(--cor-success-dark)]">
+                                        <span class="w-2 h-2 rounded-full bg-[var(--cor-success)] status-pulse"></span> Operacional
                                     </span>
                                 <?php else: ?>
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-[#4b5563]">
-                                        <span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Inactivo
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-[var(--cor-inactive-text)]">
+                                        <span class="w-2 h-2 rounded-full bg-[var(--cor-inactive-dot)]"></span> Inactivo
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -200,9 +200,9 @@ $tabs = [
                             </p>
                             <div class="flex items-center justify-between pt-5 mt-4 border-t border-surface-container-highest/50">
                                 <?php if($e['activo'] == 1): ?>
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#ecfdf5] text-[#059669]"><span class="w-2 h-2 rounded-full bg-[#10b981] status-pulse"></span> Activa</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[var(--cor-success-light)] text-[var(--cor-success-dark)]"><span class="w-2 h-2 rounded-full bg-[var(--cor-success)] status-pulse"></span> Activa</span>
                                 <?php else: ?>
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-[#4b5563]"><span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Inactiva</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-[var(--cor-inactive-text)]"><span class="w-2 h-2 rounded-full bg-[var(--cor-inactive-dot)]"></span> Inactiva</span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -491,9 +491,9 @@ $tabs = [
             <?php else: ?>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <?php foreach($bloqueios as $index => $b): ?>
-                    <div class="bento-card group relative bg-[#fff1f2] border-[#ffe4e6] stagger-<?= ($index % 3) + 1 ?>">
+                    <div class="bento-card group relative bg-[var(--cor-danger-light)] border-[var(--cor-danger-border)] stagger-<?= ($index % 3) + 1 ?>">
                         <div class="flex justify-between items-start mb-4">
-                            <div class="bg-[#fecdd3] p-2 rounded-xl text-[#be123c]">
+                            <div class="bg-[var(--cor-danger-icon-bg)] p-2 rounded-xl text-[var(--cor-danger)]">
                                 <span class="material-symbols-outlined">block</span>
                             </div>
                             <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php">
@@ -504,11 +504,11 @@ $tabs = [
                             </form>
                         </div>
                         <div>
-                            <h4 class="font-extrabold text-lg text-[#be123c] mb-1"><?= htmlspecialchars($b['motivo']) ?></h4>
-                            <p class="text-xs font-bold text-[#e11d48] uppercase tracking-wider mb-4">
+                            <h4 class="font-extrabold text-lg text-[var(--cor-danger)] mb-1"><?= htmlspecialchars($b['motivo']) ?></h4>
+                            <p class="text-xs font-bold text-[var(--cor-danger-subtitle)] uppercase tracking-wider mb-4">
                                 <?= date('d/m/Y', strtotime($b['data_bloqueio'])) ?> — <?= $b['turno']==='manha'?'Manhã':'Tarde' ?>
                             </p>
-                            <div class="pt-4 border-t border-[#fecdd3]/50 text-sm font-semibold text-[#881337]">
+                            <div class="pt-4 border-t border-[var(--cor-danger-icon-bg)]/50 text-sm font-semibold text-[var(--cor-danger-body)]">
                                 Alvo: <?= htmlspecialchars($b['medico_nome'] ?? 'Bloqueio Geral (Todo o Hospital)') ?>
                             </div>
                         </div>
@@ -560,7 +560,7 @@ $tabs = [
                         <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase pl-1">Motivo</label>
                         <input name="motivo" required type="text" class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-error/20" placeholder="Feriado, Reunião, Obras...">
                     </div>
-                    <button type="button" class="form-submit-btn w-full bg-error text-white font-extrabold py-4 rounded-xl mt-6 hover:bg-[#93000a] transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
+                    <button type="button" class="form-submit-btn w-full bg-error text-white font-extrabold py-4 rounded-xl mt-6 hover:bg-[var(--cor-danger-hover)] transition-all duration-300 shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 relative overflow-hidden group">
                         <span class="material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:rotate-90 btn-icon">block</span>
                         <span class="btn-text">Criar Bloqueio</span>
                         <div class="loader absolute hidden w-[20px] h-[20px] rounded-full border-2 border-white/30 border-t-white animate-spin btn-loader"></div>
@@ -734,7 +734,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnLoader.classList.add('hidden');
                 btnIcon.classList.remove('hidden', 'group-hover:rotate-90', 'group-hover:rotate-180');
                 btnIcon.textContent = 'check';
-                submitBtn.classList.add('!bg-[#10b981]');
+                submitBtn.classList.add('!bg-[var(--cor-success)]');
                 btnText.classList.remove('invisible');
                 btnText.textContent = 'Sucesso!';
 
@@ -747,7 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         btnIcon.classList.add('group-hover:rotate-90');
                     }
-                    submitBtn.classList.remove('!bg-[#10b981]', 'cursor-not-allowed', 'opacity-90');
+                    submitBtn.classList.remove('!bg-[var(--cor-success)]', 'cursor-not-allowed', 'opacity-90');
                     btnText.textContent = originalText;
                 }, 2000);
             }, 600);

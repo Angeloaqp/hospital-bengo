@@ -57,8 +57,8 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
         
         /* Entrance Animations */
         @keyframes glideIn {
@@ -81,7 +81,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
         
         /* Activity Row */
         .activity-row { transition: all 0.3s ease; }
-        .activity-row:hover { background-color: #f8fafc; transform: scale(1.005); box-shadow: 0 4px 15px -5px rgba(0,0,0,0.03); }
+        .activity-row:hover { background-color: var(--cor-input-hover); transform: scale(1.005); box-shadow: 0 4px 15px -5px rgba(0,0,0,0.03); }
         
         /* Pulse Animation */
         @keyframes subtlePulse {
@@ -234,9 +234,9 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
                             $pct = $maxPrio > 0 ? round(($p['total'] / $maxPrio) * 100) : 0;
                             // Map colors correctly for premium feel
                             $rawColor = strtolower(trim($p['cor']));
-                            $cleanColor = $rawColor === '#ff0000' || strpos($rawColor, 'red') !== false ? 'bg-red-500' :
-                                         ($rawColor === '#ffcc00' || strpos($rawColor, 'yellow') !== false ? 'bg-yellow-500' : 
-                                         ($rawColor === '#00cc00' || strpos($rawColor, 'green') !== false ? 'bg-green-500' : 'bg-primary'));
+                            $cleanColor = $rawColor === 'var(--cor-priority-urgente)' || strpos($rawColor, 'red') !== false ? 'bg-red-500' :
+                                         ($rawColor === 'var(--cor-priority-idoso)' || strpos($rawColor, 'yellow') !== false ? 'bg-yellow-500' : 
+                                         ($rawColor === 'var(--cor-success)' || strpos($rawColor, 'green') !== false ? 'bg-green-500' : 'bg-primary'));
                         ?>
                         <div class="flex flex-col gap-2">
                             <div class="flex justify-between text-xs font-bold">

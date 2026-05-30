@@ -39,8 +39,8 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
 
         @keyframes glideIn {
             0% { opacity: 0; transform: translateY(20px); filter: blur(4px); }
@@ -53,8 +53,8 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
         /* Floating Label Field */
         .field-wrap { position: relative; width: 100%; margin-bottom: 24px; }
         .field-wrap .fi {
-            width: 100%; background: #f4f5f7; border: 2px solid transparent; border-radius: 1.25rem;
-            padding: 1.6rem 1.25rem 0.5rem 3.5rem; font-size: 0.95rem; font-weight: 600; color: #111;
+            width: 100%; background: var(--cor-input-bg); border: 2px solid transparent; border-radius: 1.25rem;
+            padding: 1.6rem 1.25rem 0.5rem 3.5rem; font-size: 0.95rem; font-weight: 600; color: var(--cor-on-surface);
             font-family: 'Manrope', sans-serif; outline: none; transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); line-height: 1.2;
             height: 3.8rem;
         }
@@ -62,35 +62,35 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
         .field-wrap.no-icon .fi { padding-left: 1.25rem; }
         
         .field-wrap .fi::placeholder { color: transparent; }
-        .field-wrap .fi:focus { background: #fff; border-color: #111; box-shadow: 0 6px 24px -4px rgba(0,0,0,0.06); }
-        .field-wrap .fi:disabled, .field-wrap .fi[readonly] { background: #f0f1f3; color: #9ca3af; cursor: not-allowed; }
+        .field-wrap .fi:focus { background: var(--cor-surface-container-lowest); border-color: var(--cor-on-surface); box-shadow: 0 6px 24px -4px rgba(0,0,0,0.06); }
+        .field-wrap .fi:disabled, .field-wrap .fi[readonly] { background: var(--cor-surface-container-low); color: var(--cor-scrollbar); cursor: not-allowed; }
         
         .field-wrap .fl {
-            position: absolute; left: 3.5rem; top: 1.3rem; font-size: 0.9rem; font-weight: 600; color: #71717a;
+            position: absolute; left: 3.5rem; top: 1.3rem; font-size: 0.9rem; font-weight: 600; color: var(--cor-input-label);
             pointer-events: none; transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); transform-origin: left top; z-index: 2;
         }
         .field-wrap.no-icon .fl { left: 1.25rem; }
         
         .field-wrap .fi:focus ~ .fl, .field-wrap .fi:not(:placeholder-shown) ~ .fl {
-            transform: translateY(-0.85rem) scale(0.75); font-weight: 800; color: #111;
+            transform: translateY(-0.85rem) scale(0.75); font-weight: 800; color: var(--cor-on-surface);
         }
-        .field-wrap .fi:disabled ~ .fl, .field-wrap .fi[readonly] ~ .fl { color: #9ca3af; }
+        .field-wrap .fi:disabled ~ .fl, .field-wrap .fi[readonly] ~ .fl { color: var(--cor-scrollbar); }
 
         /* Material Icons prefix */
         .field-wrap .prefix-icon {
             position: absolute; left: 1.15rem; top: 50%; transform: translateY(-50%);
-            font-size: 22px; color: #a1a1aa; flex-shrink: 0; pointer-events: none; transition: color 0.3s; z-index: 3;
+            font-size: 22px; color: var(--cor-input-placeholder); flex-shrink: 0; pointer-events: none; transition: color 0.3s; z-index: 3;
         }
-        .field-wrap .fi:focus ~ .prefix-icon { color: #111; }
+        .field-wrap .fi:focus ~ .prefix-icon { color: var(--cor-on-surface); }
 
         /* Setup Avatar Upload */
         .avatar-edit-container { position: relative; width: 180px; height: 180px; margin: 0 auto; }
-        .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
-        .avatar-iniciais { width: 100%; height: 100%; border-radius: 50%; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 64px; font-weight: 900; border: 4px solid #fff; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid var(--cor-surface-container-lowest); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        .avatar-iniciais { width: 100%; height: 100%; border-radius: 50%; background: var(--cor-on-surface); color: var(--cor-surface-container-lowest); display: flex; align-items: center; justify-content: center; font-size: 64px; font-weight: 900; border: 4px solid var(--cor-surface-container-lowest); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
         .btn-upload {
-            position: absolute; bottom: 5px; right: 5px; background: #fff; color: #111; width: 44px; height: 44px;
+            position: absolute; bottom: 5px; right: 5px; background: var(--cor-surface-container-lowest); color: var(--cor-on-surface); width: 44px; height: 44px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 2px solid #fff; transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 2px solid var(--cor-surface-container-lowest); transition: all 0.3s ease;
         }
         .btn-upload:hover { transform: scale(1.1); }
         .btn-upload input[type="file"] { display: none; }

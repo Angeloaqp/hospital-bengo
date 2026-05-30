@@ -54,8 +54,8 @@ $iconeAccao = [
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
 
         @keyframes glideIn {
             0% { opacity: 0; transform: translateY(20px); filter: blur(4px); }
@@ -66,15 +66,15 @@ $iconeAccao = [
         .stagger-2 { animation-delay: 0.1s; }
         
         .table-row { transition: all 0.2s ease; border-bottom: 1px solid rgba(0,0,0,0.03); }
-        .table-row:hover { background-color: #f8fafc; }
+        .table-row:hover { background-color: var(--cor-input-hover); }
 
         /* Modern Select & Input for filters */
         .filter-input {
-            background: #f4f5f7; border: 2px solid transparent; border-radius: 1rem;
-            padding: 0.8rem 1rem; font-size: 0.85rem; font-weight: 600; color: #111;
+            background: var(--cor-input-bg); border: 2px solid transparent; border-radius: 1rem;
+            padding: 0.8rem 1rem; font-size: 0.85rem; font-weight: 600; color: var(--cor-on-surface);
             outline: none; transition: all 0.3s ease;
         }
-        .filter-input:focus { background: #fff; border-color: #111; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .filter-input:focus { background: var(--cor-surface-container-lowest); border-color: var(--cor-on-surface); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         
         /* Buttons */
         .btn-action { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
