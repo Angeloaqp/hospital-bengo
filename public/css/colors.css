@@ -5,89 +5,134 @@
 ========================================================= */
 
 :root {
-    /* ── Primárias ── */
-    --cor-primary: #007aff;
-    --cor-primary-container: #3c3b3b;
-    --cor-on-primary: #e5e2e1;
+    /* =========================================
+       1. CORES DA MARCA (O AZUL DE DESTAQUE)
+       ========================================= */
+    --cor-primary: #0A58CA;          /* Azul Vibrante Principal */
+    --cor-primary-light: #E6F0FF;    /* Azul Translúcido (para fundos de ícones/badges) */
+    --cor-primary-dark: #074299;     /* Azul Escuro (para estado Hover do botão) */
+    --cor-primary-container: #E6F0FF; 
+    --cor-on-primary: #FFFFFF;
 
-    /* ── Superfícies / Fundo ── */
-    --cor-background: #d4d4d4;
-    --cor-surface: #d4d4d4;
-    --cor-surface-bright: #d4d4d4;
-    --cor-surface-dim: #dadada;
-    --cor-surface-container: #eeeeee;
-    --cor-surface-container-low: #f3f3f3;
-    --cor-surface-container-high: #e8e8e8;
-    --cor-surface-container-highest: #e2e2e2;
-    --cor-surface-container-lowest: #ffffff;
-    --cor-surface-variant: #e2e2e2;
+    /* =========================================
+       2. CORES DE DESTAQUE ALTERNATIVAS
+       ========================================= */
+    --cor-accent: #1C1E23;           /* O Preto/Cinza Profundo (usado em tooltips e tabs ativas) */
+    
+    /* =========================================
+       3. FUNDOS E SUPERFÍCIES (A PROFUNDIDADE)
+       ========================================= */
+    --cor-background: #F4F6F9;       /* O cinza gelo de fundo de tela (essencial para o contraste) */
+    --cor-surface: #FFFFFF;          /* O branco puro dos cartões principais */
+    --cor-surface-bright: #FFFFFF;
+    --cor-surface-dim: #F4F6F9;
+    --cor-surface-container: #F8FAFC;
+    --cor-surface-container-low: #F1F5F9;
+    --cor-surface-container-high: #E2E8F0;
+    --cor-surface-container-highest: #CBD5E1;
+    --cor-surface-container-lowest: #FFFFFF;
+    --cor-surface-variant: #F4F6F9;
+    --cor-surface-secondary: #FAFAFB;/* Um branco sujo para inputs ou divisões internas de cartões */
+    --cor-surface-inverted: #1C1E23; /* Fundo dos popovers/tooltips escuros */
+    --cor-inverse-surface: #1C1E23;
 
-    /* ── Texto ── */
-    --cor-on-background: #1a1c1c;
-    --cor-on-surface: #1a1c1c;
-    --cor-on-surface-variant: #747781;
+    /* =========================================
+       4. TIPOGRAFIA (A LEITURA)
+       ========================================= */
+    --cor-text-primary: #111827;     /* Números grandes, Títulos (Quase preto) */
+    --cor-text-secondary: #6B7280;   /* Etiquetas, legendas (Cinza médio perfeito) */
+    --cor-text-muted: #9CA3AF;       /* Placeholders, texto menos importante */
+    --cor-text-on-primary: #FFFFFF;  /* Texto branco absoluto para cima de botões azuis e pretos */
 
-    /* ── Secundárias ── */
-    --cor-secondary: #747781;
-    --cor-on-secondary: #ffffff;
-    --cor-inverse-surface: #2f3131;
+    --cor-on-background: #111827;
+    --cor-on-surface: #111827;
+    --cor-on-surface-variant: #6B7280;
+    
+    --cor-secondary: #6B7280;
+    --cor-on-secondary: #FFFFFF;
 
-    /* ── Contornos ── */
-    --cor-outline: #747781;
-    --cor-outline-variant: #c6c6c6;
+    /* =========================================
+       5. BORDAS E ESTRUTURA
+       ========================================= */
+    --cor-border: #E5E7EB;           /* Linhas quase invisíveis */
+    --cor-border-light: #F3F4F6;     /* Linhas de grelha de gráficos internas */
+    --cor-outline: #E5E7EB;
+    --cor-outline-variant: #F3F4F6;
 
-    /* ── Estados ── */
-    --cor-error: #ba1a1a;
-    --cor-on-error: #ffffff;
-    --cor-success: #10b981;
+    /* =========================================
+       6. FEEDBACK SEMÂNTICO (STATUS)
+       ========================================= */
+    --cor-success: #10B981;          /* Verde Médico Positivo */
     --cor-success-light: #ecfdf5;
     --cor-success-dark: #059669;
-    --cor-warning: #F59E0B;
-    --cor-danger: #be123c;
-    --cor-danger-light: #fff1f2;
-    --cor-danger-border: #ffe4e6;
-    --cor-danger-icon-bg: #fecdd3;
-    --cor-danger-subtitle: #e11d48;
-    --cor-danger-body: #881337;
-    --cor-danger-hover: #93000a;
+    --cor-warning: #F59E0B;          /* Laranja Alerta */
+    --cor-error: #EF4444;            /* Vermelho Crítico (Batimento Cardíaco/Anomalias) */
+    --cor-on-error: #FFFFFF;
+    --cor-info: #0A58CA;             /* Partilha o azul primário */
+    
+    --cor-danger: #EF4444;
+    --cor-danger-light: #FEF2F2;
+    --cor-danger-border: #FEE2E2;
+    --cor-danger-icon-bg: #FECACA;
+    --cor-danger-subtitle: #DC2626;
+    --cor-danger-body: #991B1B;
+    --cor-danger-hover: #B91C1C;
 
-    /* ── Prioridades (Unificadas) ── */
-    --cor-priority-urgente: #DC2626;
-    --cor-priority-urgente-bg: #FFEBEE;
+    /* =========================================
+       7. PRIORIDADES E STATUS
+       ========================================= */
+    --cor-priority-urgente: #EF4444;
+    --cor-priority-urgente-bg: #FEF2F2;
     --cor-priority-idoso: #F59E0B;
-    --cor-priority-idoso-bg: #FFF8E1;
-    --cor-priority-gravida: #7C3AED;
-    --cor-priority-normal: #2563EB;
-    --cor-priority-normal-bg: #E3F2FD;
+    --cor-priority-idoso-bg: #FFFBEB;
+    --cor-priority-gravida: #8B5CF6;
+    --cor-priority-normal: #0A58CA;
+    --cor-priority-normal-bg: #E6F0FF;
 
     /* ── Inputs / Campos ── */
-    --cor-input-bg: #f4f5f7;
-    --cor-input-hover: #f8fafc;
-    --cor-input-focus-border: #111;
-    --cor-input-placeholder: #a1a1aa;
-    --cor-input-label: #71717a;
+    --cor-input-bg: #F8FAFC;
+    --cor-input-hover: #F1F5F9;
+    --cor-input-focus-border: #0A58CA;
+    --cor-input-placeholder: #9CA3AF;
+    --cor-input-label: #6B7280;
 
     /* ── Badges / Status ── */
-    --cor-inactive-text: #4b5563;
-    --cor-inactive-dot: #6b7280;
-    --cor-error-banner-bg: #ffdad6;
-    --cor-error-banner-text: #410002;
+    --cor-inactive-text: #6B7280;
+    --cor-inactive-dot: #9CA3AF;
+    --cor-error-banner-bg: #FEF2F2;
+    --cor-error-banner-text: #7F1D1D;
 
     /* ── Scrollbar ── */
-    --cor-scrollbar: #9ca3af;
-    --cor-scrollbar-hover: #6b7280;
-    --cor-scrollbar-light: #e5e7eb;
-    --cor-scrollbar-light-hover: #d1d5db;
+    --cor-scrollbar: #CBD5E1;
+    --cor-scrollbar-hover: #94A3B8;
+    --cor-scrollbar-light: #F1F5F9;
+    --cor-scrollbar-light-hover: #E2E8F0;
 
     /* ── Skeleton Loader ── */
-    --cor-skeleton-base: #f3f4f6;
-    --cor-skeleton-pulse: #e5e7eb;
+    --cor-skeleton-base: #F1F5F9;
+    --cor-skeleton-pulse: #E2E8F0;
 
     /* ── Toast ── */
-    --cor-toast-bg: #000000;
-    --cor-toast-text: #ffffff;
+    --cor-toast-bg: #1C1E23;
+    --cor-toast-text: #FFFFFF;
 
     /* ── Gráficos ── */
     --cor-chart-dark: #111827;
-    --cor-chart-tooltip: #000;
+    --cor-chart-tooltip: #1C1E23;
+
+    /* =========================================
+       8. PROFUNDIDADE E SOMBRAS (O TRUQUE PREMIUM)
+       ========================================= */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.06);     /* A sombra perfeita para os cartões brancos flutuarem */
+    --shadow-floating: 0 20px 40px rgba(0, 0, 0, 0.15); /* Sombra pesada para popovers escuros */
+
+    /* =========================================
+       9. FORMAS E ARREDONDAMENTOS
+       ========================================= */
+    --radius-sm: 0.5rem;   /* 8px */
+    --radius-md: 1rem;     /* 16px - inputs e mini-cards */
+    --radius-lg: 1.5rem;   /* 24px - cartões principais (como visto nas referências) */
+    --radius-pill: 9999px; /* Formas de pílula para tags e botões */
 }
