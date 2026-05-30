@@ -117,7 +117,7 @@ $tabs = [
                                         <span class="w-2 h-2 rounded-full bg-[#10b981] status-pulse"></span> Operacional
                                     </span>
                                 <?php else: ?>
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#f3f4f6] text-[#4b5563]">
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-[#4b5563]">
                                         <span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Inactivo
                                     </span>
                                 <?php endif; ?>
@@ -202,7 +202,7 @@ $tabs = [
                                 <?php if($e['activo'] == 1): ?>
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#ecfdf5] text-[#059669]"><span class="w-2 h-2 rounded-full bg-[#10b981] status-pulse"></span> Activa</span>
                                 <?php else: ?>
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#f3f4f6] text-[#4b5563]"><span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Inactiva</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-[#4b5563]"><span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Inactiva</span>
                                 <?php endif; ?>
                             </div>
                         </div>

@@ -24,6 +24,6 @@
     background: transparent;
 }
 .cs-panel::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.1);
+    background: var(--cor-scrollbar-light);
     border-radius: 4px;
 }

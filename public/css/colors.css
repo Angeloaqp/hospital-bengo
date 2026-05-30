@@ -1,0 +1,93 @@
+/* =========================================================
+   HOSPITAL GERAL DO BENGO — PALETA DE CORES CENTRAL
+   Todas as cores do sistema são definidas APENAS aqui.
+   Para mudar qualquer cor, edite este arquivo.
+========================================================= */
+
+:root {
+    /* ── Primárias ── */
+    --cor-primary: #007aff;
+    --cor-primary-container: #3c3b3b;
+    --cor-on-primary: #e5e2e1;
+
+    /* ── Superfícies / Fundo ── */
+    --cor-background: #d4d4d4;
+    --cor-surface: #d4d4d4;
+    --cor-surface-bright: #d4d4d4;
+    --cor-surface-dim: #dadada;
+    --cor-surface-container: #eeeeee;
+    --cor-surface-container-low: #f3f3f3;
+    --cor-surface-container-high: #e8e8e8;
+    --cor-surface-container-highest: #e2e2e2;
+    --cor-surface-container-lowest: #ffffff;
+    --cor-surface-variant: #e2e2e2;
+
+    /* ── Texto ── */
+    --cor-on-background: #1a1c1c;
+    --cor-on-surface: #1a1c1c;
+    --cor-on-surface-variant: #747781;
+
+    /* ── Secundárias ── */
+    --cor-secondary: #747781;
+    --cor-on-secondary: #ffffff;
+    --cor-inverse-surface: #2f3131;
+
+    /* ── Contornos ── */
+    --cor-outline: #747781;
+    --cor-outline-variant: #c6c6c6;
+
+    /* ── Estados ── */
+    --cor-error: #ba1a1a;
+    --cor-on-error: #ffffff;
+    --cor-success: #10b981;
+    --cor-success-light: #ecfdf5;
+    --cor-success-dark: #059669;
+    --cor-warning: #F59E0B;
+    --cor-danger: #be123c;
+    --cor-danger-light: #fff1f2;
+    --cor-danger-border: #ffe4e6;
+    --cor-danger-icon-bg: #fecdd3;
+    --cor-danger-subtitle: #e11d48;
+    --cor-danger-body: #881337;
+    --cor-danger-hover: #93000a;
+
+    /* ── Prioridades (Unificadas) ── */
+    --cor-priority-urgente: #DC2626;
+    --cor-priority-urgente-bg: #FFEBEE;
+    --cor-priority-idoso: #F59E0B;
+    --cor-priority-idoso-bg: #FFF8E1;
+    --cor-priority-gravida: #7C3AED;
+    --cor-priority-normal: #2563EB;
+    --cor-priority-normal-bg: #E3F2FD;
+
+    /* ── Inputs / Campos ── */
+    --cor-input-bg: #f4f5f7;
+    --cor-input-hover: #f8fafc;
+    --cor-input-focus-border: #111;
+    --cor-input-placeholder: #a1a1aa;
+    --cor-input-label: #71717a;
+
+    /* ── Badges / Status ── */
+    --cor-inactive-text: #4b5563;
+    --cor-inactive-dot: #6b7280;
+    --cor-error-banner-bg: #ffdad6;
+    --cor-error-banner-text: #410002;
+
+    /* ── Scrollbar ── */
+    --cor-scrollbar: #9ca3af;
+    --cor-scrollbar-hover: #6b7280;
+    --cor-scrollbar-light: #e5e7eb;
+    --cor-scrollbar-light-hover: #d1d5db;
+
+    /* ── Skeleton Loader ── */
+    --cor-skeleton-base: #f3f4f6;
+    --cor-skeleton-pulse: #e5e7eb;
+
+    /* ── Toast ── */
+    --cor-toast-bg: #000000;
+    --cor-toast-text: #ffffff;
+
+    /* ── Gráficos ── */
+    --cor-chart-dark: #111827;
+    --cor-chart-tooltip: #000;
+}

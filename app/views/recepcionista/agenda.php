@@ -49,7 +49,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 .floating-card{box-shadow:0 4px 20px -2px rgba(0,0,0,.05),0 2px 10px -2px rgba(0,0,0,.03)}
 </style>
 </head>
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-surface-container-low">
 <?php $paginaActual='agenda'; include __DIR__.'/../comum/sidebar.php'; ?>
 <?php $tituloPagina='Agenda'; $subtituloPagina=''; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
 
@@ -68,7 +68,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
         <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= dataFormatoPT($dataFiltro) ?></p>
     </div>
     <div class="flex gap-3">
-        <a href="marcacao.php" class="bg-[#007aff] text-white px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
+        <a href="marcacao.php" class="bg-primary text-white px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
             <span class="material-symbols-outlined text-[18px]">add</span> Nova Marcação
         </a>
         <a href="marcacao.php?origem=mesmo_dia" class="bg-white text-black px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline border border-primary/10">
@@ -160,7 +160,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     ?></div>
     <div class="flex gap-2">
         <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' -1 day')) ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">← Anterior</a>
-        <a href="?data=<?= date('Y-m-d') ?>" class="bg-[#007aff] text-white px-3 py-2 rounded-xl text-sm font-bold hover:scale-105 transition-transform">Hoje</a>
+        <a href="?data=<?= date('Y-m-d') ?>" class="bg-primary text-white px-3 py-2 rounded-xl text-sm font-bold hover:scale-105 transition-transform">Hoje</a>
         <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' +1 day')) ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">Seguinte →</a>
     </div>
 </div>
@@ -194,7 +194,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     <td class="py-3 text-xs font-medium"><?= htmlspecialchars($m['medico_nome']) ?></td>
     <td class="py-3 text-center">
         <?php if(!empty($m['senha_codigo'])): ?>
-            <span class="px-2.5 py-1 bg-[#007aff] text-white text-[11px] font-black rounded-lg tracking-wider"><?= htmlspecialchars($m['senha_codigo']) ?></span>
+            <span class="px-2.5 py-1 bg-primary text-white text-[11px] font-black rounded-lg tracking-wider"><?= htmlspecialchars($m['senha_codigo']) ?></span>
         <?php else: ?>
             <span class="text-on-surface-variant text-[10px] font-bold">—</span>
         <?php endif; ?>
@@ -354,7 +354,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
         ?></div></div>
     </div>
     <div class="flex gap-3 mt-6">
-        <button type="submit" class="flex-1 bg-[#007aff] text-white py-3 rounded-full font-black text-sm">Remarcar</button>
+        <button type="submit" class="flex-1 bg-primary text-white py-3 rounded-full font-black text-sm">Remarcar</button>
         <button type="button" onclick="document.getElementById('modal-remarcar').classList.add('hidden')" class="px-6 py-3 rounded-full font-bold text-sm bg-surface-container-low">Cancelar</button>
     </div>
 </form>

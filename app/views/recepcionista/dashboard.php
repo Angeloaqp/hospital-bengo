@@ -72,7 +72,7 @@ unset($_SESSION['mensagem'], $_SESSION['ultima_senha'], $_SESSION['ultimo_proces
     }
 </style>
 </head>
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-surface-container-low">
 
 <?php
 // ── SIDEBAR ──
@@ -101,7 +101,7 @@ include __DIR__ . '/../comum/header.php';
         <h3 class="font-black text-xl mb-6 tracking-tight">Imprimir Senha</h3>
         
         <!-- Ticket Físico Renderizado -->
-        <div id="print-ticket" class="w-full border-2 border-[#007aff] border-dashed rounded-xl p-6 flex flex-col items-center justify-center bg-white mb-8">
+        <div id="print-ticket" class="w-full border-2 border-primary border-dashed rounded-xl p-6 flex flex-col items-center justify-center bg-white mb-8">
             <h4 class="font-extrabold text-lg mb-1"><?= APP_NOME ?></h4>
             <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-6">Recepção Principal</p>
             
@@ -120,7 +120,7 @@ include __DIR__ . '/../comum/header.php';
 
         <div class="flex gap-3 w-full">
             <button onclick="document.getElementById('ticket-modal').style.display='none'" class="flex-1 bg-surface-container-low text-black py-3 rounded-xl font-bold text-sm hover:bg-surface-container transition-colors">Fechar</button>
-            <button onclick="window.print()" class="flex-1 bg-[#007aff] text-white py-3 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg">
+            <button onclick="window.print()" class="flex-1 bg-primary text-white py-3 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg">
                 <span class="material-symbols-outlined text-[18px]">print</span>
                 Imprimir
             </button>
@@ -176,7 +176,7 @@ include __DIR__ . '/../comum/header.php';
             <div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-black tracking-tight">Fila de Espera Atual</h3>
-                    <a href="registar.php" class="bg-[#007aff] text-white px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
+                    <a href="registar.php" class="bg-primary text-white px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-md no-underline">
                         <span class="material-symbols-outlined text-[18px]">add</span>
                         Novo Atendimento
                     </a>
@@ -250,7 +250,7 @@ include __DIR__ . '/../comum/header.php';
                         $pct = max($pct, 8); // mínimo visual
                         $isHighest = ($qtd === $maxFluxo && $qtd > 0);
                     ?>
-                        <div class="w-full <?= $isHighest ? 'bg-[#007aff] shadow-md' : 'bg-surface-container-low' ?> rounded-lg" style="height: <?= $pct ?>%"></div>
+                        <div class="w-full <?= $isHighest ? 'bg-primary shadow-md' : 'bg-surface-container-low' ?> rounded-lg" style="height: <?= $pct ?>%"></div>
                     <?php endforeach; ?>
                 </div>
                 <div class="flex justify-between mt-4 text-[9px] font-black text-on-surface-variant tracking-wider">
@@ -262,7 +262,7 @@ include __DIR__ . '/../comum/header.php';
             </div>
 
             <!-- Dica Widget -->
-            <div class="bg-[#007aff] text-white rounded-[1.5rem] p-6 floating-card relative overflow-hidden">
+            <div class="bg-primary text-white rounded-[1.5rem] p-6 floating-card relative overflow-hidden">
                 <div class="relative z-10">
                     <div class="flex items-center gap-2 mb-4">
                         <span class="material-symbols-outlined text-yellow-400 text-[18px]" style="font-variation-settings: 'FILL' 1;">lightbulb</span>

@@ -40,7 +40,7 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
                 <!-- Acções extras da página (botões injectados pelo layout antigo que precisa de se adaptar ao Tailwind) -->
                 <?php if (!empty($accoesPagina)): ?>
                     <div class="flex items-center gap-2">
-                        <?= str_replace(['btn-sm', 'btn-primario', 'btn'], ['text-xs px-4 py-2', 'bg-[#007aff] text-white rounded-xl font-bold shadow hover:scale-105', 'rounded-xl px-4 py-2 font-bold transition-all text-xs'], $accoesPagina ?? '') ?>
+                        <?= str_replace(['btn-sm', 'btn-primario', 'btn'], ['text-xs px-4 py-2', 'bg-primary text-white rounded-xl font-bold shadow hover:scale-105', 'rounded-xl px-4 py-2 font-bold transition-all text-xs'], $accoesPagina ?? '') ?>
                     </div>
                 <?php endif; ?>
 
@@ -100,7 +100,7 @@ $_inicial = strtoupper(substr($meuPerfilObject['nome'] ?? 'U', 0, 1));
                             <img src="<?= BASE_URL . 'public/' . $_fotoPath ?>" class="w-full h-full object-cover" alt="Foto">
                         </div>
                     <?php else: ?>
-                        <div class="w-9 h-9 rounded-full overflow-hidden bg-[#007aff] text-white flex items-center justify-center font-bold ring-2 ring-surface-container">
+                        <div class="w-9 h-9 rounded-full overflow-hidden bg-primary text-white flex items-center justify-center font-bold ring-2 ring-surface-container">
                             <?= $_inicial ?>
                         </div>
                     <?php endif; ?>

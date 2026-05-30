@@ -1,3 +1,6 @@
+<!-- Paleta Central de Cores (TODAS as cores do sistema vêm daqui) -->
+<link rel="stylesheet" href="/hospital-bengo/public/css/colors.css?v=<?= time() ?>">
+
 <!-- Tailwind CDN + Plugins -->
 <script src="<?= BASE_URL ?>public/assets/js/tailwindcss.js"></script>
 <!-- Fontes: Manrope (títulos) + Inter (corpo) -->
@@ -8,36 +11,36 @@
 <!-- Tactile Editorial CSS -->
 <link rel="stylesheet" href="/hospital-bengo/public/css/tactile.css?v=<?= time() ?>">
 
-<!-- Tailwind Config: Tactile Editorial Design System -->
+<!-- Tailwind Config: Tactile Editorial Design System (referencia variáveis de colors.css) -->
 <script>
     tailwind.config = {
         darkMode: "class",
         theme: {
             extend: {
                 colors: {
-                    "background": "#d4d4d4",
-                    "surface-container-highest": "#e2e2e2",
-                    "on-primary": "#e5e2e1",
-                    "surface-container-high": "#e8e8e8",
-                    "outline": "#747781",
-                    "surface-dim": "#dadada",
-                    "surface-container": "#eeeeee",
-                    "on-error": "#ffffff",
-                    "primary": "#007aff",
-                    "primary-container": "#3c3b3b",
-                    "secondary": "#747781",
-                    "outline-variant": "#c6c6c6",
-                    "on-secondary": "#ffffff",
-                    "surface-variant": "#e2e2e2",
-                    "surface": "#d4d4d4",
-                    "on-background": "#1a1c1c",
-                    "on-surface": "#1a1c1c",
-                    "surface-container-low": "#f3f3f3",
-                    "surface-container-lowest": "#ffffff",
-                    "inverse-surface": "#2f3131",
-                    "surface-bright": "#d4d4d4",
-                    "on-surface-variant": "#747781",
-                    "error": "#ba1a1a",
+                    "background": "var(--cor-background)",
+                    "surface-container-highest": "var(--cor-surface-container-highest)",
+                    "on-primary": "var(--cor-on-primary)",
+                    "surface-container-high": "var(--cor-surface-container-high)",
+                    "outline": "var(--cor-outline)",
+                    "surface-dim": "var(--cor-surface-dim)",
+                    "surface-container": "var(--cor-surface-container)",
+                    "on-error": "var(--cor-on-error)",
+                    "primary": "var(--cor-primary)",
+                    "primary-container": "var(--cor-primary-container)",
+                    "secondary": "var(--cor-secondary)",
+                    "outline-variant": "var(--cor-outline-variant)",
+                    "on-secondary": "var(--cor-on-secondary)",
+                    "surface-variant": "var(--cor-surface-variant)",
+                    "surface": "var(--cor-surface)",
+                    "on-background": "var(--cor-on-background)",
+                    "on-surface": "var(--cor-on-surface)",
+                    "surface-container-low": "var(--cor-surface-container-low)",
+                    "surface-container-lowest": "var(--cor-surface-container-lowest)",
+                    "inverse-surface": "var(--cor-inverse-surface)",
+                    "surface-bright": "var(--cor-surface-bright)",
+                    "on-surface-variant": "var(--cor-on-surface-variant)",
+                    "error": "var(--cor-error)",
                 },
                 borderRadius: {
                     DEFAULT: "1rem",
@@ -59,7 +62,7 @@
 <style>
     body {
         font-family: 'Inter', sans-serif;
-        background-color: #d4d4d4;
+        background-color: var(--cor-background);
     }
 
     h1,
@@ -71,7 +74,7 @@
         font-family: 'Manrope', sans-serif;
     }
 
-    /* Scrollbar Global & Custom - Mais visível e elegante */
+    /* Scrollbar Global & Custom */
     ::-webkit-scrollbar,
     .custom-scrollbar::-webkit-scrollbar {
         width: 10px;
@@ -85,7 +88,7 @@
 
     ::-webkit-scrollbar-thumb,
     .custom-scrollbar::-webkit-scrollbar-thumb {
-        background-color: #9ca3af;
+        background-color: var(--cor-scrollbar);
         border-radius: 10px;
         border: 3px solid transparent;
         background-clip: padding-box;
@@ -93,7 +96,7 @@
 
     ::-webkit-scrollbar-thumb:hover,
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background-color: #6b7280;
+        background-color: var(--cor-scrollbar-hover);
     }
 
     /* Animações Globais (Páginas, Dashboards e Cartões) */
@@ -109,46 +112,23 @@
         }
     }
 
-    .fade-in {
-        animation: fadeIn 0.5s ease-out forwards;
-    }
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    .fade-in-delay-1 { animation: fadeIn 0.5s ease-out 0.1s forwards; opacity: 0; }
+    .fade-in-delay-2 { animation: fadeIn 0.5s ease-out 0.2s forwards; opacity: 0; }
+    .fade-in-delay-3 { animation: fadeIn 0.5s ease-out 0.3s forwards; opacity: 0; }
+    .fade-in-delay-4 { animation: fadeIn 0.5s ease-out 0.4s forwards; opacity: 0; }
 
-    .fade-in-delay-1 {
-        animation: fadeIn 0.5s ease-out 0.1s forwards;
-        opacity: 0;
-    }
-
-    .fade-in-delay-2 {
-        animation: fadeIn 0.5s ease-out 0.2s forwards;
-        opacity: 0;
-    }
-
-    .fade-in-delay-3 {
-        animation: fadeIn 0.5s ease-out 0.3s forwards;
-        opacity: 0;
-    }
-
-    .fade-in-delay-4 {
-        animation: fadeIn 0.5s ease-out 0.4s forwards;
-        opacity: 0;
-    }
-
-    /* Animação única de abertura de página para todas as páginas (sem transform para não quebrar o position:fixed) */
+    /* Animação única de abertura de página */
     @keyframes simpleFadeIn {
-        from {
-            opacity: 0;
-        }
-
-        to {
-            opacity: 1;
-        }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     body {
         animation: simpleFadeIn 0.4s ease-out forwards;
     }
 
-    /* Retirar sombras (sobras) de todo o design, preservando o header (que usa uma classe arbitrária shadow-[...]) */
+    /* Retirar sombras de todo o design, preservando o header */
     .floating-card,
     .shadow-sm,
     .shadow,

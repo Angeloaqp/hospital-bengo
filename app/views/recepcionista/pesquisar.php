@@ -97,7 +97,7 @@ $tipos = $db->query(
     <!-- Sticky Search Section -->
     <section class="sticky z-40 top-[84px] pt-4 pb-4 -mt-4 mb-6 relative">
         <!-- Smooth gradient fade background blending to cover scrolling table content properly -->
-        <div class="absolute inset-0 bg-[#f3f4f6] z-[-1]"></div>
+        <div class="absolute inset-0 bg-surface-container-low z-[-1]"></div>
         <div class="absolute inset-x-0 -bottom-4 h-4 bg-gradient-to-b from-[#f3f4f6] to-transparent z-[-1] pointer-events-none"></div>
 
         <form method="GET" class="relative bg-white rounded-[1.5rem] flex flex-col md:flex-row items-center gap-4 p-3 floating-card border border-white/50 shadow-sm hover:shadow-md transition-shadow">

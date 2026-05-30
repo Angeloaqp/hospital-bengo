@@ -304,7 +304,7 @@ $prioridades = [
                                     </div>
                                 </div>
                                 <?php if (!$emAtend): ?>
-                                    <button class="w-full bg-white text-on-surface py-6 px-6 rounded-2xl font-black text-xl flex items-center justify-center gap-3 border border-surface-container-highest btn-press shadow hover:bg-[#007aff] hover:text-white transition-all group relative overflow-hidden" onclick="handleChamar(this, <?= $proxima['id'] ?>, '<?= addslashes(htmlspecialchars($proxima['paciente_nome'])) ?>', '<?= htmlspecialchars($proxima['codigo']) ?>')">
+                                    <button class="w-full bg-white text-on-surface py-6 px-6 rounded-2xl font-black text-xl flex items-center justify-center gap-3 border border-surface-container-highest btn-press shadow hover:bg-primary hover:text-white transition-all group relative overflow-hidden" onclick="handleChamar(this, <?= $proxima['id'] ?>, '<?= addslashes(htmlspecialchars($proxima['paciente_nome'])) ?>', '<?= htmlspecialchars($proxima['codigo']) ?>')">
                                         <span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform" id="chamar-icon">volume_up</span>
                                         <span id="chamar-text">Chamar Próximo</span>
                                     </button>

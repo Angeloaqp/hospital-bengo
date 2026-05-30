@@ -82,7 +82,7 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
         <?php foreach ($_navLinks as $link): ?>
             <?php if ($_paginaActual === $link['id']): ?>
                 <!-- Active -->
-                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full bg-[#007aff] text-white rounded-2xl transition-all shadow-md hover:scale-105 active:scale-95 overflow-hidden sidebar-link">
+                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full bg-primary text-white rounded-2xl transition-all shadow-md hover:scale-105 active:scale-95 overflow-hidden sidebar-link">
                     <span class="material-symbols-outlined text-[20px] icon-filled shrink-0"><?= $link['icon'] ?></span>
                     <span class="text-xs font-bold tracking-tight sidebar-text whitespace-nowrap"><?= $link['titulo'] ?></span>
                 </a>
@@ -102,8 +102,8 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
             <div class="h-[1px] bg-primary/5 w-full"></div>
         </div>
         <!-- Meu Perfil -->
-        <a href="<?= $_basePerfil ?>index.php" class="flex items-center gap-3 px-4 py-2.5 w-full <?php echo $_paginaActual === 'perfil' ? 'bg-[#007aff] text-white' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-black' ?> rounded-2xl transition-all overflow-hidden sidebar-link">
-            <div class="w-7 h-7 rounded-full overflow-hidden border border-surface-container-high shrink-0 bg-[#007aff] text-white flex items-center justify-center font-bold text-[10px]">
+        <a href="<?= $_basePerfil ?>index.php" class="flex items-center gap-3 px-4 py-2.5 w-full <?php echo $_paginaActual === 'perfil' ? 'bg-primary text-white' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-black' ?> rounded-2xl transition-all overflow-hidden sidebar-link">
+            <div class="w-7 h-7 rounded-full overflow-hidden border border-surface-container-high shrink-0 bg-primary text-white flex items-center justify-center font-bold text-[10px]">
                 <?php if (!empty($_fotoPathSidebar)): ?>
                     <img src="<?= BASE_URL . 'public/' . $_fotoPathSidebar ?>" class="w-full h-full object-cover" alt="Foto">
                 <?php else: ?>

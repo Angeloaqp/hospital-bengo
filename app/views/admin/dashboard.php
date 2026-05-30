@@ -93,7 +93,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
     </style>
 </head>
 
-<body class="text-on-surface bg-[#f3f4f6]">
+<body class="text-on-surface bg-surface-container-low">
 
     <?php $paginaActual = 'dashboard'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -137,7 +137,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
                     <h2 class="text-3xl font-headline font-extrabold text-black tracking-tight">Painel de Controlo</h2>
                     <p class="text-on-surface-variant font-medium mt-1 text-sm">Resumo da operação e fluidez do hospital hoje.</p>
                 </div>
-                <a href="utilizadores.php" class="bg-[#007aff] text-white px-8 py-3.5 rounded-full font-bold text-sm flex items-center gap-2 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                <a href="utilizadores.php" class="bg-primary text-white px-8 py-3.5 rounded-full font-bold text-sm flex items-center gap-2 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
                     <span class="material-symbols-outlined text-[20px]">manage_accounts</span>
                     Gerir Utilizadores
                 </a>
@@ -212,7 +212,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
                     </div>
                     <!-- Progressive bar tiny -->
                     <div class="mt-5 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-[#007aff] h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%" data-target-width="<?= $taxaConclusao ?>%"></div>
+                        <div class="bg-primary h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%" data-target-width="<?= $taxaConclusao ?>%"></div>
                     </div>
                 </div>
             </div>
@@ -236,7 +236,7 @@ $taxaConclusao = $totalHoje > 0 ? round(($concluidosHoje / $totalHoje) * 100) : 
                             $rawColor = strtolower(trim($p['cor']));
                             $cleanColor = $rawColor === '#ff0000' || strpos($rawColor, 'red') !== false ? 'bg-red-500' :
                                          ($rawColor === '#ffcc00' || strpos($rawColor, 'yellow') !== false ? 'bg-yellow-500' : 
-                                         ($rawColor === '#00cc00' || strpos($rawColor, 'green') !== false ? 'bg-green-500' : 'bg-[#007aff]'));
+                                         ($rawColor === '#00cc00' || strpos($rawColor, 'green') !== false ? 'bg-green-500' : 'bg-primary'));
                         ?>
                         <div class="flex flex-col gap-2">
                             <div class="flex justify-between text-xs font-bold">

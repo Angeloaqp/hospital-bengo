@@ -425,7 +425,7 @@ $avatarColors = [
                                     Detalhes Rápidos
                                 </button>
                                 <a href="editar_utilizador.php?id=<?= $u['id'] ?>"
-                                    class="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-[#007aff] hover:text-white transition-all btn-action edit-icon-btn"
+                                    class="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-primary hover:text-white transition-all btn-action edit-icon-btn"
                                     title="Editar">
                                     <span class="material-symbols-outlined text-[20px]">edit_note</span>
                                 </a>
@@ -455,7 +455,7 @@ $avatarColors = [
                     <div
                         class="info-card bg-white/40 p-8 rounded-[2.5rem] shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] cursor-default group">
                         <div
-                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-on-surface group-hover:bg-[#007aff] group-hover:text-white transition-all duration-300">
+                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-on-surface group-hover:bg-primary group-hover:text-white transition-all duration-300">
                             <span class="material-symbols-outlined">verified_user</span>
                         </div>
                         <h4 class="font-extrabold text-lg text-on-surface mb-3 tracking-tight">Acessos Seguros</h4>
@@ -465,7 +465,7 @@ $avatarColors = [
                     <div
                         class="info-card bg-white/40 p-8 rounded-[2.5rem] shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] cursor-default group">
                         <div
-                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-on-surface group-hover:bg-[#007aff] group-hover:text-white transition-all duration-300">
+                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-on-surface group-hover:bg-primary group-hover:text-white transition-all duration-300">
                             <span class="material-symbols-outlined">history</span>
                         </div>
                         <h4 class="font-extrabold text-lg text-on-surface mb-3 tracking-tight">Histórico de Auditoria</h4>
@@ -476,7 +476,7 @@ $avatarColors = [
                     <div
                         class="info-card bg-white/40 p-8 rounded-[2.5rem] shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] cursor-default group">
                         <div
-                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-on-surface group-hover:bg-[#007aff] group-hover:text-white transition-all duration-300">
+                            class="info-icon w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-on-surface group-hover:bg-primary group-hover:text-white transition-all duration-300">
                             <span class="material-symbols-outlined">badge</span>
                         </div>
                         <h4 class="font-extrabold text-lg text-on-surface mb-3 tracking-tight">Controlo de Funções</h4>
@@ -574,7 +574,7 @@ $avatarColors = [
                 // Page numbers
                 for (let i = 1; i <= totalPages; i++) {
                     const btn = document.createElement('button');
-                    btn.className = `w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-bold shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] btn-action transition-all ${i === currentPage ? 'bg-primary text-white' : 'bg-white text-on-surface hover:bg-[#007aff] hover:text-white'
+                    btn.className = `w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-bold shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] btn-action transition-all ${i === currentPage ? 'bg-primary text-white' : 'bg-white text-on-surface hover:bg-primary hover:text-white'
                         }`;
                     btn.textContent = i;
                     btn.onclick = () => goTo(i);
@@ -588,7 +588,7 @@ $avatarColors = [
 
             function makeBtn(icon, active, handler) {
                 const btn = document.createElement('button');
-                btn.className = `w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] btn-action transition-all ${active ? 'hover:bg-[#007aff] hover:text-white' : 'opacity-30 cursor-default'
+                btn.className = `w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] btn-action transition-all ${active ? 'hover:bg-primary hover:text-white' : 'opacity-30 cursor-default'
                     }`;
                 btn.innerHTML = `<span class="material-symbols-outlined text-lg">${icon}</span>`;
                 if (active) btn.onclick = handler;

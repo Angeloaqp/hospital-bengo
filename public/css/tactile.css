@@ -1,6 +1,7 @@
 /* =========================================================
    HOSPITAL GERAL DO BENGO - TACTILE EDITORIAL
    Design System Global CSS
+   (Cores referenciadas via variáveis de colors.css)
 ========================================================= */
 
 /* Scrollbars Universais */
@@ -11,10 +12,10 @@
 ::-webkit-scrollbar-track { background: transparent; }
 
 .custom-scrollbar::-webkit-scrollbar-thumb,
-::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover,
-::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
 
 /* Tipografia */
 .tactile-mono {
@@ -55,22 +56,21 @@
 .icon-lg { font-size: 24px; }
 
 /* =========================================================
-   HOSPITAL GERAL DO BENGO - TACTILE EDITORIAL
-   UX Magic & Micro-Interações (Etapa 3)
+   UX Magic & Micro-Interações
 ========================================================= */
 
 /* 1. Skeleton Loaders */
 @keyframes skeletonPulse {
-    0% { background-color: #f3f4f6; }
-    50% { background-color: #e5e7eb; }
-    100% { background-color: #f3f4f6; }
+    0% { background-color: var(--cor-skeleton-base); }
+    50% { background-color: var(--cor-skeleton-pulse); }
+    100% { background-color: var(--cor-skeleton-base); }
 }
 .skeleton {
     animation: skeletonPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     color: transparent !important;
     border-color: transparent !important;
     pointer-events: none;
-    background-color: #f3f4f6;
+    background-color: var(--cor-skeleton-base);
 }
 .skeleton * {
     visibility: hidden;
@@ -119,7 +119,7 @@
     pointer-events: none;
 }
 .toast {
-    background: #000000; color: #ffffff; padding: 10px 16px 10px 10px; border-radius: 9999px;
+    background: var(--cor-toast-bg); color: var(--cor-toast-text); padding: 10px 16px 10px 10px; border-radius: 9999px;
     display: flex; align-items: center; gap: 14px;
     box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
     transform: translateX(50px) scale(0.95); opacity: 0;

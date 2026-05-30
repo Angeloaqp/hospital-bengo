@@ -362,14 +362,14 @@ $subtituloPagina = 'Agendar consulta para data futura';
                                         <div class="grid grid-cols-2 gap-3">
                                             <label class="relative cursor-pointer group hover:scale-[1.02] transition-all block">
                                                 <input checked class="peer sr-only custom-radio" name="turno" type="radio" value="manha" id="turno-manha" onchange="checkCapacidade()" />
-                                                <div class="p-4 rounded-[24px] bg-surface-container-low border-2 border-transparent peer-checked:border-[#007aff] peer-checked:bg-white transition-all text-center h-full flex flex-col items-center justify-center hover:shadow-sm">
+                                                <div class="p-4 rounded-[24px] bg-surface-container-low border-2 border-transparent peer-checked:border-primary peer-checked:bg-white transition-all text-center h-full flex flex-col items-center justify-center hover:shadow-sm">
                                                     <span class="material-symbols-outlined text-xl mb-1 text-on-surface-variant group-peer-checked:text-on-surface radio-icon">light_mode</span>
                                                     <span class="text-[10px] font-black uppercase tracking-wider block radio-text">Manhã</span>
                                                 </div>
                                             </label>
                                             <label class="relative cursor-pointer group hover:scale-[1.02] transition-all block">
                                                 <input class="peer sr-only custom-radio" name="turno" type="radio" value="tarde" id="turno-tarde" onchange="checkCapacidade()" />
-                                                <div class="p-4 rounded-[24px] bg-surface-container-low border-2 border-transparent peer-checked:border-[#007aff] peer-checked:bg-white transition-all text-center h-full flex flex-col items-center justify-center hover:shadow-sm">
+                                                <div class="p-4 rounded-[24px] bg-surface-container-low border-2 border-transparent peer-checked:border-primary peer-checked:bg-white transition-all text-center h-full flex flex-col items-center justify-center hover:shadow-sm">
                                                     <span class="material-symbols-outlined text-xl mb-1 text-on-surface-variant group-peer-checked:text-on-surface radio-icon">routine</span>
                                                     <span class="text-[10px] font-black uppercase tracking-wider block radio-text">Tarde</span>
                                                 </div>
@@ -465,8 +465,8 @@ $subtituloPagina = 'Agendar consulta para data futura';
                                 </div>
                                 <div class="relative py-6 overflow-hidden">
                                     <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 border-t-2 border-dashed border-zinc-200"></div>
-                                    <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#f3f4f6] shadow-inner"></div>
-                                    <div class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#f3f4f6] shadow-inner"></div>
+                                    <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-surface-container-low shadow-inner"></div>
+                                    <div class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-surface-container-low shadow-inner"></div>
                                 </div>
                                 <div class="px-8 flex flex-col items-center pb-4">
                                     <div class="hidden w-full flex flex-col items-center animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 ease-out" id="summary-senha">
@@ -766,7 +766,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
                     contMedicos.innerHTML = d.medicos.map(m =>
                         `<label class="relative cursor-pointer group hover:scale-[1.02] hover:shadow-md transition-all rounded-[32px]">
                 <input class="peer sr-only" name="medico_seleccao" type="radio" value="${m.id}" data-cons="${m.consultorio_id||''}" data-nome="${m.nome}" data-cons-nome="${m.consultorio_nome||'Sem Consultório'}" onchange="seleccionarMedico(this)" />
-                <div class="flex items-center gap-4 p-4 rounded-[32px] bg-surface-container-low border-2 border-transparent peer-checked:border-[#007aff] peer-checked:bg-white transition-all h-full">
+                <div class="flex items-center gap-4 p-4 rounded-[32px] bg-surface-container-low border-2 border-transparent peer-checked:border-primary peer-checked:bg-white transition-all h-full">
                     <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0 text-white font-bold text-xs">
                         Dr
                     </div>
@@ -774,7 +774,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
                         <p class="text-sm font-black text-on-surface">Dr(a). ${m.nome}</p>
                         <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">${m.consultorio_nome || 'Sem Consultório Base'}</p>
                     </div>
-                    <div class="absolute top-4 right-4 w-4 h-4 rounded-full border-2 border-surface-variant peer-checked:border-[#007aff] peer-checked:bg-primary flex items-center justify-center transition-colors">
+                    <div class="absolute top-4 right-4 w-4 h-4 rounded-full border-2 border-surface-variant peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center transition-colors">
                         <div class="w-1.5 h-1.5 bg-white rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></div>
                     </div>
                 </div>
@@ -1043,15 +1043,15 @@ $subtituloPagina = 'Agendar consulta para data futura';
                     <span class="material-symbols-outlined ${iconColor} text-[20px]">${icon}</span>
                 </div>
                 <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" name="contactos[${i}][valor]" value="${valor}" class="w-full bg-transparent border-b border-primary/10 focus:border-[#007aff] px-1 py-1 text-sm font-bold text-on-surface" placeholder="Contacto..." required>
+                    <input type="text" name="contactos[${i}][valor]" value="${valor}" class="w-full bg-transparent border-b border-primary/10 focus:border-primary px-1 py-1 text-sm font-bold text-on-surface" placeholder="Contacto..." required>
                     <div class="flex gap-2">
-                        <select name="contactos[${i}][tipo]" class="bg-transparent border-b border-primary/10 focus:border-[#007aff] px-1 py-1 text-[10px] uppercase font-semibold text-on-surface-variant w-1/2">
+                        <select name="contactos[${i}][tipo]" class="bg-transparent border-b border-primary/10 focus:border-primary px-1 py-1 text-[10px] uppercase font-semibold text-on-surface-variant w-1/2">
                             <option value="telefone" ${tipo==='telefone'?'selected':''}>Telefone</option>
                             <option value="whatsapp" ${tipo==='whatsapp'?'selected':''}>WhatsApp</option>
                             <option value="email" ${tipo==='email'?'selected':''}>Email</option>
                             <option value="emergencia" ${tipo==='emergencia'?'selected':''}>Emerg.</option>
                         </select>
-                        <input type="text" name="contactos[${i}][nome_contacto]" value="${nome}" class="w-1/2 bg-transparent border-b border-primary/10 focus:border-[#007aff] px-1 py-1 text-xs font-semibold text-on-surface-variant" placeholder="Nome (Opcional)">
+                        <input type="text" name="contactos[${i}][nome_contacto]" value="${nome}" class="w-1/2 bg-transparent border-b border-primary/10 focus:border-primary px-1 py-1 text-xs font-semibold text-on-surface-variant" placeholder="Nome (Opcional)">
                     </div>
                 </div>
             </div>

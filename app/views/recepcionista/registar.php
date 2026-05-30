@@ -52,7 +52,7 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
         }
     </style>
 </head>
-<body class="bg-[#f9f9f9] text-[#1a1c1c] font-['Inter'] antialiased">
+<body class="bg-surface-container-low text-[#1a1c1c] font-['Inter'] antialiased">
 
 <?php $paginaActual = 'registar'; ?>
 <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -166,7 +166,7 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                     <button type="button" onclick="window.history.back()" class="px-6 py-3 font-headline font-bold text-sm text-[#474747] hover:bg-[#f3f3f3] transition-colors duration-300 ease-in-out rounded-2xl">
                         Cancelar
                     </button>
-                    <button type="submit" id="btn-registar" class="px-8 py-3 bg-[#007aff] text-white font-headline font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 ease-in-out active:scale-95 flex items-center gap-2 rounded-2xl">
+                    <button type="submit" id="btn-registar" class="px-8 py-3 bg-primary text-white font-headline font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 ease-in-out active:scale-95 flex items-center gap-2 rounded-2xl">
                         <span class="material-symbols-outlined text-[18px]">check_circle</span>
                         <span id="btn-text">Registar Paciente</span>
                     </button>
@@ -191,7 +191,7 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                     </div>
                     <h3 class="font-headline text-xl font-bold text-black mb-2">Atendimento Imediato</h3>
                     <p class="font-body text-[#474747] text-sm pr-12">Encaminhar o paciente agora mesmo para a triagem ou urgência.</p>
-                    <div class="absolute bottom-8 right-8 w-12 h-12 bg-[#007aff] text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <div class="absolute bottom-8 right-8 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </div>
                 </a>
@@ -202,7 +202,7 @@ unset($_SESSION['erros_form'], $_SESSION['dados_form']);
                     </div>
                     <h3 class="font-headline text-xl font-bold text-black mb-2">Fazer Marcação</h3>
                     <p class="font-body text-[#474747] text-sm pr-12">Agendar consulta médica para uma data e horário futuro.</p>
-                    <div class="absolute bottom-8 right-8 w-12 h-12 bg-[#007aff] text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <div class="absolute bottom-8 right-8 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </div>
                 </a>

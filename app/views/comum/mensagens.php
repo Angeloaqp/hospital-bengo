@@ -351,7 +351,7 @@ function tempoRelativo($data)
                                         <div class="bg-gray-50/50 border border-primary/5 rounded-2xl p-4 max-h-[300px] overflow-y-auto custom-scrollbar">
                                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                                 <?php foreach ($utilizadores as $u): ?>
-                                                    <label class="custom-checkbox flex items-center p-3 rounded-xl bg-white border border-gray-200 hover:border-[#007aff] transition-colors cursor-pointer gap-3 shadow-sm">
+                                                    <label class="custom-checkbox flex items-center p-3 rounded-xl bg-white border border-gray-200 hover:border-primary transition-colors cursor-pointer gap-3 shadow-sm">
                                                         <input type="checkbox" name="destinatarios[]" value="<?= $u['id'] ?>" <?= $toId === $u['id'] ? 'checked' : '' ?>>
                                                         <div class="flex flex-col truncate">
                                                             <span class="text-sm font-extrabold text-on-surface truncate"><?= htmlspecialchars($u['nome']) ?></span>
