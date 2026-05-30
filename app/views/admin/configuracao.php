@@ -30,98 +30,28 @@ $tabs = [
 ];
 ?>
 <!DOCTYPE html>
-<html lang="pt"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Configuração — <?= APP_NOME ?></title>
-<script src="<?= BASE_URL ?>public/assets/js/tailwindcss.js"></script>
-<link href="<?= BASE_URL ?>public/assets/css/google_fonts.css" rel="stylesheet"/>
-<link href="<?= BASE_URL ?>public/assets/css/material_symbols.css" rel="stylesheet"/>
-<script>
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                "colors": {
-                    "primary-fixed-dim": "#c8c6c5",
-                    "on-tertiary": "#ffffff",
-                    "on-error": "#ffffff",
-                    "inverse-surface": "#2f3131",
-                    "error-container": "#ffdad6",
-                    "error": "#ba1a1a",
-                    "tertiary-container": "#f2f2f2",
-                    "outline": "#74777a",
-                    "on-surface": "#1a1c1c",
-                    "on-primary-container": "#6f6d6d",
-                    "on-primary-fixed-variant": "#474746",
-                    "on-secondary-fixed-variant": "#464747",
-                    "surface-dim": "#dadada",
-                    "primary-container": "#f4f1f1",
-                    "surface-tint": "#5f5e5e",
-                    "surface-container-high": "#e8e8e8",
-                    "on-primary-fixed": "#1c1b1b",
-                    "on-primary": "#ffffff",
-                    "inverse-primary": "#c8c6c5",
-                    "on-tertiary-fixed-variant": "#454747",
-                    "on-tertiary-fixed": "#1a1c1c",
-                    "surface-bright": "#f9f9f9",
-                    "outline-variant": "#c4c7c9",
-                    "on-tertiary-container": "#6d6e6e",
-                    "surface-container": "#eeeeee",
-                    "surface-container-highest": "#e2e2e2",
-                    "secondary-fixed": "#e3e2e2",
-                    "tertiary": "#5d5f5f",
-                    "primary": "#5f5e5e",
-                    "on-background": "#1a1c1c",
-                    "inverse-on-surface": "#f1f1f1",
-                    "surface-variant": "#e2e2e2",
-                    "on-secondary-fixed": "#1b1c1c",
-                    "secondary-fixed-dim": "#c7c6c6",
-                    "on-error-container": "#93000a",
-                    "secondary-container": "#e3e2e2",
-                    "surface-container-low": "#f3f3f3",
-                    "tertiary-fixed": "#e2e2e2",
-                    "secondary": "#5e5e5e",
-                    "on-surface-variant": "#44474a",
-                    "on-secondary-container": "#646464",
-                    "surface-container-lowest": "#ffffff",
-                    "primary-fixed": "#e5e2e1",
-                    "on-secondary": "#ffffff",
-                    "tertiary-fixed-dim": "#c6c6c6",
-                    "background": "#f9f9f9",
-                    "surface": "#f9f9f9"
-                },
-                "borderRadius": {
-                    "DEFAULT": "1rem", "lg": "1rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"
-                },
-                "fontFamily": {
-                    "headline": ["Manrope"], "display": ["Manrope"], "body": ["Inter"], "label": ["Inter"]
-                }
-            }
-        }
-    }
-</script>
-<style>
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-    h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Manrope', sans-serif; }
-    .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
-    .bento-card { background: #ffffff; border-radius: 2rem; padding: 1.5rem; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 30px rgba(0,0,0,0.04); border: 1px solid rgba(226, 226, 226, 0.5); }
-    .bento-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.12); border-color: rgba(196, 199, 201, 0.8); }
-    .bento-card:hover .icon-shift { transform: translateY(-2px); }
-    .input-recessed { background-color: #f3f3f3; border: 1px solid transparent; transition: all 0.2s; }
-    .input-recessed:focus { background-color: #ffffff; border-color: transparent; outline: none; box-shadow: 0 0 0 4px rgba(95, 94, 94, 0.1); }
-    .floating-card { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03); }
-    
-    @keyframes fade-slide-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
-    .stagger-1 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.1s; }
-    .stagger-2 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.2s; }
-    .stagger-3 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.3s; }
-    .panel-enter { animation: fade-slide-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.2s; }
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Configuração — <?= APP_NOME ?></title>
+    <?php include __DIR__ . '/../comum/head_assets.php'; ?>
+    <style>
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .bento-card { background: #ffffff; border-radius: 2rem; padding: 1.5rem; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid rgba(226, 226, 226, 0.5); box-shadow: none !important; }
+        .bento-card:hover { transform: translateY(-4px) scale(1.02); border-color: rgba(196, 199, 201, 0.8); box-shadow: none !important; }
+        .bento-card:hover .icon-shift { transform: translateY(-2px); }
+        .input-recessed { background-color: #f3f3f3; border: 1px solid transparent; transition: all 0.2s; }
+        .input-recessed:focus { background-color: #ffffff; border-color: transparent; outline: none; }
+        
+        @keyframes fade-slide-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        .stagger-1 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.1s; }
+        .stagger-2 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.2s; }
+        .stagger-3 { animation: fade-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.3s; }
+        .panel-enter { animation: fade-slide-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; animation-delay: 0.2s; }
 
-    @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-    .status-pulse { animation: pulse-glow 2s infinite; }
-</style>
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        .status-pulse { animation: pulse-glow 2s infinite; }
+    </style>
 </head>
 <body class="text-on-surface bg-background">
 <?php $paginaActual='configuracao'; include __DIR__.'/../comum/sidebar.php'; ?>
