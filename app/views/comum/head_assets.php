@@ -15,7 +15,7 @@ tailwind.config = {
     theme: {
         extend: {
             colors: {
-                "background": "#9ca0ac",
+                "background": "#d6d9e0",
                 "surface-container-highest": "#e2e2e2",
                 "on-primary": "#e5e2e1",
                 "surface-container-high": "#e8e8e8",
@@ -29,13 +29,13 @@ tailwind.config = {
                 "outline-variant": "#c6c6c6",
                 "on-secondary": "#ffffff",
                 "surface-variant": "#e2e2e2",
-                "surface": "#9ca0ac",
+                "surface": "#d6d9e0",
                 "on-background": "#1a1c1c",
                 "on-surface": "#1a1c1c",
                 "surface-container-low": "#f3f3f3",
                 "surface-container-lowest": "#ffffff",
                 "inverse-surface": "#2f3131",
-                "surface-bright": "#9ca0ac",
+                "surface-bright": "#d6d9e0",
                 "on-surface-variant": "#747781",
                 "error": "#ba1a1a",
             },
@@ -57,7 +57,7 @@ tailwind.config = {
 }
 </script>
 <style>
-    body { font-family: 'Inter', sans-serif; background-color: #9ca0ac; }
+    body { font-family: 'Inter', sans-serif; background-color: #d6d9e0; }
     h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
 
     /* Scrollbar Global & Custom - Mais visível e elegante */
