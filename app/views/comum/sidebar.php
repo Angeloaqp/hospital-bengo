@@ -67,8 +67,8 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
     <!-- Top Section: Hospital Logo & Toggle -->
     <div id="sidebar-top" class="mb-8 flex flex-col items-center px-6 gap-3 transition-all">
         <div class="flex flex-col items-center justify-center overflow-hidden h-12 w-full px-2">
-            <img src="<?= BASE_URL ?>public/assets/img/logo_hgb.png" alt="HGB Logo" class="h-10 w-auto sidebar-text transition-all object-contain">
-            <img src="<?= BASE_URL ?>public/assets/img/logo_hgb.png" alt="H" class="h-8 w-auto hidden sidebar-mini-text transition-all object-contain" style="object-position: left;">
+            <img src="<?= BASE_URL ?>public/assets/img/logo_hhc.png" alt="HHC Logo" class="h-10 w-auto sidebar-text transition-all object-contain">
+            <img src="<?= BASE_URL ?>public/assets/img/logo_hhc.png" alt="HHC" class="h-8 w-auto hidden sidebar-mini-text transition-all object-contain" style="object-position: left;">
         </div>
         <div class="w-10 h-[1.5px] bg-primary/5"></div>
         <!-- Toggle Minimize (Abaixo do Logo) -->
