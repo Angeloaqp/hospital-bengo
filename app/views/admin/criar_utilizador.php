@@ -217,16 +217,14 @@ unset($_SESSION['erro'], $_SESSION['form_data'], $_SESSION['utilizador_criado'])
             <?php if ($criado): ?>
             <!-- ═══════════ SUCCESS CARD ═══════════ -->
             <div class="flex flex-col items-center justify-center min-h-[60vh] glide-in">
-                <!-- Success Banner -->
-                <div class="w-full max-w-lg mb-8 p-4 bg-green-50 rounded-2xl flex items-center gap-3 border border-green-100">
-                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-white text-[16px]">check</span>
-                    </div>
-                    <p class="text-sm font-bold text-green-800">Utilizador "<?= htmlspecialchars($criado['nome']) ?>" criado com sucesso.</p>
-                </div>
 
                 <!-- User Card -->
-                <div class="bg-white rounded-[2rem] shadow-lg border border-surface-container-high/50 w-full max-w-sm overflow-hidden">
+                <div class="bg-white rounded-[2rem] shadow-lg border border-surface-container-high/50 w-full max-w-sm overflow-hidden relative">
+                    <!-- Success Checkmark Top Right -->
+                    <div class="absolute top-6 right-6 w-10 h-10 bg-green-50 rounded-full flex items-center justify-center border border-green-100">
+                        <span class="material-symbols-outlined text-green-500 text-[20px]">check</span>
+                    </div>
+
                     <!-- Card Top -->
                     <div class="p-8 pb-6 flex flex-col items-center text-center">
                         <!-- Avatar -->
@@ -295,8 +293,8 @@ unset($_SESSION['erro'], $_SESSION['form_data'], $_SESSION['utilizador_criado'])
                     <!-- Card Actions -->
                     <div class="px-6 py-5 flex items-center gap-3">
                         <a href="utilizadores.php" class="flex-1 bg-primary text-white py-3.5 rounded-xl font-extrabold text-sm text-center flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-md">
-                            <span class="material-symbols-outlined text-[18px]">bar_chart</span>
-                            Detalhes Rápidos
+                            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            Terminar
                         </a>
                         <a href="criar_utilizador.php" class="w-11 h-11 bg-surface-container-low rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all shrink-0">
                             <span class="material-symbols-outlined text-[20px]">person_add</span>
