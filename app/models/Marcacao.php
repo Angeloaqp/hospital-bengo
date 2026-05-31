@@ -17,10 +17,10 @@ class Marcacao
         $stmt = $db->prepare(
             "INSERT INTO marcacoes
                 (paciente_id, especialidade_id, tipo_atendimento_id,
-                 consultorio_id, medico_id, data_consulta, turno,
+                 consultorio_id, medico_id, data_consulta, hora_marcacao, turno,
                  origem, prioridade, observacoes, criada_por)
              VALUES
-                (:pac, :esp, :tipo, :cons, :med, :data, :turno,
+                (:pac, :esp, :tipo, :cons, :med, :data, :hora, :turno,
                  :origem, :prio, :obs, :criada)"
         );
         $stmt->execute([
@@ -30,6 +30,7 @@ class Marcacao
             ':cons'   => !empty($dados['consultorio_id']) ? (int) $dados['consultorio_id'] : null,
             ':med'    => (int) $dados['medico_id'],
             ':data'   => $dados['data_consulta'],
+            ':hora'   => $dados['hora_marcacao'] ?? null,
             ':turno'  => $dados['turno'],
             ':origem' => $dados['origem'] ?? 'marcacao',
             ':prio'   => (int) ($dados['prioridade'] ?? 4),
@@ -47,6 +48,7 @@ class Marcacao
         $db = Database::ligar();
         $stmt = $db->prepare(
             "SELECT m.*,
+                    DATE_FORMAT(m.hora_marcacao, '%H:%i') as hora_formatada,
                     p.nome AS paciente_nome,
                     p.idade AS paciente_idade,
                     p.bi_nif AS paciente_bi,
@@ -103,6 +105,7 @@ class Marcacao
         }
 
         $sql = "SELECT m.*,
+                       DATE_FORMAT(m.hora_marcacao, '%H:%i') as hora_formatada,
                        p.nome AS paciente_nome,
                        p.idade AS paciente_idade,
                        e.nome AS especialidade_nome,

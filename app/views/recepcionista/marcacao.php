@@ -123,6 +123,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
             <?php endif; ?>
 
             <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" id="form-marcacao" class="relative">
+                <input type="hidden" name="hora_marcacao" id="hora-marcacao-input" value="">
                 <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
                 <input type="hidden" name="acao" value="criar">
                 <input type="hidden" name="origem" value="<?= $mesmoDia ? 'mesmo_dia' : 'marcacao' ?>">
@@ -455,7 +456,9 @@ $subtituloPagina = 'Agendar consulta para data futura';
                                             <div>
                                                 <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1.5">Data e Horário</p>
                                                 <p class="text-xl font-black text-on-surface tracking-tight" id="resumo-data">-</p>
-                                                <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mt-1" id="resumo-turno">-</p>
+                                                <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mt-1">
+                                                    <span id="resumo-turno">-</span> <span id="resumo-horario" class="ml-2 text-primary"></span>
+                                                </p>
                                             </div>
                                             <div class="hidden text-green-600 animate-in zoom-in duration-300" id="summary-confirm-icon">
                                                 <span class="material-symbols-outlined text-[32px] fill-1">verified</span>
@@ -953,6 +956,8 @@ $subtituloPagina = 'Agendar consulta para data futura';
             if (modo === 'auto') {
                 document.getElementById('resumo-data').textContent = "Automático (Próxima Vaga)";
                 document.getElementById('resumo-turno').textContent = "Qualquer Turno";
+                document.getElementById('resumo-horario').textContent = "";
+                document.getElementById('hora-marcacao-input').value = "";
                 updateIndicator('step4-indicator', true);
             } else {
                 if (selData.value) {
@@ -965,9 +970,26 @@ $subtituloPagina = 'Agendar consulta para data futura';
                     document.getElementById('resumo-data').textContent = dateObj.toLocaleDateString('pt-PT', options);
                     document.getElementById('resumo-turno').textContent = turno;
                     updateIndicator('step4-indicator', true);
+
+                    // Fetch hora automática
+                    const medicoId = document.getElementById('medico-id').value;
+                    if (medicoId && turnoNode) {
+                        fetch(`<?= BASE_URL ?>app/controllers/agenda_api.php?acao=calcular_hora&medico_id=${medicoId}&data=${selData.value}&turno=${turnoNode.value}`)
+                            .then(r => r.json())
+                            .then(data => {
+                                if (data.hora_marcacao) {
+                                    document.getElementById('resumo-horario').textContent = "| " + data.hora_marcacao;
+                                    document.getElementById('hora-marcacao-input').value = data.hora_marcacao;
+                                }
+                            })
+                            .catch(err => console.error("Erro ao calcular hora:", err));
+                    }
+
                 } else {
                     document.getElementById('resumo-data').textContent = "-";
                     document.getElementById('resumo-turno').textContent = "-";
+                    document.getElementById('resumo-horario').textContent = "";
+                    document.getElementById('hora-marcacao-input').value = "";
                     updateIndicator('step4-indicator', false);
                 }
             }

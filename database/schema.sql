@@ -114,6 +114,7 @@ CREATE TABLE `marcacoes` (
   `consultorio_id` int(10) unsigned DEFAULT NULL,
   `medico_id` int(10) unsigned NOT NULL,
   `data_consulta` date NOT NULL,
+  `hora_marcacao` time DEFAULT NULL,
   `turno` enum('manha','tarde') NOT NULL,
   `origem` enum('marcacao','mesmo_dia') NOT NULL DEFAULT 'marcacao',
   `prioridade` tinyint(3) unsigned NOT NULL DEFAULT 4 COMMENT '1=Urgente, 2=Idoso, 3=Gravida, 4=Normal',

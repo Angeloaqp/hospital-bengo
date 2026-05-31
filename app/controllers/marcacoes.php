@@ -54,6 +54,7 @@ if ($acao === 'criar') {
     
     $dataConsulta = trim($_POST['data_consulta'] ?? '');
     $turno = trim($_POST['turno'] ?? '');
+    $hora_marcacao = trim($_POST['hora_marcacao'] ?? '');
     $origem = trim($_POST['origem'] ?? 'marcacao');
     $prioridade = (int) ($_POST['prioridade'] ?? 4);
     $observacoes = trim($_POST['observacoes'] ?? '');
@@ -107,6 +108,7 @@ if ($acao === 'criar') {
             'consultorio_id'     => $consultorioId,
             'medico_id'          => $medicoId,
             'data_consulta'      => $dataConsulta,
+            'hora_marcacao'      => $hora_marcacao ?: null,
             'turno'              => $turno,
             'origem'             => $origem,
             'prioridade'         => $prioridade,

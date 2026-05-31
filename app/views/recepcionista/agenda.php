@@ -188,7 +188,12 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     $pl = $prioLabels[$m['prioridade']] ?? 'Normal';
 ?>
 <tr class="group hover:bg-surface-container-low/30 transition-colors">
-    <td class="py-3 text-xs font-bold"><?= $turnoLabel[$m['turno']] ?? $m['turno'] ?></td>
+    <td class="py-3">
+        <div class="text-xs font-bold"><?= $turnoLabel[$m['turno']] ?? $m['turno'] ?></div>
+        <?php if(!empty($m['hora_formatada'])): ?>
+            <div class="text-[10px] text-primary font-bold mt-0.5"><?= $m['hora_formatada'] ?></div>
+        <?php endif; ?>
+    </td>
     <td class="py-3 font-bold text-black text-sm"><?= htmlspecialchars($m['paciente_nome']) ?> <span class="text-on-surface-variant text-xs">(<?= $m['paciente_idade'] ?>a)</span></td>
     <td class="py-3 text-xs text-on-surface-variant font-medium"><?= htmlspecialchars($m['especialidade_nome']) ?></td>
     <td class="py-3 text-xs font-medium"><?= htmlspecialchars($m['medico_nome']) ?></td>

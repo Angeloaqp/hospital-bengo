@@ -214,8 +214,12 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
     ?>
     <div class="grid grid-cols-[auto_2fr_1.5fr_1fr_1.5fr_1.5fr_1fr] gap-4 items-center bg-white p-5 rounded-[24px] floating-card border border-white hover:shadow-lg transition-shadow cursor-pointer <?= $opacityClass ?>">
         <div class="w-12 flex flex-col items-center justify-center text-on-surface-variant">
-            <span class="font-headline font-black text-on-surface"><?= $m['turno'] === 'manha' ? 'Manhã' : 'Tarde' ?></span>
-            <span class="material-symbols-outlined text-[14px] mt-1" data-icon="<?= $m['turno'] === 'manha' ? 'light_mode' : 'routine' ?>"><?= $m['turno'] === 'manha' ? 'light_mode' : 'routine' ?></span>
+            <span class="font-headline font-black text-on-surface text-[14px]"><?= $m['turno'] === 'manha' ? 'Manhã' : 'Tarde' ?></span>
+            <?php if(!empty($m['hora_formatada'])): ?>
+                <span class="font-headline font-bold text-primary text-[11px] mt-0.5"><?= $m['hora_formatada'] ?></span>
+            <?php else: ?>
+                <span class="material-symbols-outlined text-[14px] mt-1" data-icon="<?= $m['turno'] === 'manha' ? 'light_mode' : 'routine' ?>"><?= $m['turno'] === 'manha' ? 'light_mode' : 'routine' ?></span>
+            <?php endif; ?>
         </div>
         <div class="flex items-center gap-3">
             <div>

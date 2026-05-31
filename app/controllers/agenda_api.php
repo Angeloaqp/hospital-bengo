@@ -188,4 +188,67 @@ if ($acao === 'horario_medico') {
     exit;
 }
 
+// ------------------------------------------------
+// Calcular hora automática de atendimento
+// ------------------------------------------------
+if ($acao === 'calcular_hora') {
+    $medicoId = (int) ($_GET['medico_id'] ?? 0);
+    $dataConsulta = $_GET['data'] ?? '';
+    
+    // Normalizar o turno: remove acentos e minúsculas
+    $turno = strtolower(trim($_GET['turno'] ?? ''));
+    $turno = str_replace(['ã','á','à','â'], 'a', $turno);
+
+    if (!$medicoId || !$dataConsulta || !in_array($turno, ['manha', 'tarde'])) {
+        echo json_encode(['erro' => 'Parâmetros incompletos ou inválidos.', 'hora_marcacao' => null]);
+        exit;
+    }
+
+    $db = Database::ligar();
+    $stmt = $db->prepare(
+        "SELECT COUNT(*) as total 
+         FROM marcacoes 
+         WHERE medico_id = :med 
+         AND data_consulta = :data 
+         AND turno = :turno 
+         AND estado != 'cancelada'"
+    );
+    $stmt->execute([
+        ':med' => $medicoId,
+        ':data' => $dataConsulta,
+        ':turno' => $turno
+    ]);
+    $result = $stmt->fetch();
+    $total = (int) $result['total'];
+
+    // Para Manhã: 08:00 às 11:50
+    // Para Tarde: 13:00 às 15:50
+    $startHour = ($turno === 'tarde') ? 13 : 8;
+    $startMinute = 0;
+
+    $additionalMinutes = $total * 30;
+    
+    // Calcula as horas e minutos totais
+    $totalMinutes = ($startHour * 60) + $startMinute + $additionalMinutes;
+    
+    // Limite máximo: 11:50 para manhã e 15:50 para tarde
+    $limitMinutes = ($turno === 'tarde') ? (15 * 60 + 50) : (11 * 60 + 50);
+
+    if ($totalMinutes > $limitMinutes) {
+        $totalMinutes = $limitMinutes;
+    }
+
+    $hora = floor($totalMinutes / 60);
+    $minuto = $totalMinutes % 60;
+
+    $horaFormatada = sprintf("%02d:%02d", $hora, $minuto);
+
+    echo json_encode([
+        'hora_marcacao' => $horaFormatada,
+        'turno' => $turno,
+        'total_agendado' => $total
+    ]);
+    exit;
+}
+
 echo json_encode(['erro' => 'Acção desconhecida.']);
