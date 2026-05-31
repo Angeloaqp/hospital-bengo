@@ -438,29 +438,56 @@ $tabs = [
                     <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
                     <input type="hidden" name="acao" value="sincronizar_vinculos">
                     
-                    <div class="space-y-4 md:col-span-1">
-                        <div class="p-6 bg-surface-container-low rounded-[2rem]">
+                    <div class="space-y-4 md:col-span-1 flex flex-col">
+                        <div class="p-6 bg-surface-container-low rounded-[2.5rem] flex-1">
                             <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block mb-3">Seleccione o Médico</label>
-                            <select name="medico_id" id="vinculos_medico_id" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20" onchange="carregarVinculosEdicao()">
+                            <select name="medico_id" id="vinculos_medico_id" required class="input-recessed w-full rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20 bg-white" onchange="carregarVinculosEdicao()">
                                 <option value="">Escolher Médico...</option>
                                 <?php foreach($medicos as $m): ?><option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nome']) ?></option><?php endforeach; ?>
                             </select>
-                            <div class="mt-8 text-xs text-on-surface-variant">
-                                <b>Dica:</b> Prima `Ctrl` (Win) ou `Cmd` (Mac) para seleccionar múltiplos itens nas listas à direita.
+                            <div class="mt-8 text-sm text-on-surface-variant font-medium">
+                                <span class="material-symbols-outlined text-primary mb-2 text-3xl">touch_app</span><br>
+                                Seleccione um médico para ver e editar os seus vínculos activos. Pode marcar ou desmarcar as opções livremente nas listas à direita.
                             </div>
                         </div>
                     </div>
-                    <div class="space-y-4 md:col-span-1">
-                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block">Especialidades (Múltipla escolha)</label>
-                        <select name="especialidades[]" id="vinculos_especialidades" multiple size="8" class="input-recessed w-full rounded-[2rem] px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20 bg-white border border-surface-container-high">
-                            <?php foreach($especialidades as $e): ?><option class="p-2 rounded hover:bg-surface-container-low" value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nome']) ?></option><?php endforeach; ?>
-                        </select>
+                    
+                    <div class="space-y-4 md:col-span-1 flex flex-col h-[400px]">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block shrink-0 pl-2">Especialidades</label>
+                        <div class="bg-white border border-surface-container-high rounded-[2.5rem] p-3 flex-1 overflow-y-auto custom-scrollbar shadow-sm">
+                            <div class="space-y-1" id="vinculos_especialidades">
+                                <?php foreach($especialidades as $e): ?>
+                                    <label class="flex items-center justify-between p-3.5 rounded-2xl cursor-pointer transition-all duration-200 border border-transparent hover:bg-surface-container-low has-[:checked]:bg-primary-container has-[:checked]:border-primary/20 group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-5 h-5 rounded-md border-2 border-outline flex items-center justify-center bg-white group-has-[:checked]:bg-primary group-has-[:checked]:border-primary transition-colors">
+                                                <span class="material-symbols-outlined text-white text-[14px] opacity-0 group-has-[:checked]:opacity-100 transition-opacity font-bold">check</span>
+                                            </div>
+                                            <span class="text-sm font-bold text-on-surface group-has-[:checked]:text-primary transition-colors"><?= htmlspecialchars($e['nome']) ?></span>
+                                        </div>
+                                        <input type="checkbox" name="especialidades[]" value="<?= $e['id'] ?>" class="hidden checkbox-especialidade">
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                     </div>
-                    <div class="space-y-4 md:col-span-1">
-                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block">Consultórios (Múltipla escolha)</label>
-                        <select name="consultorios[]" id="vinculos_consultorios" multiple size="8" class="input-recessed w-full rounded-[2rem] px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary/20 bg-white border border-surface-container-high">
-                            <?php foreach($consultorios as $c): ?><option class="p-2 rounded hover:bg-surface-container-low" value="<?= $c['id'] ?>"><?= htmlspecialchars($c['nome']) ?></option><?php endforeach; ?>
-                        </select>
+
+                    <div class="space-y-4 md:col-span-1 flex flex-col h-[400px]">
+                        <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block shrink-0 pl-2">Consultórios</label>
+                        <div class="bg-white border border-surface-container-high rounded-[2.5rem] p-3 flex-1 overflow-y-auto custom-scrollbar shadow-sm">
+                            <div class="space-y-1" id="vinculos_consultorios">
+                                <?php foreach($consultorios as $c): ?>
+                                    <label class="flex items-center justify-between p-3.5 rounded-2xl cursor-pointer transition-all duration-200 border border-transparent hover:bg-surface-container-low has-[:checked]:bg-primary-container has-[:checked]:border-primary/20 group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-5 h-5 rounded-md border-2 border-outline flex items-center justify-center bg-white group-has-[:checked]:bg-primary group-has-[:checked]:border-primary transition-colors">
+                                                <span class="material-symbols-outlined text-white text-[14px] opacity-0 group-has-[:checked]:opacity-100 transition-opacity font-bold">check</span>
+                                            </div>
+                                            <span class="text-sm font-bold text-on-surface group-has-[:checked]:text-primary transition-colors"><?= htmlspecialchars($c['nome']) ?></span>
+                                        </div>
+                                        <input type="checkbox" name="consultorios[]" value="<?= $c['id'] ?>" class="hidden checkbox-consultorio">
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="md:col-span-3 pt-6 border-t border-surface-container flex justify-end">
@@ -792,11 +819,11 @@ function carregarVinculos() {
 
 function carregarVinculosEdicao() {
     const medicoId = document.getElementById('vinculos_medico_id').value;
-    const espSelect = document.getElementById('vinculos_especialidades');
-    const consSelect = document.getElementById('vinculos_consultorios');
+    const espCheckboxes = document.querySelectorAll('.checkbox-especialidade');
+    const consCheckboxes = document.querySelectorAll('.checkbox-consultorio');
     if (!medicoId) {
-        Array.from(espSelect.options).forEach(o => o.selected = false);
-        Array.from(consSelect.options).forEach(o => o.selected = false);
+        espCheckboxes.forEach(cb => cb.checked = false);
+        consCheckboxes.forEach(cb => cb.checked = false);
         return;
     }
     fetch(`<?= BASE_URL ?>app/controllers/api_vinculos_medico.php?medico_id=${medicoId}`)
@@ -805,8 +832,8 @@ function carregarVinculosEdicao() {
             if (data.erro) return;
             const espIds = data.especialidades.map(e => e.id.toString());
             const consIds = data.consultorios.map(c => c.id.toString());
-            Array.from(espSelect.options).forEach(o => o.selected = espIds.includes(o.value));
-            Array.from(consSelect.options).forEach(o => o.selected = consIds.includes(o.value));
+            espCheckboxes.forEach(cb => cb.checked = espIds.includes(cb.value));
+            consCheckboxes.forEach(cb => cb.checked = consIds.includes(cb.value));
         });
 }
 
