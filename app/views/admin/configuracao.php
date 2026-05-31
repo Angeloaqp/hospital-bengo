@@ -66,8 +66,8 @@ $tabs = [
 
 
     <!-- Navigation Tabs -->
-    <div class="overflow-x-auto pb-2 hide-scrollbar relative w-full ">
-        <div class="flex gap-2 p-1.5 bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-surface-container rounded-full w-max relative z-10 mx-auto" id="tabs-container">
+    <div class="sticky top-28 z-40 w-full mb-8">
+        <div class="rounded-2xl bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.04)] border border-surface-container px-6 py-2 flex items-center gap-2 overflow-x-auto hide-scrollbar w-full" id="tabs-container">
             <?php foreach($tabs as $k=>$v): ?>
                 <button onclick="switchTab('<?= $k ?>')" id="tab-btn-<?= $k ?>" class="tab-btn px-6 py-2.5 rounded-full font-bold text-sm transition-all relative z-10 <?= $tab===$k ? 'text-white bg-primary shadow-md' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low' ?>"><?= $v ?></button>
             <?php endforeach; ?>
