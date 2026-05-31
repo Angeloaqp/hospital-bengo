@@ -87,7 +87,7 @@ $avatarColors = [
         }
 
         .user-card:hover .btn-primary-action {
-            background: var(--cor-on-background);
+            filter: brightness(1.1);
             transform: translateY(-2px);
         }
 

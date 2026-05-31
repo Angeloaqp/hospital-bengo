@@ -78,10 +78,10 @@ unset($_SESSION['erro_login']);
         .field-wrap .fi::placeholder { color: transparent; }
         .field-wrap .fi:focus {
             background: #fff;
-            border-color: #111;
+            border-color: var(--cor-primary);
             box-shadow: 0 6px 24px -4px rgba(0,0,0,0.06);
         }
-        .field-wrap .fi:focus ~ .field-icon { color: #111; }
+        .field-wrap .fi:focus ~ .field-icon { color: var(--cor-primary); }
 
         .field-wrap .fl {
             position: absolute;
@@ -101,7 +101,7 @@ unset($_SESSION['erro_login']);
             top: 0.85rem;
             transform: translateY(-50%) scale(0.75);
             font-weight: 800;
-            color: #111;
+            color: var(--cor-primary);
             letter-spacing: 0.04em;
         }
 
@@ -121,7 +121,7 @@ unset($_SESSION['erro_login']);
 <body class="editorial-gradient text-on-surface h-screen overflow-hidden flex font-sans">
 
     <!-- Esquerda: Informação & Branding -->
-    <div class="hidden lg:flex lg:w-1/2 h-full bg-black relative flex-col justify-between p-12 overflow-hidden fade-in">
+    <div class="hidden lg:flex lg:w-1/2 h-full bg-primary relative flex-col justify-between p-12 overflow-hidden fade-in">
         <!-- Fundo Decorativo -->
         <div class="absolute -right-20 -top-20 opacity-20 pointer-events-none">
             <span class="material-symbols-outlined text-[400px] text-white">health_and_safety</span>
@@ -155,10 +155,10 @@ unset($_SESSION['erro_login']);
             
             <div class="mb-10 text-center lg:text-left">
                 <!-- Mobile Logo -->
-                <div class="lg:hidden w-14 h-14 bg-black rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div class="lg:hidden w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
                     <span class="material-symbols-outlined text-white text-2xl font-light">vital_signs</span>
                 </div>
-                <h2 class="text-3xl sm:text-4xl font-headline font-extrabold text-black tracking-tight mb-2">Bem-vindo(a)</h2>
+                <h2 class="text-3xl sm:text-4xl font-headline font-extrabold text-on-surface tracking-tight mb-2">Bem-vindo(a)</h2>
                 <p class="text-on-surface-variant text-sm font-medium">
                     Introduza as suas credenciais para aceder ao sistema.
                 </p>
@@ -198,14 +198,14 @@ unset($_SESSION['erro_login']);
                     <div class="mt-4 mb-8 bg-gray-50/50 rounded-xl p-4 flex gap-3 border border-gray-100/80 items-start">
                         <span class="material-symbols-outlined text-blue-500 text-[18px] mt-0.5" style="font-variation-settings: 'FILL' 1;">info</span>
                         <div>
-                            <span class="block text-[11px] font-extrabold text-black uppercase tracking-wider mb-1">Acesso Inteligente</span>
+                            <span class="block text-[11px] font-extrabold text-on-surface uppercase tracking-wider mb-1">Acesso Inteligente</span>
                             <span class="text-[13px] text-on-surface-variant font-medium leading-snug block">
                                 O seu nível de acesso será detetado automaticamente.
                             </span>
                         </div>
                     </div>
 
-                    <button type="submit" id="btn-entrar" class="w-full bg-black text-white px-9 py-4 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2.5 btn-action shadow-lg shadow-black/15">
+                    <button type="submit" id="btn-entrar" class="w-full bg-primary text-white px-9 py-4 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2.5 btn-action shadow-lg shadow-primary/20">
                         Aceder ao Painel
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                     </button>
