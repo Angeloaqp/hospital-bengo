@@ -616,7 +616,7 @@ $tabs = [
 <dialog id="modalEditConsultorio" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-primary/40 shadow-none w-full max-w-md m-auto border border-surface-container-high">
     <div class="flex justify-between items-center mb-6">
         <h3 class="font-headline font-extrabold text-2xl text-on-surface">Editar Consultório</h3>
-        <button onclick="document.getElementById('modalEditConsultorio').close()" class="text-on-surface-variant hover:text-black font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
+        <button onclick="document.getElementById('modalEditConsultorio').close()" class="text-on-surface-variant hover:text-primary font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
     </div>
     <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-4">
         <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
@@ -638,7 +638,7 @@ $tabs = [
 <dialog id="modalEditEspecialidade" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-primary/40 shadow-none w-full max-w-md m-auto border border-surface-container-high">
     <div class="flex justify-between items-center mb-6">
         <h3 class="font-headline font-extrabold text-2xl text-on-surface">Editar Especialidade</h3>
-        <button onclick="document.getElementById('modalEditEspecialidade').close()" class="text-on-surface-variant hover:text-black font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
+        <button onclick="document.getElementById('modalEditEspecialidade').close()" class="text-on-surface-variant hover:text-primary font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
     </div>
     <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-4">
         <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
@@ -660,7 +660,7 @@ $tabs = [
 <dialog id="modalEditTipo" class="bg-white rounded-[2.5rem] p-8 backdrop:bg-primary/40 shadow-none w-full max-w-md m-auto border border-surface-container-high">
     <div class="flex justify-between items-center mb-6">
         <h3 class="font-headline font-extrabold text-2xl text-on-surface">Editar Tipo</h3>
-        <button onclick="document.getElementById('modalEditTipo').close()" class="text-on-surface-variant hover:text-black font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
+        <button onclick="document.getElementById('modalEditTipo').close()" class="text-on-surface-variant hover:text-primary font-bold p-2 bg-surface-container-low rounded-full"><span class="material-symbols-outlined text-[20px]">close</span></button>
     </div>
     <form method="POST" action="<?= BASE_URL ?>app/controllers/admin_config.php" class="space-y-4">
         <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">

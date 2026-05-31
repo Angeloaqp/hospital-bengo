@@ -362,7 +362,7 @@ unset($_SESSION['erro']);
 
                             <!-- Actions -->
                             <div class="flex items-center justify-end gap-4 mt-12 pt-6 border-t border-primary/5">
-                                <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="font-bold text-sm text-on-surface-variant hover:text-black transition-colors px-6 py-3 rounded-xl hover:bg-gray-50">
+                                <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="font-bold text-sm text-on-surface-variant hover:text-primary transition-colors px-6 py-3 rounded-xl hover:bg-gray-50">
                                     Cancelar
                                 </a>
                                 <button type="submit" class="bg-primary text-white px-9 py-4 rounded-xl font-bold text-sm flex items-center gap-2.5 btn-action shadow-lg shadow-black/10">

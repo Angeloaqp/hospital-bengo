@@ -160,7 +160,7 @@ $iconeAccao = [
 
                     <div class="flex items-center gap-3 ml-auto">
                         <?php if ($filtroAccao || $filtroUser || $dataInicio || $dataFim): ?>
-                            <a href="auditoria.php" class="px-5 py-3 text-sm font-bold text-gray-500 hover:text-black transition-colors rounded-xl hover:bg-gray-50">
+                            <a href="auditoria.php" class="px-5 py-3 text-sm font-bold text-gray-500 hover:text-primary transition-colors rounded-xl hover:bg-gray-50">
                                 Limpar
                             </a>
                         <?php endif; ?>

@@ -72,7 +72,7 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
         </div>
         <div class="w-10 h-[1.5px] bg-primary/5"></div>
         <!-- Toggle Minimize (Abaixo do Logo) -->
-        <button type="button" id="sidebar-toggle" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-full transition-all" title="Alternar Menu">
+        <button type="button" id="sidebar-toggle" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-primary rounded-full transition-all" title="Alternar Menu">
             <span class="material-symbols-outlined text-[18px] transition-transform duration-300" id="sidebar-toggle-icon">menu_open</span>
         </button>
     </div>
@@ -88,7 +88,7 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
                 </a>
             <?php else: ?>
                 <!-- Inactive -->
-                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-black rounded-2xl transition-all hover:scale-105 overflow-hidden sidebar-link">
+                <a href="<?= $link['url'] ?>" class="flex items-center gap-3 px-4 py-3 w-full text-on-surface-variant hover:bg-surface-container-low hover:text-primary rounded-2xl transition-all hover:scale-105 overflow-hidden sidebar-link">
                     <span class="material-symbols-outlined text-[20px] icon-outline shrink-0"><?= $link['icon'] ?></span>
                     <span class="text-xs font-semibold tracking-tight sidebar-text whitespace-nowrap"><?= $link['titulo'] ?></span>
                 </a>
@@ -102,7 +102,7 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
             <div class="h-[1px] bg-primary/5 w-full"></div>
         </div>
         <!-- Meu Perfil -->
-        <a href="<?= $_basePerfil ?>index.php" class="flex items-center gap-3 px-4 py-2.5 w-full <?php echo $_paginaActual === 'perfil' ? 'bg-primary text-white' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-black' ?> rounded-2xl transition-all overflow-hidden sidebar-link">
+        <a href="<?= $_basePerfil ?>index.php" class="flex items-center gap-3 px-4 py-2.5 w-full <?php echo $_paginaActual === 'perfil' ? 'bg-primary text-white' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' ?> rounded-2xl transition-all overflow-hidden sidebar-link">
             <div class="w-7 h-7 rounded-full overflow-hidden border border-surface-container-high shrink-0 bg-primary text-white flex items-center justify-center font-bold text-[10px]">
                 <?php if (!empty($_fotoPathSidebar)): ?>
                     <img src="<?= BASE_URL . 'public/' . $_fotoPathSidebar ?>" class="w-full h-full object-cover" alt="Foto">
@@ -128,7 +128,7 @@ $mobileLinks = array_slice($_navLinks, 0, 4); // máximo 4 atalhos
 <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-surface-container-high z-[60] pb-safe flex items-center justify-around px-2 pt-2 pb-4 floating-card">
     <?php foreach ($mobileLinks as $link): ?>
         <?php $isActive = $_paginaActual === $link['id']; ?>
-        <a href="<?= $link['url'] ?>" class="flex flex-col items-center justify-center p-2 min-w-[64px] transition-all <?= $isActive ? 'text-black' : 'text-on-surface-variant hover:text-black' ?>">
+        <a href="<?= $link['url'] ?>" class="flex flex-col items-center justify-center p-2 min-w-[64px] transition-all <?= $isActive ? 'text-primary' : 'text-on-surface-variant hover:text-primary' ?>">
             <div class="<?= $isActive ? 'bg-surface-container-low px-4 py-1 rounded-full' : 'px-4 py-1' ?> transition-all">
                 <span class="material-symbols-outlined <?= $isActive ? 'icon-filled text-[24px]' : 'icon-outline text-[24px]' ?>"><?= $link['icon'] ?></span>
             </div>
