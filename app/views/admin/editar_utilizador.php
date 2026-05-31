@@ -32,6 +32,7 @@ unset($_SESSION['erro']);
 ?>
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,182 +43,376 @@ unset($_SESSION['erro']);
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cor-scrollbar-light); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cor-scrollbar-light-hover); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        .fade-in-delay-1 { animation: fadeIn 0.5s ease-out 0.1s forwards; opacity: 0; }
-        .floating-card { box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 10px -2px rgba(0,0,0,0.03); }
-        .tactile-input {
+
+        /* ─── Entrance Animations ─── */
+        @keyframes glideIn {
+            0% { opacity: 0; transform: translateY(30px) scale(0.97); filter: blur(6px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        .glide-in { animation: glideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .stagger-1 { animation-delay: 0.08s; }
+        .stagger-2 { animation-delay: 0.16s; }
+
+        /* ─── Floating Label Field ─── */
+        .field-wrap {
+            position: relative;
             width: 100%;
-            padding: 14px 16px;
-            border: 1px solid var(--cor-scrollbar-light);
+            height: 3.8rem;
+        }
+        .field-wrap .field-icon {
+            position: absolute;
+            left: 1.15rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 22px;
+            color: var(--cor-input-placeholder);
+            pointer-events: none;
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+        .field-wrap .fi {
+            width: 100%;
+            height: 100%;
+            background: var(--cor-input-bg);
+            border: 2px solid transparent;
             border-radius: 0.75rem;
-            font-size: 14px;
-            color: var(--cor-chart-dark);
-            background: var(--cor-surface-container-lowest);
-            transition: all 0.2s;
-        }
-        .tactile-input:focus {
+            padding: 1.6rem 1.25rem 0.5rem 3.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--cor-on-surface);
+            font-family: 'Manrope', sans-serif;
             outline: none;
-            border-color: var(--cor-toast-bg);
-            box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
+            transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+            -webkit-appearance: none;
+            appearance: none;
+            line-height: 1.2;
         }
-        .tactile-label {
-            display: block;
-            font-size: 12px;
+        .field-wrap .fi::placeholder { color: transparent; }
+        .field-wrap .fi:focus {
+            background: var(--cor-surface-container-lowest);
+            border-color: var(--cor-on-surface);
+            box-shadow: 0 6px 24px -4px rgba(0,0,0,0.06);
+        }
+        .field-wrap .fi:focus ~ .field-icon { color: var(--cor-on-surface); }
+
+        /* Floating label */
+        .field-wrap .fl {
+            position: absolute;
+            left: 3.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--cor-input-label);
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform-origin: left center;
+            z-index: 2;
+        }
+        .field-wrap .fi:focus ~ .fl,
+        .field-wrap .fi:not(:placeholder-shown) ~ .fl,
+        .field-wrap .fi.has-value ~ .fl {
+            top: 0.85rem;
+            transform: translateY(-50%) scale(0.75);
             font-weight: 800;
-            color: var(--cor-inactive-text);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            color: var(--cor-on-surface);
+            letter-spacing: 0.04em;
+        }
+
+        /* Select arrow */
+        .field-wrap .select-arrow {
+            position: absolute;
+            right: 1.15rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 22px;
+            color: var(--cor-input-placeholder);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .field-wrap .fi:focus ~ .select-arrow { color: var(--cor-on-surface); transform: translateY(-50%) rotate(180deg); }
+
+        /* Hint text below field */
+        .field-hint {
+            margin-top: 0.4rem;
+            margin-left: 1rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--cor-input-placeholder);
+            letter-spacing: 0.02em;
+        }
+
+        /* ─── Buttons ─── */
+        .btn-action { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .btn-action:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -6px rgba(0,0,0,0.15); }
+        .btn-action:active { transform: scale(0.97) translateY(0); }
+
+        /* ─── Conditional fields ─── */
+        .campo-medico {
+            display: none; max-height: 0; opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.4s ease 0.1s;
+        }
+        .campo-medico.visivel {
+            display: block; max-height: 200px; opacity: 1; overflow: visible;
+        }
+
+        /* ─── Section divider ─── */
+        .section-divider {
+            display: flex; align-items: center; gap: 1rem;
+            margin: 2.5rem 0 2rem;
+        }
+        .section-divider::before,
+        .section-divider::after {
+            content: ''; flex: 1; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
+        }
+        .section-divider span {
+            font-size: 0.7rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.12em;
+            color: var(--cor-input-placeholder); white-space: nowrap;
         }
     </style>
 </head>
 
 <body class="text-on-surface h-screen overflow-hidden bg-background">
-
     <?php $paginaActual = 'utilizadores'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
-
-    <?php ob_start(); ?>
-        <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="text-xs px-4 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-black rounded-full font-bold transition-all border border-primary/5 flex items-center gap-1">
-            <span class="material-symbols-outlined text-[16px]">arrow_back</span> Voltar ao Perfil
-        </a>
+    
+    <?php
+    $tituloPagina = 'Utilizadores';
+    ob_start(); ?>
+    <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="px-4 py-2 bg-white rounded-full flex items-center gap-2 border border-primary/5 shadow-sm hover:bg-gray-50 transition-colors">
+        <span class="material-symbols-outlined text-[16px] text-on-surface-variant">arrow_back</span>
+        <span class="text-xs font-bold text-on-surface">Voltar ao Perfil</span>
+    </a>
     <?php $accoesPagina = ob_get_clean(); ?>
 
-    <?php $tituloPagina = 'Editar Conta: ' . htmlspecialchars(explode(' ', $u['nome'])[0]); ?>
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
-    <div class="ml-56 mt-28 h-[calc(100vh-7rem)] flex flex-col">
-        <div class="flex-1 overflow-y-auto custom-scrollbar">
-            <main class="w-full max-w-[800px] mx-auto px-8 pb-24 pt-8">
+    <main class="ml-64 pt-24 h-screen overflow-y-auto custom-scrollbar">
+        <div class="p-8 max-w-[1400px] mx-auto min-h-full pb-24">
+            
+            <?php if ($erro): ?>
+                <div class="mb-6 p-4 bg-red-50 rounded-2xl flex items-center gap-3 border border-red-100 glide-in">
+                    <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-white text-[16px]">error</span>
+                    </div>
+                    <p class="text-sm font-bold text-red-800"><?= htmlspecialchars($erro) ?></p>
+                </div>
+            <?php endif; ?>
 
-                <div class="mb-8 fade-in">
-                    <h2 class="text-4xl font-headline font-extrabold tracking-tighter mb-2 text-on-surface">Editar Utilizador</h2>
-                    <p class="text-on-surface-variant font-medium">Modifique as credenciais, dados pessoais ou nível de acesso.</p>
+            <!-- Page Title -->
+            <div class="mb-10 flex justify-between items-end glide-in">
+                <div>
+                    <h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Editar Conta</h2>
+                    <p class="text-sm text-on-surface-variant font-medium mt-1">Modifique as credenciais, dados pessoais ou nível de acesso.</p>
+                </div>
+            </div>
+
+            <!-- Split Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 glide-in stagger-1">
+                
+                <!-- Left: Info Panel -->
+                <div class="lg:col-span-4 flex flex-col gap-6">
+                    <div class="bg-primary text-white rounded-[2rem] p-8 shadow-lg relative overflow-hidden sticky top-8">
+                        <div class="absolute -right-10 -bottom-10 opacity-[0.07]">
+                            <span class="material-symbols-outlined text-[160px]">manage_accounts</span>
+                        </div>
+                        <div class="w-12 h-12 bg-white/15 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
+                            <span class="material-symbols-outlined text-white text-xl">shield_person</span>
+                        </div>
+                        <h3 class="font-headline font-extrabold text-2xl mb-3 tracking-tight">Actualização Segura</h3>
+                        <p class="text-sm text-white/70 font-medium leading-relaxed mb-8">
+                            Modifique as permissões de acesso com cuidado. Qualquer mudança de nível de acesso entra em vigor imediatamente para a segurança dos dados hospitalares.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3 text-sm font-semibold">
+                                <span class="material-symbols-outlined text-[18px] text-white/60" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span> Administrador
+                            </div>
+                            <div class="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3 text-sm font-semibold">
+                                <span class="material-symbols-outlined text-[18px] text-white/60" style="font-variation-settings: 'FILL' 1;">stethoscope</span> Médico
+                            </div>
+                            <div class="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3 text-sm font-semibold">
+                                <span class="material-symbols-outlined text-[18px] text-white/60" style="font-variation-settings: 'FILL' 1;">concierge</span> Recepção
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <?php if ($erro): ?>
-                    <div class="mb-6 p-4 bg-error/10 border border-error/20 rounded-2xl flex items-start gap-3 fade-in text-error">
-                        <span class="material-symbols-outlined shrink-0">error</span>
-                        <p class="font-bold text-sm mt-0.5"><?= htmlspecialchars($erro) ?></p>
+                <!-- Right: Form -->
+                <div class="lg:col-span-8">
+                    <div class="bg-white rounded-[2rem] p-8 md:p-10 border border-white/50 shadow-sm glide-in stagger-2">
+                        <form method="POST" id="form-editar" action="<?= BASE_URL ?>app/controllers/estatisticas.php" autocomplete="off">
+                            <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                            <input type="hidden" name="acao" value="editar_utilizador">
+                            <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                            
+                            <!-- Section: Identity -->
+                            <div class="flex items-center gap-3 mb-8">
+                                <div class="w-9 h-9 bg-gray-100 rounded-xl flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px] text-on-surface">badge</span>
+                                </div>
+                                <h4 class="font-extrabold text-lg text-on-surface tracking-tight">Dados do Colaborador</h4>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <!-- Nome Completo -->
+                                <div class="field-wrap">
+                                    <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($u['nome']) ?>" 
+                                        required minlength="3" placeholder=" " class="fi">
+                                    <span class="material-symbols-outlined field-icon">person</span>
+                                    <label for="nome" class="fl">Nome Completo *</label>
+                                </div>
+
+                                <!-- Nome de Utilizador -->
+                                <div>
+                                    <div class="field-wrap">
+                                        <input type="text" id="nome_utilizador" name="nome_utilizador" value="<?= htmlspecialchars($u['nome_utilizador']) ?>" 
+                                            required minlength="3" placeholder=" " pattern="[a-zA-Z0-9_\.]+" class="fi">
+                                        <span class="material-symbols-outlined field-icon">alternate_email</span>
+                                        <label for="nome_utilizador" class="fl">Nome de Utilizador *</label>
+                                    </div>
+                                    <p class="field-hint">Apenas letras, números, _ e ponto.</p>
+                                </div>
+
+                                <!-- Senha -->
+                                <div>
+                                    <div class="field-wrap">
+                                        <input type="password" id="senha" name="senha" minlength="6" placeholder=" " class="fi">
+                                        <span class="material-symbols-outlined field-icon">lock</span>
+                                        <label for="senha" class="fl">Nova Senha</label>
+                                    </div>
+                                    <p class="field-hint">Deixe em branco para manter a actual.</p>
+                                </div>
+
+                                <!-- Telefone -->
+                                <div class="field-wrap">
+                                    <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($u['telefone'] ?? '') ?>" 
+                                        placeholder=" " class="fi">
+                                    <span class="material-symbols-outlined field-icon">call</span>
+                                    <label for="telefone" class="fl">Telefone de Contacto</label>
+                                </div>
+                            </div>
+
+                            <!-- Section Divider -->
+                            <div class="section-divider">
+                                <span>Permissões</span>
+                            </div>
+
+                            <!-- Section: Permissions -->
+                            <div class="flex items-center gap-3 mb-8">
+                                <div class="w-9 h-9 bg-gray-100 rounded-xl flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px] text-on-surface">tune</span>
+                                </div>
+                                <h4 class="font-extrabold text-lg text-on-surface tracking-tight">Perfil e Especialidade</h4>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <!-- Perfil de Acesso -->
+                                <?php
+                                $sel_id = 'perfil';
+                                $sel_name = 'perfil';
+                                $sel_icon = 'security';
+                                $sel_label = 'Perfil de Acesso *';
+                                $sel_value = $u['perfil'];
+                                $sel_required = true;
+                                $sel_options = [
+                                    '' => ['label' => ' '],
+                                    'recepcionista' => ['label' => 'Recepcionista'],
+                                    'medico' => ['label' => 'Médico'],
+                                    'admin' => ['label' => 'Administrador']
+                                ];
+                                include __DIR__ . '/../comum/custom_select_floating.php';
+                                ?>
+
+                                <!-- Especialidade (condicional) -->
+                                <div class="campo-medico" id="campo-especialidade">
+                                    <?php
+                                    $sel_id = 'especialidade_id';
+                                    $sel_name = 'especialidade_id';
+                                    $sel_icon = 'medical_information';
+                                    $sel_label = 'Especialidade *';
+                                    $sel_value = (string)($u['especialidade_id'] ?? '0');
+                                    $sel_options = ['0' => ['label' => ' ']];
+                                    foreach ($especialidades as $e) {
+                                        $sel_options[(string)$e['id']] = ['label' => htmlspecialchars($e['nome'])];
+                                    }
+                                    include __DIR__ . '/../comum/custom_select_floating.php';
+                                    ?>
+                                </div>
+
+                                <!-- Consultório (condicional) -->
+                                <div class="campo-medico" id="campo-consultorio">
+                                    <?php
+                                    $sel_id = 'consultorio_id';
+                                    $sel_name = 'consultorio_id';
+                                    $sel_icon = 'meeting_room';
+                                    $sel_label = 'Consultório';
+                                    $sel_value = (string)($u['consultorio_id'] ?? '0');
+                                    $sel_options = ['0' => ['label' => ' ']];
+                                    foreach ($consultorios as $c) {
+                                        $sel_options[(string)$c['id']] = ['label' => htmlspecialchars($c['nome'])];
+                                    }
+                                    include __DIR__ . '/../comum/custom_select_floating.php';
+                                    ?>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center justify-end gap-4 mt-12 pt-6 border-t border-primary/5">
+                                <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="font-bold text-sm text-on-surface-variant hover:text-black transition-colors px-6 py-3 rounded-xl hover:bg-gray-50">
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="bg-primary text-white px-9 py-4 rounded-xl font-bold text-sm flex items-center gap-2.5 btn-action shadow-lg shadow-black/10">
+                                    <span class="material-symbols-outlined text-[20px]">save</span>
+                                    Guardar Alterações
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                <?php endif; ?>
+                </div>
 
-                <form method="POST" action="<?= BASE_URL ?>app/controllers/estatisticas.php" class="bg-white p-10 rounded-[2.5rem] floating-card border border-white fade-in-delay-1 space-y-8">
-                    <input type="hidden" name="acao" value="editar_utilizador">
-                    <input type="hidden" name="id" value="<?= $u['id'] ?>">
-                    <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Nome -->
-                        <div class="md:col-span-2">
-                            <label for="nome" class="tactile-label">Nome Completo *</label>
-                            <input type="text" id="nome" name="nome" class="tactile-input" value="<?= htmlspecialchars($u['nome']) ?>" required minlength="3">
-                        </div>
-
-                        <!-- Nome de Utilizador -->
-                        <div>
-                            <label for="nome_utilizador" class="tactile-label">Nome de Acesso *</label>
-                            <input type="text" id="nome_utilizador" name="nome_utilizador" class="tactile-input" value="<?= htmlspecialchars($u['nome_utilizador']) ?>" required minlength="3" pattern="[a-zA-Z0-9_\.]+">
-                            <p class="text-[10px] font-bold text-on-surface-variant mt-2 uppercase tracking-widest">Letras, números, _ e .</p>
-                        </div>
-
-                        <!-- Telefone -->
-                        <div>
-                            <label for="telefone" class="tactile-label">Telefone</label>
-                            <input type="text" id="telefone" name="telefone" class="tactile-input" value="<?= htmlspecialchars($u['telefone'] ?? '') ?>" placeholder="Ex: 923 456 789">
-                        </div>
-
-                        <!-- Senha -->
-                        <div class="md:col-span-2 p-6 bg-surface-container-low/50 rounded-2xl border border-surface-container-low">
-                            <label for="senha" class="tactile-label">Nova Senha</label>
-                            <input type="password" id="senha" name="senha" class="tactile-input bg-white" minlength="6" placeholder="Deixar em branco para manter a actual">
-                            <p class="text-[10px] font-bold text-on-surface-variant mt-2 uppercase tracking-widest">Apenas preencha se desejar alterar a senha</p>
-                        </div>
-
-                        <!-- Perfil -->
-                        <div class="md:col-span-2 mt-4 pt-6 border-t border-surface-container-low">
-                            <label for="perfil" class="tactile-label">Nível de Acesso *</label>
-                            <?php
-                            $sel_id = 'perfil';
-                            $sel_name = 'perfil';
-                            $sel_icon = 'shield_person';
-                            $sel_placeholder = 'Seleccionar perfil';
-                            $sel_value = $u['perfil'];
-                            $sel_required = true;
-                            $sel_options = [
-                                'recepcionista' => ['label' => 'Recepcionista', 'icon' => 'badge', 'color' => 'text-purple-600'],
-                                'medico' => ['label' => 'Médico', 'icon' => 'stethoscope', 'color' => 'text-blue-600'],
-                                'admin' => ['label' => 'Administrador', 'icon' => 'shield_person', 'color' => 'text-on-surface'],
-                            ];
-                            include __DIR__ . '/../comum/custom_select.php';
-                            ?>
-                        </div>
-
-                        <!-- Especialidade (Médico) -->
-                        <div class="campo-medico">
-                            <label for="especialidade_id" class="tactile-label">Especialidade *</label>
-                            <?php
-                            $sel_id = 'especialidade_id';
-                            $sel_name = 'especialidade_id';
-                            $sel_icon = 'medical_services';
-                            $sel_placeholder = '— Seleccionar —';
-                            $sel_value = (string)($u['especialidade_id'] ?? 0);
-                            $sel_options = ['0' => ['label' => '— Seleccionar —', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant']];
-                            foreach ($especialidades as $e) {
-                                $sel_options[(string)$e['id']] = ['label' => htmlspecialchars($e['nome']), 'icon' => 'medical_services', 'color' => 'text-blue-600'];
-                            }
-                            include __DIR__ . '/../comum/custom_select.php';
-                            ?>
-                        </div>
-
-                        <!-- Consultório (Médico) -->
-                        <div class="campo-medico">
-                            <label for="consultorio_id" class="tactile-label">Consultório Vinculado</label>
-                            <?php
-                            $sel_id = 'consultorio_id';
-                            $sel_name = 'consultorio_id';
-                            $sel_icon = 'meeting_room';
-                            $sel_placeholder = '— Seleccionar —';
-                            $sel_value = (string)($u['consultorio_id'] ?? 0);
-                            $sel_options = ['0' => ['label' => '— Seleccionar —', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant']];
-                            foreach ($consultorios as $c) {
-                                $sel_options[(string)$c['id']] = ['label' => htmlspecialchars($c['nome']), 'icon' => 'meeting_room', 'color' => 'text-green-600'];
-                            }
-                            include __DIR__ . '/../comum/custom_select.php';
-                            ?>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-surface-container-low">
-                        <a href="<?= BASE_URL ?>app/views/admin/ver_utilizador.php?id=<?= $u['id'] ?>" class="px-6 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container-low transition-all">Cancelar</a>
-                        <button type="submit" class="px-8 py-3 bg-primary text-white rounded-xl font-bold text-sm shadow hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">save</span> Guardar Alterações
-                        </button>
-                    </div>
-                </form>
-
-            </main>
+            </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        const perfilSelect = document.getElementById('perfil-native');
+        // ─── Toggle Médico fields ───
+        const perfil = document.getElementById('perfil-native');
         const camposMedico = document.querySelectorAll('.campo-medico');
 
         function toggleCamposMedico() {
-            const show = perfilSelect.value === 'medico';
+            const show = perfil.value === 'medico';
             camposMedico.forEach(c => {
-                c.style.display = show ? 'block' : 'none';
+                c.classList.toggle('visivel', show);
             });
             if (!show) {
-                document.getElementById('especialidade_id-native').value = '0';
-                document.getElementById('consultorio_id-native').value = '0';
+                if(typeof CustomSelect !== 'undefined') {
+                    CustomSelect.select('especialidade_id', '0', ' ', '', '');
+                    CustomSelect.select('consultorio_id', '0', ' ', '', '');
+                } else {
+                    document.getElementById('especialidade_id-native').value = '0';
+                    document.getElementById('consultorio_id-native').value = '0';
+                }
             }
+            // Sync floating labels for all selects
+            document.querySelectorAll('select[id$="-native"]').forEach(sel => {
+                if(typeof syncFloatingLabel === 'function') syncFloatingLabel(sel);
+            });
         }
 
-        perfilSelect.addEventListener('change', toggleCamposMedico);
+        perfil.addEventListener('change', toggleCamposMedico);
+        
+        // Init on load
         toggleCamposMedico();
+        // Allow a small delay for custom select components to initialize before syncing labels
+        setTimeout(() => {
+            document.querySelectorAll('select[id$="-native"]').forEach(sel => {
+                if(typeof syncFloatingLabel === 'function') syncFloatingLabel(sel);
+            });
+        }, 100);
     </script>
 </body>
 </html>
