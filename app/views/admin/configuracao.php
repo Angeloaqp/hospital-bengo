@@ -454,38 +454,48 @@ $tabs = [
                     
                     <div class="space-y-4 md:col-span-1 flex flex-col h-[400px]">
                         <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block shrink-0 pl-2">Especialidades</label>
-                        <div class="bg-white border border-surface-container-high rounded-[2.5rem] p-3 flex-1 overflow-y-auto custom-scrollbar shadow-sm">
-                            <div class="space-y-1" id="vinculos_especialidades">
-                                <?php foreach($especialidades as $e): ?>
-                                    <label class="flex items-center justify-between p-3.5 rounded-2xl cursor-pointer transition-all duration-200 border border-transparent hover:bg-surface-container-low has-[:checked]:bg-primary-container has-[:checked]:border-primary/20 group">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-5 h-5 rounded-md border-2 border-outline flex items-center justify-center bg-white group-has-[:checked]:bg-primary group-has-[:checked]:border-primary transition-colors">
-                                                <span class="material-symbols-outlined text-white text-[14px] opacity-0 group-has-[:checked]:opacity-100 transition-opacity font-bold">check</span>
+                        <div class="bg-white border border-surface-container-high rounded-[2.5rem] flex-1 overflow-hidden shadow-sm flex flex-col p-2">
+                            <div class="flex-1 overflow-y-auto custom-scrollbar px-1">
+                                <div class="space-y-1 py-1" id="vinculos_especialidades">
+                                    <?php foreach($especialidades as $e): ?>
+                                        <label class="flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all duration-200 border border-transparent hover:bg-surface-container-low has-[:checked]:bg-primary-container has-[:checked]:border-primary/20 group">
+                                            <div class="flex items-center gap-3 min-w-0">
+                                                <div class="w-5 h-5 rounded-md border-2 border-outline flex items-center justify-center bg-white group-has-[:checked]:bg-primary group-has-[:checked]:border-primary transition-colors shrink-0">
+                                                    <span class="material-symbols-outlined text-white text-[14px] opacity-0 group-has-[:checked]:opacity-100 transition-opacity font-bold">check</span>
+                                                </div>
+                                                <div class="w-8 h-8 rounded-full bg-surface-container-highest/50 flex items-center justify-center group-has-[:checked]:bg-primary/20 transition-colors shrink-0">
+                                                    <span class="material-symbols-outlined text-on-surface-variant group-has-[:checked]:text-primary text-[18px] transition-colors">medical_services</span>
+                                                </div>
+                                                <span class="text-sm font-bold text-on-surface group-has-[:checked]:text-primary transition-colors truncate"><?= htmlspecialchars($e['nome']) ?></span>
                                             </div>
-                                            <span class="text-sm font-bold text-on-surface group-has-[:checked]:text-primary transition-colors"><?= htmlspecialchars($e['nome']) ?></span>
-                                        </div>
-                                        <input type="checkbox" name="especialidades[]" value="<?= $e['id'] ?>" class="hidden checkbox-especialidade">
-                                    </label>
-                                <?php endforeach; ?>
+                                            <input type="checkbox" name="especialidades[]" value="<?= $e['id'] ?>" class="hidden checkbox-especialidade">
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="space-y-4 md:col-span-1 flex flex-col h-[400px]">
                         <label class="text-xs font-extrabold text-on-surface tracking-wider uppercase block shrink-0 pl-2">Consultórios</label>
-                        <div class="bg-white border border-surface-container-high rounded-[2.5rem] p-3 flex-1 overflow-y-auto custom-scrollbar shadow-sm">
-                            <div class="space-y-1" id="vinculos_consultorios">
-                                <?php foreach($consultorios as $c): ?>
-                                    <label class="flex items-center justify-between p-3.5 rounded-2xl cursor-pointer transition-all duration-200 border border-transparent hover:bg-surface-container-low has-[:checked]:bg-primary-container has-[:checked]:border-primary/20 group">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-5 h-5 rounded-md border-2 border-outline flex items-center justify-center bg-white group-has-[:checked]:bg-primary group-has-[:checked]:border-primary transition-colors">
-                                                <span class="material-symbols-outlined text-white text-[14px] opacity-0 group-has-[:checked]:opacity-100 transition-opacity font-bold">check</span>
+                        <div class="bg-white border border-surface-container-high rounded-[2.5rem] flex-1 overflow-hidden shadow-sm flex flex-col p-2">
+                            <div class="flex-1 overflow-y-auto custom-scrollbar px-1">
+                                <div class="space-y-1 py-1" id="vinculos_consultorios">
+                                    <?php foreach($consultorios as $c): ?>
+                                        <label class="flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all duration-200 border border-transparent hover:bg-surface-container-low has-[:checked]:bg-primary-container has-[:checked]:border-primary/20 group">
+                                            <div class="flex items-center gap-3 min-w-0">
+                                                <div class="w-5 h-5 rounded-md border-2 border-outline flex items-center justify-center bg-white group-has-[:checked]:bg-primary group-has-[:checked]:border-primary transition-colors shrink-0">
+                                                    <span class="material-symbols-outlined text-white text-[14px] opacity-0 group-has-[:checked]:opacity-100 transition-opacity font-bold">check</span>
+                                                </div>
+                                                <div class="w-8 h-8 rounded-full bg-surface-container-highest/50 flex items-center justify-center group-has-[:checked]:bg-primary/20 transition-colors shrink-0">
+                                                    <span class="material-symbols-outlined text-on-surface-variant group-has-[:checked]:text-primary text-[18px] transition-colors">meeting_room</span>
+                                                </div>
+                                                <span class="text-sm font-bold text-on-surface group-has-[:checked]:text-primary transition-colors truncate"><?= htmlspecialchars($c['nome']) ?></span>
                                             </div>
-                                            <span class="text-sm font-bold text-on-surface group-has-[:checked]:text-primary transition-colors"><?= htmlspecialchars($c['nome']) ?></span>
-                                        </div>
-                                        <input type="checkbox" name="consultorios[]" value="<?= $c['id'] ?>" class="hidden checkbox-consultorio">
-                                    </label>
-                                <?php endforeach; ?>
+                                            <input type="checkbox" name="consultorios[]" value="<?= $c['id'] ?>" class="hidden checkbox-consultorio">
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
