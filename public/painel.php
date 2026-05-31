@@ -32,63 +32,33 @@ $pColors = [
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Link para a folha de cores global para referências no futuro -->
+    <link rel="stylesheet" href="/hospital-bengo/public/css/colors.css?v=<?= time() ?>">
+    
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "surface-variant": "#e2e2e2",
-                        "surface-container-high": "#e8e8e8",
-                        "on-primary-container": "#ffffff",
-                        "error": "#ba1a1a",
-                        "background": "#f0f0f0", 
-                        "on-tertiary-fixed": "#ffffff",
-                        "primary-fixed": "#5f5e5e",
-                        "on-secondary": "#ffffff",
-                        "secondary-fixed-dim": "#acabab",
-                        "tertiary-container": "#737575",
-                        "surface-dim": "#dadada",
-                        "surface-tint": "#5f5e5e",
-                        "primary": "#000000",
-                        "on-tertiary-container": "#ffffff",
-                        "on-surface": "#1a1c1c",
-                        "on-secondary-fixed": "#1b1c1c",
-                        "surface-bright": "#f9f9f9",
-                        "on-surface-variant": "#474747",
-                        "on-primary": "#ffffff",
-                        "surface-container-low": "#f6f6f6",
-                        "inverse-on-surface": "#f1f1f1",
-                        "surface-container-highest": "#e2e2e2",
-                        "inverse-surface": "#2f3131",
-                        "primary-fixed-dim": "#474746",
-                        "inverse-primary": "#c8c6c5",
-                        "surface-container": "#eeeeee",
-                        "secondary": "#5e5e5e",
-                        "tertiary-fixed": "#5d5f5f",
-                        "on-primary-fixed": "#ffffff",
-                        "tertiary": "#3a3c3c",
-                        "on-error-container": "#410002",
-                        "on-secondary-fixed-variant": "#3b3b3c",
-                        "tertiary-fixed-dim": "#454747",
-                        "secondary-fixed": "#c7c6c6",
-                        "surface-container-lowest": "#ffffff",
-                        "surface": "#ffffff",
-                        "primary-container": "#222222",
-                        "on-secondary-container": "#1b1c1c",
-                        "on-tertiary": "#e2e2e2",
-                        "on-error": "#ffffff",
-                        "on-background": "#1a1c1c",
-                        "outline-variant": "#c6c6c6",
-                        "on-primary-fixed-variant": "#e5e2e1",
-                        "secondary-container": "#d5d4d4",
-                        "error-container": "#ffdad6",
-                        "outline": "#777777",
-                        "on-tertiary-fixed-variant": "#e2e2e2",
-                        "urgent": "#ff5252",
-                        "elderly": "#ffb300",
-                        "priority": "#ab47bc",
-                        "standard": "#29b6f6"
+                        // Cores Centrais do Design System
+                        "primary": "#0A58CA",
+                        "on-primary": "#FFFFFF",
+                        "background": "#F4F6F9", 
+                        "surface": "#FFFFFF",
+                        "surface-container-low": "#F1F5F9",
+                        "on-surface": "#111827",
+                        "on-surface-variant": "#6B7280",
+                        "error": "#EF4444",
+                        "inverse-surface": "#1C1E23",
+                        "on-inverse-surface": "#FFFFFF",
+                        
+                        // Cores Semânticas de Fila
+                        "urgent": "#EF4444",
+                        "elderly": "#F59E0B",
+                        "priority": "#8B5CF6",
+                        "standard": "#0A58CA"
                     },
                     borderRadius: {
                         "DEFAULT": "1rem",
@@ -113,7 +83,7 @@ $pColors = [
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f0f0f0; color: #1a1c1c; overflow: hidden; } 
+        body { font-family: 'Inter', sans-serif; background-color: #F4F6F9; color: #111827; overflow: hidden; } 
         h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Inter', sans-serif; } 
         .text-display-giant { font-size: 7.5rem; line-height: 1; letter-spacing: -0.05em; font-weight: 900; } 
         .text-display-md { font-size: 2.25rem; line-height: 1.1; letter-spacing: -0.04em; font-weight: 700; } 
@@ -139,7 +109,7 @@ $pColors = [
     </style>
 </head>
 
-<body class="w-screen h-screen flex flex-col antialiased bg-[#f0f0f0] p-3 gap-3">
+<body class="w-screen h-screen flex flex-col antialiased bg-background p-3 gap-3">
 
     <!-- Top Navigation Bar / Real-time info -->
     <header class="w-full flex justify-between items-center z-50 px-2 shrink-0">
@@ -148,11 +118,11 @@ $pColors = [
         </div>
         <div class="flex items-center gap-3 font-headline font-bold text-title-lg text-primary">
             <div id="ultima-actualizacao" class="hidden">Atualizado</div> <!-- Referencia JS oculta -->
-            <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-ambient">
+            <div class="flex items-center gap-2 bg-surface px-3 py-1.5 rounded-full shadow-ambient">
                 <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">schedule</span>
                 <span class="font-mono tracking-tighter" id="relogio"><?= date('H:i') ?></span>
             </div>
-            <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-ambient">
+            <div class="flex items-center gap-2 bg-surface px-3 py-1.5 rounded-full shadow-ambient">
                 <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">cloud</span>
                 <span class="font-mono tracking-tighter">24°C</span>
             </div>
@@ -187,7 +157,7 @@ $pColors = [
                     
                     <div class="bg-surface-container-low rounded-2xl p-4 w-full max-w-xl shadow-ambient mt-2 shrink-0 flex flex-col items-center">
                         <p class="text-label-sm text-on-surface-variant mb-1">PACIENTE</p>
-                        <h2 class="text-display-md text-primary font-headline mb-4 truncate w-full">
+                        <h2 class="text-display-md text-on-surface font-headline mb-4 truncate w-full">
                             <?= htmlspecialchars($nomeFormatado) ?>
                         </h2>
                         <div class="bg-primary text-on-primary rounded-full py-3 px-8 inline-flex items-center gap-4 shadow-ambient-lg">
@@ -216,7 +186,7 @@ $pColors = [
                     </div>
                     <div class="flex flex-col">
                         <p class="text-[0.65rem] font-bold text-on-surface-variant mb-0.5 tracking-wider uppercase">EM ESPERA</p>
-                        <p class="text-xl font-headline font-bold text-primary flex items-baseline gap-1"><?= $emEspera ?> <span class="text-base font-normal text-on-surface-variant">pessoas</span></p>
+                        <p class="text-xl font-headline font-bold text-on-surface flex items-baseline gap-1"><?= $emEspera ?> <span class="text-base font-normal text-on-surface-variant">pessoas</span></p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -225,7 +195,7 @@ $pColors = [
                     </div>
                     <div class="flex flex-col">
                         <p class="text-[0.65rem] font-bold text-on-surface-variant mb-0.5 tracking-wider uppercase">TEMPO MÉDIO</p>
-                        <p class="text-xl font-headline font-bold text-primary flex items-baseline gap-1"><?= $tempoMedio ?> <span class="text-base font-normal text-on-surface-variant">minutos</span></p>
+                        <p class="text-xl font-headline font-bold text-on-surface flex items-baseline gap-1"><?= $tempoMedio ?> <span class="text-base font-normal text-on-surface-variant">minutos</span></p>
                     </div>
                 </div>
             </div>
@@ -248,14 +218,14 @@ $pColors = [
                             $nomeC = count($nomeP) > 1 ? $nomeP[0] . ' ' . end($nomeP) : $nomeP[0];
                         ?>
                             <!-- Queue Item -->
-                            <div class="flex items-center justify-between bg-black px-3 rounded-lg shadow-ambient relative overflow-hidden shrink-0 h-auto py-0.5 group">
+                            <div class="flex items-center justify-between bg-inverse-surface px-3 rounded-lg shadow-ambient relative overflow-hidden shrink-0 h-auto py-0.5 group">
                                 <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-<?= $tp['class'] ?>/10 flex items-center justify-center text-<?= $tp['class'] ?>">
+                                    <div class="w-6 h-6 rounded-full bg-<?= $tp['class'] ?>/20 flex items-center justify-center text-<?= $tp['class'] ?>">
                                         <span class="material-symbols-outlined text-sm"><?= $tp['icon'] ?></span>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="font-mono font-black text-base text-white leading-tight"><?= htmlspecialchars($s['codigo']) ?></span>
-                                        <span class="text-[0.7rem] text-gray-300 font-medium leading-none"><?= htmlspecialchars($nomeC) ?></span>
+                                        <span class="font-mono font-black text-base text-on-inverse-surface leading-tight"><?= htmlspecialchars($s['codigo']) ?></span>
+                                        <span class="text-[0.7rem] text-gray-400 font-medium leading-none"><?= htmlspecialchars($nomeC) ?></span>
                                     </div>
                                 </div>
                                 <div class="text-right flex flex-col items-end gap-0">
@@ -290,9 +260,9 @@ $pColors = [
                     <!-- Last Called List -->
                     <div class="flex-1 flex flex-col gap-2 overflow-y-auto pr-1 pb-1">
                         <?php foreach ($concluidas as $s): ?>
-                            <div class="flex items-center justify-between px-2 bg-black rounded-md shadow-ambient shrink-0 h-auto py-0.5">
-                                <span class="font-mono font-bold text-[0.8rem] text-white"><?= htmlspecialchars($s['codigo']) ?></span>
-                                <span class="text-[0.6rem] font-medium text-gray-300">Concluído</span>
+                            <div class="flex items-center justify-between px-2 bg-inverse-surface rounded-md shadow-ambient shrink-0 h-auto py-0.5">
+                                <span class="font-mono font-bold text-[0.8rem] text-on-inverse-surface"><?= htmlspecialchars($s['codigo']) ?></span>
+                                <span class="text-[0.6rem] font-medium text-gray-400">Concluído</span>
                             </div>
                         <?php endforeach; ?>
                         <?php if (empty($concluidas)) echo '<span class="text-[0.6rem] text-gray-400 text-center py-2">Sem histórico</span>'; ?>
@@ -301,9 +271,9 @@ $pColors = [
                     <!-- Absent List -->
                     <div class="flex-1 flex flex-col gap-2 overflow-y-auto pr-1 pb-1">
                         <?php foreach ($canceladas as $s): ?>
-                            <div class="flex items-center justify-between px-2 bg-black rounded-md shadow-ambient shrink-0 h-auto py-0.5">
-                                <span class="font-mono font-bold text-[0.8rem] text-white"><?= htmlspecialchars($s['codigo']) ?></span>
-                                <span class="text-white font-bold uppercase tracking-widest text-[0.45rem]">CANCELADO</span>
+                            <div class="flex items-center justify-between px-2 bg-inverse-surface rounded-md shadow-ambient shrink-0 h-auto py-0.5">
+                                <span class="font-mono font-bold text-[0.8rem] text-on-inverse-surface"><?= htmlspecialchars($s['codigo']) ?></span>
+                                <span class="text-error font-bold uppercase tracking-widest text-[0.45rem]">CANCELADO</span>
                             </div>
                         <?php endforeach; ?>
                         <?php if (empty($canceladas)) echo '<span class="text-[0.6rem] text-gray-400 text-center py-2">Sem ausências</span>'; ?>
