@@ -144,10 +144,35 @@ if ($acao === 'criar_utilizador') {
             'foto_path' => $fotoPath,
         ]);
 
-        $_SESSION['mensagem'] =
-            'Utilizador "' . $nome . '" criado com sucesso.';
+        // Buscar nomes da especialidade e consultório para o card de confirmação
+        $espNome = '';
+        $consNome = '';
+        if ($espId > 0) {
+            $espList = Estatistica::listarEspecialidades();
+            foreach ($espList as $e) {
+                if ((int)$e['id'] === $espId) { $espNome = $e['nome']; break; }
+            }
+        }
+        if ($consId > 0) {
+            $consList = Estatistica::listarConsultorios();
+            foreach ($consList as $c) {
+                if ((int)$c['id'] === $consId) { $consNome = $c['nome']; break; }
+            }
+        }
+
+        $_SESSION['utilizador_criado'] = [
+            'nome' => $nome,
+            'nome_utilizador' => $username,
+            'perfil' => $perfil,
+            'especialidade' => $espNome,
+            'consultorio' => $consNome,
+            'telefone' => $telefone,
+            'foto_path' => $fotoPath,
+            'data' => date('d/m/y'),
+        ];
+
         header('Location: ' . BASE_URL .
-            'app/views/admin/utilizadores.php');
+            'app/views/admin/criar_utilizador.php');
         exit;
 
     } catch (PDOException $e) {

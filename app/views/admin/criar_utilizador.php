@@ -16,7 +16,8 @@ $consultorios = Estatistica::listarConsultorios();
 
 $erro = $_SESSION['erro'] ?? '';
 $form = $_SESSION['form_data'] ?? [];
-unset($_SESSION['erro'], $_SESSION['form_data']);
+$criado = $_SESSION['utilizador_criado'] ?? null;
+unset($_SESSION['erro'], $_SESSION['form_data'], $_SESSION['utilizador_criado']);
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -213,6 +214,100 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
     <main class="ml-64 pt-24 h-screen overflow-y-auto custom-scrollbar">
         <div class="p-8 max-w-[1400px] mx-auto min-h-full pb-24">
             
+            <?php if ($criado): ?>
+            <!-- ═══════════ SUCCESS CARD ═══════════ -->
+            <div class="flex flex-col items-center justify-center min-h-[60vh] glide-in">
+                <!-- Success Banner -->
+                <div class="w-full max-w-lg mb-8 p-4 bg-green-50 rounded-2xl flex items-center gap-3 border border-green-100">
+                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-white text-[16px]">check</span>
+                    </div>
+                    <p class="text-sm font-bold text-green-800">Utilizador "<?= htmlspecialchars($criado['nome']) ?>" criado com sucesso.</p>
+                </div>
+
+                <!-- User Card -->
+                <div class="bg-white rounded-[2rem] shadow-lg border border-surface-container-high/50 w-full max-w-sm overflow-hidden">
+                    <!-- Card Top -->
+                    <div class="p-8 pb-6 flex flex-col items-center text-center">
+                        <!-- Avatar -->
+                        <?php if (!empty($criado['foto_path'])): ?>
+                            <div class="w-20 h-20 rounded-full bg-primary flex items-center justify-center mb-4 shadow-md overflow-hidden ring-4 ring-primary/10">
+                                <img src="<?= BASE_URL ?>public/<?= htmlspecialchars($criado['foto_path']) ?>" alt="Foto" class="w-full h-full object-cover">
+                            </div>
+                        <?php else: ?>
+                            <div class="w-20 h-20 rounded-full bg-primary flex items-center justify-center mb-4 shadow-md ring-4 ring-primary/10">
+                                <span class="text-white text-3xl font-extrabold"><?= mb_strtoupper(mb_substr($criado['nome'], 0, 1)) ?></span>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Name & Role -->
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="text-xl font-headline font-extrabold text-on-surface tracking-tight"><?= htmlspecialchars($criado['nome']) ?></h3>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-bold text-on-surface-variant capitalize"><?= htmlspecialchars(ucfirst($criado['perfil'])) ?></span>
+                            <?php if (!empty($criado['especialidade'])): ?>
+                                <span class="text-on-surface-variant/40">·</span>
+                                <span class="text-sm font-bold text-on-surface-variant"><?= htmlspecialchars($criado['especialidade']) ?></span>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Status dot -->
+                        <div class="flex items-center gap-1.5 mt-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+                            <span class="text-xs font-bold text-green-600">Activo</span>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="flex flex-wrap justify-center gap-2 mt-5">
+                            <span class="px-3 py-1.5 bg-surface-container-low rounded-full text-xs font-extrabold text-on-surface"><?= htmlspecialchars(ucfirst($criado['perfil'])) ?></span>
+                            <?php if (!empty($criado['especialidade'])): ?>
+                                <span class="px-3 py-1.5 bg-surface-container-low rounded-full text-xs font-extrabold text-on-surface"><?= htmlspecialchars($criado['especialidade']) ?></span>
+                            <?php endif; ?>
+                            <?php if (!empty($criado['consultorio'])): ?>
+                                <span class="px-3 py-1.5 bg-surface-container-low rounded-full text-xs font-extrabold text-on-surface"><?= htmlspecialchars($criado['consultorio']) ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="border-t border-surface-container-high/50 mx-6"></div>
+
+                    <!-- Card Metadata -->
+                    <div class="px-8 py-5 grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-xs font-extrabold text-on-surface-variant tracking-wider uppercase">Utilizador</p>
+                            <p class="text-sm font-bold text-on-surface mt-1">@<?= htmlspecialchars($criado['nome_utilizador']) ?></p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-extrabold text-on-surface-variant tracking-wider uppercase">Estado</p>
+                            <p class="text-sm font-bold text-on-surface mt-1">Activo</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-extrabold text-on-surface-variant tracking-wider uppercase">Registado</p>
+                            <p class="text-sm font-bold text-on-surface mt-1"><?= $criado['data'] ?></p>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="border-t border-surface-container-high/50 mx-6"></div>
+
+                    <!-- Card Actions -->
+                    <div class="px-6 py-5 flex items-center gap-3">
+                        <a href="utilizadores.php" class="flex-1 bg-primary text-white py-3.5 rounded-xl font-extrabold text-sm text-center flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-md">
+                            <span class="material-symbols-outlined text-[18px]">bar_chart</span>
+                            Detalhes Rápidos
+                        </a>
+                        <a href="criar_utilizador.php" class="w-11 h-11 bg-surface-container-low rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all shrink-0">
+                            <span class="material-symbols-outlined text-[20px]">person_add</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <?php else: ?>
+            <!-- ═══════════ FORM ═══════════ -->
+
             <?php if ($erro): ?>
                 <div class="mb-6 p-4 bg-red-50 rounded-2xl flex items-center gap-3 border border-red-100 glide-in">
                     <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shrink-0">
@@ -225,7 +320,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
             <!-- Page Title -->
             <div class="mb-10 flex justify-between items-end glide-in">
                 <div>
-                    <a href="utilizadores.php" class="text-sm font-bold text-on-surface-variant hover:text-black transition-colors flex items-center gap-1 mb-2">
+                    <a href="utilizadores.php" class="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 mb-2">
                         <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                         Voltar à Gestão
                     </a>
@@ -281,7 +376,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                             <!-- Foto Upload -->
                             <div class="flex items-center gap-5 mb-8">
                                 <label for="foto" class="avatar-upload group" id="avatar-container">
-                                    <span class="material-symbols-outlined text-[var(--cor-input-placeholder)] text-2xl avatar-icon group-hover:text-black transition-colors">add_a_photo</span>
+                                    <span class="material-symbols-outlined text-[var(--cor-input-placeholder)] text-2xl avatar-icon group-hover:text-primary transition-colors">add_a_photo</span>
                                     <img id="avatar-preview-img" src="" alt="Foto" class="avatar-preview">
                                 </label>
                                 <input type="file" id="foto" name="foto" accept="image/*" class="hidden" onchange="previewAvatar(this)">
@@ -393,7 +488,7 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
 
                             <!-- Actions -->
                             <div class="flex items-center justify-end gap-4 mt-12 pt-6 border-t border-primary/5">
-                                <a href="utilizadores.php" class="font-bold text-sm text-on-surface-variant hover:text-black transition-colors px-6 py-3 rounded-xl hover:bg-gray-50">
+                                <a href="utilizadores.php" class="font-bold text-sm text-on-surface-variant hover:text-primary transition-colors px-6 py-3 rounded-xl hover:bg-gray-50">
                                     Cancelar
                                 </a>
                                 <button type="submit" class="bg-primary text-white px-9 py-4 rounded-xl font-bold text-sm flex items-center gap-2.5 btn-action shadow-lg shadow-black/10">
@@ -406,52 +501,55 @@ unset($_SESSION['erro'], $_SESSION['form_data']);
                 </div>
 
             </div>
+            <?php endif; ?>
         </div>
     </main>
 
     <script>
         // ─── Toggle Médico fields ───
         const perfil = document.getElementById('perfil-native');
-        const camposMedico = document.querySelectorAll('.campo-medico');
+        if (perfil) {
+            const camposMedico = document.querySelectorAll('.campo-medico');
 
-        function toggleCamposMedico() {
-            const show = perfil.value === 'medico';
-            camposMedico.forEach(c => {
-                c.classList.toggle('visivel', show);
-            });
-            if (!show) {
-                if(typeof CustomSelect !== 'undefined') {
-                    CustomSelect.select('especialidade_id', '0', ' ', '', '');
-                    CustomSelect.select('consultorio_id', '0', ' ', '', '');
+            function toggleCamposMedico() {
+                const show = perfil.value === 'medico';
+                camposMedico.forEach(c => {
+                    c.classList.toggle('visivel', show);
+                });
+                if (!show) {
+                    if(typeof CustomSelect !== 'undefined') {
+                        CustomSelect.select('especialidade_id', '0', ' ', '', '');
+                        CustomSelect.select('consultorio_id', '0', ' ', '', '');
+                    }
+                }
+                // Sync floating labels for all selects
+                document.querySelectorAll('select[id$="-native"]').forEach(sel => {
+                    if(typeof syncFloatingLabel === 'function') syncFloatingLabel(sel);
+                });
+            }
+
+            perfil.addEventListener('change', toggleCamposMedico);
+            
+            // ─── Foto Preview ───
+            window.previewAvatar = function(input) {
+                const container = document.getElementById('avatar-container');
+                const img = document.getElementById('avatar-preview-img');
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        img.src = e.target.result;
+                        container.classList.add('has-image');
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    img.src = '';
+                    container.classList.remove('has-image');
                 }
             }
-            // Sync floating labels for all selects
-            document.querySelectorAll('select[id$="-native"]').forEach(sel => {
-                if(typeof syncFloatingLabel === 'function') syncFloatingLabel(sel);
-            });
-        }
 
-        perfil.addEventListener('change', toggleCamposMedico);
-        
-        // ─── Foto Preview ───
-        function previewAvatar(input) {
-            const container = document.getElementById('avatar-container');
-            const img = document.getElementById('avatar-preview-img');
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    img.src = e.target.result;
-                    container.classList.add('has-image');
-                }
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                img.src = '';
-                container.classList.remove('has-image');
-            }
+            // Init on load
+            toggleCamposMedico();
         }
-
-        // Init on load
-        toggleCamposMedico();
     </script>
 </body>
 </html>
