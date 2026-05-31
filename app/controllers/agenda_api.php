@@ -143,25 +143,48 @@ if ($acao === 'medicos_da_especialidade') {
     $espId = (int) ($_GET['especialidade_id'] ?? 0);
     
     $db = Database::ligar();
-    $sql = "SELECT u.id, u.nome, e.nome as especialidade_nome, c.nome as consultorio_nome, c.id as consultorio_id
+    $sql = "SELECT u.id, u.nome, 
+            (
+                SELECT GROUP_CONCAT(DISTINCT esp.nome SEPARATOR ', ')
+                FROM especialidades esp
+                LEFT JOIN medico_especialidades me ON me.especialidade_id = esp.id
+                WHERE me.medico_id = u.id OR esp.id = u.especialidade_id
+            ) as especialidades_concat,
+            c.nome as consultorio_nome, c.id as consultorio_id
             FROM utilizadores u
-            LEFT JOIN especialidades e ON u.especialidade_id = e.id
             LEFT JOIN consultorios c ON u.consultorio_id = c.id
             WHERE u.perfil = 'medico' AND u.estado = 1";
             
-    $params = [];
     if ($espId > 0) {
-        $sql .= " AND u.especialidade_id = :espId";
-        $params[':espId'] = $espId;
+        $sql .= " AND (u.especialidade_id = " . $espId . " OR u.id IN (SELECT medico_id FROM medico_especialidades WHERE especialidade_id = " . $espId . "))";
     }
     
     $sql .= " ORDER BY u.nome ASC";
     
     $stmt = $db->prepare($sql);
-    $stmt->execute($params);
+    $stmt->execute();
     $medicos = $stmt->fetchAll();
     
     echo json_encode(['medicos' => $medicos]);
+    exit;
+}
+
+// ------------------------------------------------
+// Obter horários de um médico (Disponibilidades)
+// ------------------------------------------------
+if ($acao === 'horario_medico') {
+    $medicoId = (int) ($_GET['medico_id'] ?? 0);
+    
+    $db = Database::ligar();
+    $stmt = $db->prepare(
+        "SELECT dia_semana, turno, capacidade, data_disponibilidade 
+         FROM disponibilidades_medicas 
+         WHERE medico_id = :med AND activo = 1"
+    );
+    $stmt->execute([':med' => $medicoId]);
+    $horarios = $stmt->fetchAll();
+    
+    echo json_encode(['horarios' => $horarios]);
     exit;
 }
 

@@ -393,3 +393,22 @@ INSERT INTO `utilizadores` (`nome`, `nome_utilizador`, `senha_hash`, `perfil`, `
 ('Administrador', 'admin', '$2y$10$YfPFz1.t6mBwVNH1bGEJa.kT8a8cSxU1qQx9aH.dGOaEPwF5Gm1mK', 'admin', NULL, NULL, 1),
 ('Dr. Exemplo', 'medico', '$2y$10$YfPFz1.t6mBwVNH1bGEJa.kT8a8cSxU1qQx9aH.dGOaEPwF5Gm1mK', 'medico', 1, 1, 1),
 ('Recepcao Geral', 'recepcao', '$2y$10$YfPFz1.t6mBwVNH1bGEJa.kT8a8cSxU1qQx9aH.dGOaEPwF5Gm1mK', 'recepcionista', NULL, NULL, 1);
+
+-- ------------------------------------------------
+-- 16. Vinculos de Medicos
+-- ------------------------------------------------
+CREATE TABLE IF NOT EXISTS `medico_especialidades` (
+  `medico_id` int(10) unsigned NOT NULL,
+  `especialidade_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`medico_id`, `especialidade_id`),
+  CONSTRAINT `fk_me_medico` FOREIGN KEY (`medico_id`) REFERENCES `utilizadores` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_me_especialidade` FOREIGN KEY (`especialidade_id`) REFERENCES `especialidades` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `medico_consultorios_adicionais` (
+  `medico_id` int(10) unsigned NOT NULL,
+  `consultorio_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`medico_id`, `consultorio_id`),
+  CONSTRAINT `fk_mca_medico` FOREIGN KEY (`medico_id`) REFERENCES `utilizadores` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_mca_consultorio` FOREIGN KEY (`consultorio_id`) REFERENCES `consultorios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -520,6 +520,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
         let pacienteIdInicial = <?= $pacienteIdGet ?>;
         let isSubmitting = false;
         let bookingState = 'initial';
+        let medicoHorarios = [];
 
         // Helpers to update indicators
         function updateIndicator(stepId, isComplete) {
@@ -772,7 +773,8 @@ $subtituloPagina = 'Agendar consulta para data futura';
                     </div>
                     <div>
                         <p class="text-sm font-black text-on-surface">Dr(a). ${m.nome}</p>
-                        <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">${m.consultorio_nome || 'Sem Consultório Base'}</p>
+                        <p class="text-[11px] text-primary font-bold mt-0.5">${m.especialidades_concat || 'Clínico Geral'}</p>
+                        <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mt-0.5">${m.consultorio_nome || 'Sem Consultório Base'}</p>
                     </div>
                     <div class="absolute top-4 right-4 w-4 h-4 rounded-full border-2 border-surface-variant peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center transition-colors">
                         <div class="w-1.5 h-1.5 bg-white rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></div>
@@ -791,7 +793,13 @@ $subtituloPagina = 'Agendar consulta para data futura';
             document.getElementById('resumo-consultorio').textContent = radio.dataset.consNome;
             updateIndicator('step3-indicator', true);
 
-            if (!mesmoDia) checkCapacidade();
+            fetch(BASE + 'app/controllers/agenda_api.php?acao=horario_medico&medico_id=' + radio.value)
+                .then(r => r.json()).then(d => {
+                    medicoHorarios = d.horarios || [];
+                    renderCalendar();
+                    updateTurnoDisponibilidade();
+                    if (!mesmoDia) checkCapacidade();
+                });
         }
 
         // ==========================================
@@ -844,13 +852,18 @@ $subtituloPagina = 'Agendar consulta para data futura';
                 let dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
                 let isPast = thisDate < today;
                 let isSelected = dateStr === selectedDateStr;
+                
+                let dbDay = thisDate.getDay() === 0 ? 7 : thisDate.getDay();
+                let hasVaga = medicoHorarios.some(h => (h.data_disponibilidade === dateStr) || (!h.data_disponibilidade && parseInt(h.dia_semana) === dbDay));
+
+                let dotHtml = hasVaga && !isPast ? '<div class="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-green-500"></div>' : '';
 
                 if (isPast) {
-                    html += `<button type="button" disabled class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all disabled:opacity-30">${i}</button>`;
+                    html += `<button type="button" disabled class="hover:bg-white rounded-[12px] w-8 h-8 flex flex-col items-center justify-center mx-auto transition-all disabled:opacity-30 relative">${i}</button>`;
                 } else if (isSelected) {
-                    html += `<button type="button" onclick="selectDate('${dateStr}')" class="bg-primary text-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto shadow-md transition-all hover:scale-[1.1]">${i}</button>`;
+                    html += `<button type="button" onclick="selectDate('${dateStr}')" class="bg-primary text-white rounded-[12px] w-8 h-8 flex flex-col items-center justify-center mx-auto shadow-md transition-all hover:scale-[1.1] relative">${i}${dotHtml}</button>`;
                 } else {
-                    html += `<button type="button" onclick="selectDate('${dateStr}')" class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm text-on-surface relative">${i}</button>`;
+                    html += `<button type="button" onclick="selectDate('${dateStr}')" class="hover:bg-white rounded-[12px] w-8 h-8 flex flex-col items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm text-on-surface relative">${i}${dotHtml}</button>`;
                 }
             }
 
@@ -890,7 +903,46 @@ $subtituloPagina = 'Agendar consulta para data futura';
             selectedDateStr = dateStr;
             selData.value = dateStr;
             renderCalendar();
+            updateTurnoDisponibilidade();
             checkCapacidade();
+        }
+
+        function updateTurnoDisponibilidade() {
+            if (!selData.value) return;
+            const dateObj = new Date(selData.value);
+            let dbDay = dateObj.getDay() === 0 ? 7 : dateObj.getDay();
+            
+            let temManha = false;
+            let temTarde = false;
+            
+            medicoHorarios.forEach(h => {
+                const turnoLower = (h.turno || '').toLowerCase();
+                if ((h.data_disponibilidade === selData.value) || (!h.data_disponibilidade && parseInt(h.dia_semana) === dbDay)) {
+                    if (turnoLower === 'manha' || turnoLower === 'manhã' || turnoLower === 'ambos') temManha = true;
+                    if (turnoLower === 'tarde' || turnoLower === 'ambos') temTarde = true;
+                }
+            });
+            
+            const btnManha = document.getElementById('turno-manha');
+            const btnTarde = document.getElementById('turno-tarde');
+            if(!btnManha || !btnTarde) return;
+            
+            const labelManha = btnManha.closest('label');
+            const labelTarde = btnTarde.closest('label');
+            
+            if (!temManha && temTarde) {
+                btnTarde.checked = true;
+            } else if (temManha && !temTarde) {
+                btnManha.checked = true;
+            }
+            
+            labelManha.style.opacity = temManha ? '1' : '0.4';
+            labelManha.style.pointerEvents = temManha ? 'auto' : 'none';
+            btnManha.disabled = !temManha;
+            
+            labelTarde.style.opacity = temTarde ? '1' : '0.4';
+            labelTarde.style.pointerEvents = temTarde ? 'auto' : 'none';
+            btnTarde.disabled = !temTarde;
         }
 
         function updateResumoData() {
