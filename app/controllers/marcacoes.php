@@ -329,9 +329,20 @@ if ($acao === 'triagem') {
         );
 
         $_SESSION['mensagem'] = 'Triagem registada com sucesso.';
+        
+        if (isset($_POST['ajax'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'success', 'mensagem' => $_SESSION['mensagem']]);
+            exit;
+        }
 
     } catch (Exception $e) {
         $_SESSION['erro'] = 'Erro na triagem: ' . $e->getMessage();
+        if (isset($_POST['ajax'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'erro' => $_SESSION['erro']]);
+            exit;
+        }
     }
 
     header('Location: ' . $destino);

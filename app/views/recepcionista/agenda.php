@@ -256,6 +256,11 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
                                 <?= htmlspecialchars($m['senha_codigo']) ?>
                             </span>
                         <?php endif; ?>
+                        <?php if(!empty($m['triagem_id'])): ?>
+                            <span class="inline-flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-700 rounded-full shadow-sm ml-1" title="Triagem Efetuada">
+                                <span class="material-symbols-outlined text-[12px]">vital_signs</span>
+                            </span>
+                        <?php endif; ?>
                         
                         <!-- Hover Overlay -->
                         <div class="absolute inset-0 bg-black/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
@@ -305,7 +310,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 
 <!-- Modal Triagem -->
 <div id="modal-triagem" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
-<div class="bg-white rounded-[2rem] w-full max-w-2xl p-8 floating-card max-h-[90vh] overflow-y-auto">
+<div class="bg-blue-50/40 rounded-[2rem] w-full max-w-2xl p-8 floating-card max-h-[90vh] overflow-y-auto border border-blue-100 shadow-2xl backdrop-blur-md">
 <div class="flex items-center gap-3 mb-2">
     <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
         <span class="material-symbols-outlined">vital_signs</span>
@@ -320,6 +325,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" id="form-triagem">
     <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
     <input type="hidden" name="acao" value="triagem">
+    <input type="hidden" name="ajax" value="1">
     <input type="hidden" name="marcacao_id" id="triagem-marcacao-id" value="">
     
     <div class="space-y-6">
@@ -332,8 +338,8 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
         </div>
 
         <!-- Sinais Vitais -->
-        <div class="bg-surface-container-lowest border border-surface-container-high rounded-3xl p-5 shadow-sm">
-            <h4 class="text-xs font-black uppercase tracking-widest text-primary mb-4 flex items-center gap-1">
+        <div class="bg-white/80 border border-blue-100 rounded-3xl p-5 shadow-sm">
+            <h4 class="text-xs font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center gap-1">
                 <span class="material-symbols-outlined text-[16px]">monitor_heart</span> Sinais Vitais
             </h4>
             
@@ -384,7 +390,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
         </div>
 
         <!-- Prioridade -->
-        <div class="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
+        <div class="bg-white/80 rounded-2xl p-4 border border-blue-100 shadow-sm">
             <label class="text-[11px] font-black uppercase tracking-widest text-blue-800 flex items-center gap-1 mb-2">
                 <span class="material-symbols-outlined text-[14px]">flag</span> Prioridade Clínica
             </label>
@@ -503,7 +509,27 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 const estadoBadgeClass = <?= json_encode($estadoBadge) ?>;
 const prioLabels = <?= json_encode($prioLabels) ?>;
 
-function abrirTriagem(id){document.getElementById('triagem-marcacao-id').value=id;document.getElementById('modal-triagem').classList.remove('hidden')}
+function abrirTriagem() {
+    let m = window.marcacaoSelecionada;
+    if(!m) return;
+    
+    document.getElementById('triagem-marcacao-id').value = m.id;
+    
+    // Preencher campos existentes
+    document.querySelector('#form-triagem [name="sintomas"]').value = m.triagem_sintomas || '';
+    document.querySelector('#form-triagem [name="temperatura"]').value = m.triagem_temperatura || '';
+    document.querySelector('#form-triagem [name="pressao_arterial"]').value = m.triagem_pressao_arterial || '';
+    document.querySelector('#form-triagem [name="peso"]').value = m.triagem_peso || '';
+    document.querySelector('#form-triagem [name="frequencia_cardiaca"]').value = m.triagem_frequencia_cardiaca || '';
+    document.querySelector('#form-triagem [name="observacoes_triagem"]').value = m.triagem_observacoes || '';
+    
+    let prio = m.triagem_prioridade || 4;
+    let optBtn = document.querySelector('#cs-prioridade-triagem .cs-option[data-value="'+prio+'"]');
+    if(optBtn) optBtn.click();
+
+    document.getElementById('modal-triagem').classList.remove('hidden');
+}
+
 function fecharTriagem(){document.getElementById('modal-triagem').classList.add('hidden')}
 function abrirRemarcar(id){document.getElementById('remarcar-marcacao-id').value=id;document.getElementById('modal-remarcar').classList.remove('hidden')}
 
@@ -512,6 +538,8 @@ function fecharDetalhes() {
 }
 
 function abrirDetalhes(m) {
+    window.marcacaoSelecionada = m;
+    
     document.getElementById('det-paciente').textContent = m.paciente_nome + ' (' + m.paciente_idade + 'a)';
     document.getElementById('det-info').textContent = m.especialidade_nome + ' • Dr. ' + m.medico_nome;
     
@@ -529,7 +557,7 @@ function abrirDetalhes(m) {
     let accoesHtml = '';
     
     if (m.estado === 'confirmada' || m.estado === 'marcada') {
-        accoesHtml += `<button onclick="fecharDetalhes(); abrirTriagem(${m.id})" class="w-full bg-blue-600 text-white px-4 py-3 rounded-xl text-sm font-black hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+        accoesHtml += `<button onclick="fecharDetalhes(); abrirTriagem()" class="w-full bg-blue-600 text-white px-4 py-3 rounded-xl text-sm font-black hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
             <span class="material-symbols-outlined text-[18px]">vital_signs</span> Fazer Triagem
         </button>`;
         
@@ -599,6 +627,52 @@ function atualizarAgenda(url = null) {
             else container.style.opacity = '1';
         });
 }
+
+// Submeter Triagem via AJAX
+document.getElementById('form-triagem').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let btn = this.querySelector('button[type="submit"]');
+    let originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">autorenew</span> Guardando...';
+    btn.disabled = true;
+
+    fetch(this.action, {
+        method: 'POST',
+        body: new FormData(this)
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+        
+        if (data.status === 'success') {
+            fecharTriagem();
+            Swal.fire({
+                icon: 'success',
+                title: 'Sucesso',
+                text: data.mensagem,
+                timer: 2000,
+                showConfirmButton: false
+            });
+            atualizarAgenda(); // recarregar apenas o calendário
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: data.erro || 'Ocorreu um erro ao guardar a triagem.'
+            });
+        }
+    })
+    .catch(err => {
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Falha de comunicação com o servidor.'
+        });
+    });
+});
 </script>
 <script src="<?= BASE_URL ?>public/assets/js/fila.js"></script>
 </body></html>
