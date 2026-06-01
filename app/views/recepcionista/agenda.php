@@ -116,7 +116,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 </div>
 
 <!-- Filtros -->
-<form method="GET" class="bg-white rounded-[1.5rem] p-5 floating-card border border-white mb-6 relative z-50 fade-in-delay-2">
+<form method="GET" class="bg-white/90 backdrop-blur-md rounded-[1.5rem] p-5 floating-card border border-white mb-6 sticky top-4 z-[90] fade-in-delay-2 shadow-lg">
 <div class="flex flex-wrap gap-3 items-end">
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Data</label>
     <?php 
