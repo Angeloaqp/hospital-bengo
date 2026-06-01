@@ -115,7 +115,7 @@ if ($sel_onchange) {
     </div>
 
     <!-- Dropdown Panel -->
-    <div class="cs-panel absolute top-[calc(100%+8px)] left-0 w-full bg-white <?= $sizePanel ?> floating-card border border-zinc-100 z-[999] max-h-60 overflow-y-auto">
+    <div class="cs-panel absolute top-[calc(100%+8px)] left-0 min-w-full w-max bg-white <?= $sizePanel ?> floating-card border border-zinc-100 z-[999] max-h-60 overflow-y-auto">
         <?php foreach ($sel_options as $val => $opt):
             $isRich = is_array($opt);
             $label = $isRich ? ($opt['label'] ?? $val) : $opt;
@@ -129,7 +129,7 @@ if ($sel_onchange) {
                 <label class="cs-option w-full flex items-center gap-3 <?= $sizeOpt ?> hover:bg-surface-container-low transition-colors text-left cursor-pointer <?= $isActive ? 'active bg-surface-container-low' : '' ?>" data-value="<?= htmlspecialchars($val) ?>">
                     <input type="checkbox" class="w-4 h-4 rounded accent-black" <?= $isActive ? 'checked' : '' ?> onchange="CustomSelect.selectMultiple('<?= $sel_id ?>', '<?= htmlspecialchars($val) ?>', this.checked)">
                     <span class="material-symbols-outlined <?= $color ?> text-[20px]"><?= $icon ?></span>
-                    <span class="text-sm font-semibold"><?= htmlspecialchars($label) ?></span>
+                    <span class="text-sm font-semibold whitespace-nowrap"><?= htmlspecialchars($label) ?></span>
                 </label>
             <?php else: ?>
                 <button type="button"
@@ -137,7 +137,7 @@ if ($sel_onchange) {
                         data-value="<?= htmlspecialchars($val) ?>"
                         onclick="CustomSelect.select('<?= $sel_id ?>', '<?= htmlspecialchars($val) ?>', '<?= htmlspecialchars($label, ENT_QUOTES) ?>', '<?= $icon ?>', '<?= $color ?>')">
                     <span class="material-symbols-outlined <?= $color ?> text-[20px]"><?= $icon ?></span>
-                    <span class="text-sm font-semibold"><?= htmlspecialchars($label) ?></span>
+                    <span class="text-sm font-semibold whitespace-nowrap"><?= htmlspecialchars($label) ?></span>
                 </button>
             <?php endif; ?>
         <?php endforeach; ?>
