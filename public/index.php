@@ -121,7 +121,11 @@ unset($_SESSION['erro_login']);
 <body class="editorial-gradient text-on-surface h-screen overflow-hidden flex font-sans">
 
     <!-- Esquerda: Informação & Branding -->
-    <div class="hidden lg:flex lg:w-1/2 h-full bg-primary relative flex-col justify-between p-12 overflow-hidden fade-in">
+    <div class="hidden lg:flex lg:w-1/2 h-full bg-primary relative flex-col justify-between p-12 overflow-hidden fade-in" style="background-image: url('<?= BASE_URL ?>public/assets/img/login.jpeg'); background-size: cover; background-position: center;">
+        <!-- Overlay escuro/azulado para garantir legibilidade -->
+        <div class="absolute inset-0 bg-primary/80 mix-blend-multiply"></div>
+        <div class="absolute inset-0 bg-black/30"></div>
+        
         <!-- Fundo Decorativo -->
         <div class="absolute -right-20 -top-20 opacity-20 pointer-events-none">
             <span class="material-symbols-outlined text-[400px] text-white">health_and_safety</span>
@@ -150,10 +154,7 @@ unset($_SESSION['erro_login']);
     </div>
 
     <!-- Direita: Login Form -->
-    <div class="w-full lg:w-1/2 h-full flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-y-auto" style="background-image: url('<?= BASE_URL ?>public/assets/img/login.jpeg'); background-size: cover; background-position: center;">
-        <!-- Overlay para garantir legibilidade do texto se a imagem for escura -->
-        <div class="absolute inset-0 bg-white/60 backdrop-blur-[2px]"></div>
-        
+    <div class="w-full lg:w-1/2 h-full flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-y-auto">
         <div class="w-full max-w-[420px] glide-in stagger-1 relative z-10">
             
             <div class="mb-10 text-center lg:text-left">
