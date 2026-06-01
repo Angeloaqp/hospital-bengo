@@ -126,7 +126,7 @@ if ($acao === 'criar') {
 
         // ── Gerar senha automaticamente para TODAS as marcações (válida no dia) ──
         $origemSenha = ($origem === 'mesmo_dia') ? 'mesmo_dia' : 'marcacao';
-        $senhaCodigo = Senha::gerarCodigo($prioridade, $dataConsulta);
+        $senhaCodigo = Senha::gerarCodigo($prioridade, $dataConsulta, $medicoId);
 
         $stmtSenha = $db->prepare(
             "INSERT INTO senhas

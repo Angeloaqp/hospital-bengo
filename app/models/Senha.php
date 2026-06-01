@@ -96,7 +96,7 @@ class Senha
      * Gera o próximo código de senha para uma prioridade
      * Formato: U-001, I-001, G-001, N-001
      */
-    public static function gerarCodigo(int $prioridade, string $dataReferencia = null): string
+    public static function gerarCodigo(int $prioridade, string $dataReferencia = null, ?int $medicoId = null): string
     {
         $prefixos = [
             1 => 'U',
@@ -104,10 +104,23 @@ class Senha
             3 => 'G',
             4 => 'N'
         ];
-        $prefixo = $prefixos[$prioridade] ?? 'N';
+        $prefixoPri = $prefixos[$prioridade] ?? 'N';
         $data = $dataReferencia ?: date('Y-m-d');
 
         $db = Database::ligar();
+        
+        $prefixoMedico = '';
+        if ($medicoId) {
+            $stmtM = $db->prepare("SELECT nome_utilizador FROM utilizadores WHERE id = :id");
+            $stmtM->execute([':id' => $medicoId]);
+            $username = $stmtM->fetchColumn();
+            if ($username) {
+                $prefixoMedico = strtoupper($username) . '-';
+            }
+        }
+        
+        $prefixoFinal = $prefixoMedico . $prefixoPri;
+
         $stmt = $db->prepare(
             "SELECT COUNT(*) FROM senhas s
              LEFT JOIN marcacoes m ON s.marcacao_id = m.id
@@ -117,10 +130,10 @@ class Senha
                  OR (m.id IS NULL AND DATE(s.criado_em) = :d2)
              )"
         );
-        $stmt->execute([':p' => $prefixo . '-%', ':d1' => $data, ':d2' => $data]);
+        $stmt->execute([':p' => $prefixoFinal . '-%', ':d1' => $data, ':d2' => $data]);
         $total = (int) $stmt->fetchColumn();
 
-        return $prefixo . '-' . str_pad($total + 1, 3, '0', STR_PAD_LEFT);
+        return $prefixoFinal . '-' . str_pad($total + 1, 3, '0', STR_PAD_LEFT);
     }
     /**
      * Devolve a próxima senha em espera 
