@@ -126,10 +126,7 @@ unset($_SESSION['erro_login']);
         <div class="absolute inset-0 bg-primary/80 mix-blend-multiply"></div>
         <div class="absolute inset-0 bg-black/30"></div>
         
-        <!-- Fundo Decorativo -->
-        <div class="absolute -right-20 -top-20 opacity-20 pointer-events-none">
-            <span class="material-symbols-outlined text-[400px] text-white">health_and_safety</span>
-        </div>
+
         
         <div class="relative z-10 glide-in stagger-1">
             <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md mb-6 border border-white/20">
@@ -138,18 +135,21 @@ unset($_SESSION['erro_login']);
             <h1 class="text-white text-5xl font-headline font-extrabold tracking-tight mb-4">
                 <?= APP_NOME ?>
             </h1>
-            <p class="text-white/70 text-lg font-medium max-w-md leading-relaxed">
+        </div>
+
+        <div class="relative z-10 glide-in stagger-2 flex flex-col gap-10">
+            <p class="text-white/80 text-lg font-medium max-w-md leading-relaxed">
                 Sistema Integrado de Gestão de Filas Hospitalares.<br>
                 Tecnologia de ponta para um atendimento mais humano e eficiente.
             </p>
-        </div>
-
-        <div class="relative z-10 glide-in stagger-2">
-            <div class="flex items-center gap-3">
-                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.5)]"></span>
-                <span class="text-white/60 text-sm font-bold tracking-widest uppercase">Sistemas Operacionais</span>
+            
+            <div>
+                <div class="flex items-center gap-3">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.5)]"></span>
+                    <span class="text-white/60 text-sm font-bold tracking-widest uppercase">Sistemas Operacionais</span>
+                </div>
+                <p class="text-white/40 text-xs mt-3">Versão <?= APP_VERSAO ?></p>
             </div>
-            <p class="text-white/40 text-xs mt-3">Versão <?= APP_VERSAO ?></p>
         </div>
     </div>
 
