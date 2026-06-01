@@ -148,7 +148,7 @@ CREATE TABLE `senhas` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `marcacao_id` int(10) unsigned DEFAULT NULL COMMENT 'Null para senhas legacy sem marcacao',
   `origem` enum('fila','marcacao','mesmo_dia') NOT NULL DEFAULT 'fila',
-  `codigo` varchar(10) NOT NULL COMMENT 'Ex: U-001, N-012, I-003, G-002',
+  `codigo` varchar(50) NOT NULL COMMENT 'Ex: U-001, N-012, I-003, G-002',
   `paciente_id` int(10) unsigned NOT NULL,
   `tipo_atendimento_id` int(10) unsigned NOT NULL,
   `consultorio_id` int(10) unsigned DEFAULT NULL,
