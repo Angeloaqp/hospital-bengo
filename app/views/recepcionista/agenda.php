@@ -116,14 +116,14 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 </div>
 
 <!-- Filtros -->
-<form method="GET" class="bg-white/90 backdrop-blur-md rounded-[1.5rem] p-5 floating-card border border-white mb-6 sticky top-4 z-[90] fade-in-delay-2 shadow-lg">
+<form id="filtro-agenda" class="bg-white/90 backdrop-blur-md rounded-[1.5rem] p-5 floating-card border border-white mb-6 sticky top-24 z-[90] fade-in-delay-2 shadow-lg">
 <div class="flex flex-wrap gap-3 items-end">
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Data</label>
     <?php 
     $cal_id = 'cal-filtro';
     $cal_name = 'data';
     $cal_value = $dataFiltro;
-    $cal_onchange = 'this.form.submit()';
+    $cal_onchange = 'atualizarAgenda()';
     require __DIR__ . '/../comum/calendario_dropdown.php'; 
     ?>
     </div>
@@ -134,7 +134,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     $sel_icon = 'schedule';
     $sel_placeholder = 'Todos';
     $sel_value = $turnoFiltro;
-    $sel_onchange = 'this.form.submit()';
+    $sel_onchange = 'atualizarAgenda()';
     $sel_size = 'sm';
     $sel_options = [
         '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
@@ -154,7 +154,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     $sel_icon = 'person';
     $sel_placeholder = 'Todos';
     $sel_value = (string)$medicoFiltro;
-    $sel_onchange = 'this.form.submit()';
+    $sel_onchange = 'atualizarAgenda()';
     $sel_size = 'sm';
     $sel_options = ['' => ['label' => 'Todos', 'icon' => 'groups', 'color' => 'text-on-surface-variant']];
     foreach($medicos as $med) {
@@ -169,7 +169,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     $sel_icon = 'info';
     $sel_placeholder = 'Todos';
     $sel_value = $estadoFiltro;
-    $sel_onchange = 'this.form.submit()';
+    $sel_onchange = 'atualizarAgenda()';
     $sel_size = 'sm';
     $sel_options = [
         '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
@@ -183,15 +183,22 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     include __DIR__ . '/../comum/custom_select.php';
     ?></div>
     <div class="flex gap-2">
-        <a href="?data=<?= date('Y-m-d', strtotime($dataInicio.' -7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">← Anterior</a>
-        <a href="?data=<?= date('Y-m-d') ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>" class="bg-primary text-white px-3 py-2 rounded-xl text-sm font-bold hover:scale-105 transition-transform">Semana Atual</a>
-        <a href="?data=<?= date('Y-m-d', strtotime($dataInicio.' +7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">Seguinte →</a>
+    <div class="flex gap-2">
+        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d', strtotime($dataInicio.' -7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">← Anterior</button>
+        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d') ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-primary text-white px-3 py-2 rounded-xl text-sm font-bold hover:scale-105 transition-transform">Semana Atual</button>
+        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d', strtotime($dataInicio.' +7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">Seguinte →</button>
+    </div>
     </div>
 </div>
 </form>
 
 <!-- Calendário Semanal -->
-<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white mb-6 fade-in-delay-3 overflow-hidden">
+<div id="calendario-container">
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white mb-6 fade-in-delay-3 overflow-hidden relative">
+    <!-- Indicador de Carregamento -->
+    <div id="loading-overlay" class="absolute inset-0 bg-white/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+        <span class="material-symbols-outlined animate-spin text-primary text-4xl">autorenew</span>
+    </div>
 <div class="flex justify-between items-center mb-6">
     <h3 class="text-xl font-headline font-extrabold tracking-tight">Semana de <?= dataFormatoPT($dataInicio) ?> a <?= dataFormatoPT($dataFim) ?></h3>
     <p class="text-on-surface-variant font-bold text-sm"><?= count($agendaRaw) ?> marcações</p>
@@ -260,6 +267,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
         </div>
     </div>
     <?php endforeach; ?>
+</div>
 </div>
 </div>
 </div>
@@ -488,6 +496,47 @@ function abrirDetalhes(m) {
     
     document.getElementById('det-accoes').innerHTML = accoesHtml;
     document.getElementById('modal-detalhes').classList.remove('hidden');
+}
+
+function atualizarAgenda(url = null) {
+    let form = document.getElementById('filtro-agenda');
+    let overlay = document.getElementById('loading-overlay');
+    let container = document.getElementById('calendario-container');
+    
+    // Mostra indicador de carregamento, se existir
+    if(overlay) overlay.classList.remove('hidden');
+    else container.style.opacity = '0.5';
+
+    let fetchUrl = url;
+    if (!fetchUrl) {
+        let formData = new FormData(form);
+        let queryString = new URLSearchParams(formData).toString();
+        fetchUrl = '?' + queryString;
+    }
+
+    // Atualiza a URL no histórico (sem recarregar a página)
+    window.history.pushState({}, '', fetchUrl);
+
+    fetch(fetchUrl)
+        .then(response => response.text())
+        .then(html => {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(html, 'text/html');
+            let novoCalendario = doc.getElementById('calendario-container');
+            
+            if (novoCalendario) {
+                container.innerHTML = novoCalendario.innerHTML;
+            } else {
+                console.error("Não foi possível encontrar #calendario-container na resposta.");
+                if(overlay) overlay.classList.add('hidden');
+                else container.style.opacity = '1';
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar agenda:', error);
+            if(overlay) overlay.classList.add('hidden');
+            else container.style.opacity = '1';
+        });
 }
 </script>
 <script src="<?= BASE_URL ?>public/assets/js/fila.js"></script>
