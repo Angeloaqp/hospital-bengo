@@ -133,6 +133,68 @@ class Marcacao
     }
 
     // ------------------------------------------------
+    // Listar agenda num intervalo de dias (com filtros opcionais)
+    // ------------------------------------------------
+    public static function listarAgendaIntervalo(
+        string $dataInicio,
+        string $dataFim,
+        ?int $medicoId = null,
+        ?int $especialidadeId = null,
+        ?string $estado = null,
+        ?string $turno = null
+    ): array {
+        $db = Database::ligar();
+        $where = ["m.data_consulta >= :data_inicio AND m.data_consulta <= :data_fim"];
+        $params = [':data_inicio' => $dataInicio, ':data_fim' => $dataFim];
+
+        if ($medicoId) {
+            $where[] = "m.medico_id = :med";
+            $params[':med'] = $medicoId;
+        }
+        if ($especialidadeId) {
+            $where[] = "m.especialidade_id = :esp";
+            $params[':esp'] = $especialidadeId;
+        }
+        if ($estado) {
+            $where[] = "m.estado = :estado";
+            $params[':estado'] = $estado;
+        }
+        if ($turno) {
+            $where[] = "m.turno = :turno";
+            $params[':turno'] = $turno;
+        }
+
+        $sql = "SELECT m.*,
+                       DATE_FORMAT(m.hora_marcacao, '%H:%i') as hora_formatada,
+                       p.nome AS paciente_nome,
+                       p.idade AS paciente_idade,
+                       e.nome AS especialidade_nome,
+                       ta.nome AS tipo_atendimento_nome,
+                       c.nome AS consultorio_nome,
+                       u.nome AS medico_nome,
+                       t.prioridade_clinica AS triagem_prioridade,
+                       s.codigo AS senha_codigo
+                FROM marcacoes m
+                JOIN pacientes p       ON m.paciente_id = p.id
+                JOIN especialidades e  ON m.especialidade_id = e.id
+                JOIN tipos_atendimento ta ON m.tipo_atendimento_id = ta.id
+                LEFT JOIN consultorios c ON m.consultorio_id = c.id
+                JOIN utilizadores u    ON m.medico_id = u.id
+                LEFT JOIN triagens t   ON t.marcacao_id = m.id
+                LEFT JOIN senhas s     ON s.marcacao_id = m.id
+                WHERE " . implode(' AND ', $where) . "
+                ORDER BY m.data_consulta ASC,
+                         m.turno ASC,
+                         COALESCE(m.hora_marcacao, '23:59:59') ASC,
+                         COALESCE(t.prioridade_clinica, m.prioridade) ASC,
+                         m.criado_em ASC";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    // ------------------------------------------------
     // Listar marcações por médico num dia
     // ------------------------------------------------
     public static function listarPorMedicoDia(

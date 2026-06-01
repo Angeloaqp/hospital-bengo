@@ -13,13 +13,33 @@ require_once __DIR__ . '/../../../app/models/Utilizador.php';
 exigirPerfil(['recepcionista', 'admin']);
 $meuPerfilObject = Utilizador::obter((int) sessao('utilizador_id'));
 
-$dataFiltro = trim($_GET['data'] ?? date('Y-m-d'));
+$dataInicio = trim($_GET['data'] ?? date('Y-m-d'));
+$dataFim = date('Y-m-d', strtotime("$dataInicio + 6 days"));
+$dataFiltro = $dataInicio;
+
 $turnoFiltro = trim($_GET['turno'] ?? '');
 $medicoFiltro = !empty($_GET['medico_id']) ? (int) $_GET['medico_id'] : null;
 $estadoFiltro = trim($_GET['estado'] ?? '');
 $checkinId = (int) ($_GET['checkin'] ?? 0);
 
-$agenda = Marcacao::listarAgendaDia($dataFiltro, $medicoFiltro, null, $estadoFiltro ?: null, $turnoFiltro ?: null);
+$agendaRaw = Marcacao::listarAgendaIntervalo($dataInicio, $dataFim, $medicoFiltro, null, $estadoFiltro ?: null, $turnoFiltro ?: null);
+
+// Agrupar por data para a grelha
+$agendaSemana = [];
+$diasSemana = [];
+for ($i = 0; $i < 7; $i++) {
+    $d = date('Y-m-d', strtotime("$dataInicio + $i days"));
+    $diasSemana[] = $d;
+    $agendaSemana[$d] = [];
+}
+
+foreach ($agendaRaw as $m) {
+    $data = $m['data_consulta'];
+    if (isset($agendaSemana[$data])) {
+        $agendaSemana[$data][] = $m;
+    }
+}
+
 $estatsDia = Marcacao::estatisticasDia($dataFiltro);
 $medicos = Disponibilidade::listarMedicos();
 $falhasNotif = Notificacao::listarFalhasRecentes(5);
@@ -123,7 +143,11 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     ];
     include __DIR__ . '/../comum/custom_select.php';
     ?></div>
-    <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Médico</label>
+    <div>
+        <label class="text-[11px] font-black uppercase tracking-widest text-primary flex items-center gap-1 mb-1 bg-primary/10 px-2 py-0.5 rounded-md w-max">
+            <span class="material-symbols-outlined text-[14px]">stethoscope</span>
+            Filtrar por Médico
+        </label>
     <?php
     $sel_id = 'cs-medico';
     $sel_name = 'medico_id';
@@ -159,93 +183,92 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     include __DIR__ . '/../comum/custom_select.php';
     ?></div>
     <div class="flex gap-2">
-        <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' -1 day')) ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">← Anterior</a>
-        <a href="?data=<?= date('Y-m-d') ?>" class="bg-primary text-white px-3 py-2 rounded-xl text-sm font-bold hover:scale-105 transition-transform">Hoje</a>
-        <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' +1 day')) ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">Seguinte →</a>
+        <a href="?data=<?= date('Y-m-d', strtotime($dataInicio.' -7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">← Anterior</a>
+        <a href="?data=<?= date('Y-m-d') ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>" class="bg-primary text-white px-3 py-2 rounded-xl text-sm font-bold hover:scale-105 transition-transform">Semana Atual</a>
+        <a href="?data=<?= date('Y-m-d', strtotime($dataInicio.' +7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">Seguinte →</a>
     </div>
 </div>
 </form>
 
-<!-- Tabela da Agenda -->
-<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white mb-6 fade-in-delay-3">
-<h3 class="text-lg font-black tracking-tight mb-4"><?= count($agenda) ?> marcações</h3>
-<?php if(empty($agenda)): ?>
-    <div class="text-center py-12 text-on-surface-variant font-semibold">Nenhuma marcação para este dia.</div>
-<?php else: ?>
-<div class="overflow-x-auto">
-<table class="w-full text-left">
-<thead class="border-b border-surface-container-low">
-<tr class="text-on-surface-variant text-[10px] font-black uppercase tracking-[0.15em]">
-    <th class="pb-3">Turno</th><th class="pb-3">Paciente</th><th class="pb-3">Especialidade</th>
-    <th class="pb-3">Médico</th><th class="pb-3 text-center">Senha</th><th class="pb-3 text-center">Prioridade</th>
-    <th class="pb-3 text-center">Estado</th><th class="pb-3">Origem</th><th class="pb-3 text-right">Acções</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-container-low/50">
-<?php foreach($agenda as $m):
-    $eb = $estadoBadge[$m['estado']] ?? 'bg-gray-100 text-gray-500';
-    $pb = $prioBadge[$m['prioridade']] ?? 'bg-blue-600';
-    $pl = $prioLabels[$m['prioridade']] ?? 'Normal';
-?>
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-    <td class="py-3">
-        <div class="text-xs font-bold"><?= $turnoLabel[$m['turno']] ?? $m['turno'] ?></div>
-        <?php if(!empty($m['hora_formatada'])): ?>
-            <div class="text-[10px] text-primary font-bold mt-0.5"><?= $m['hora_formatada'] ?></div>
-        <?php endif; ?>
-    </td>
-    <td class="py-3 font-bold text-black text-sm"><?= htmlspecialchars($m['paciente_nome']) ?> <span class="text-on-surface-variant text-xs">(<?= $m['paciente_idade'] ?>a)</span></td>
-    <td class="py-3 text-xs text-on-surface-variant font-medium"><?= htmlspecialchars($m['especialidade_nome']) ?></td>
-    <td class="py-3 text-xs font-medium"><?= htmlspecialchars($m['medico_nome']) ?></td>
-    <td class="py-3 text-center">
-        <?php if(!empty($m['senha_codigo'])): ?>
-            <span class="px-2.5 py-1 bg-primary text-white text-[11px] font-black rounded-lg tracking-wider"><?= htmlspecialchars($m['senha_codigo']) ?></span>
-        <?php else: ?>
-            <span class="text-on-surface-variant text-[10px] font-bold">—</span>
-        <?php endif; ?>
-    </td>
-    <td class="py-3 text-center"><span class="px-2 py-0.5 <?= $pb ?> text-white text-[9px] font-black rounded-full"><?= strtoupper($pl) ?></span></td>
-    <td class="py-3 text-center"><span class="px-2 py-0.5 <?= $eb ?> text-[9px] font-black rounded-full"><?= strtoupper($m['estado']) ?></span></td>
-    <td class="py-3 text-[10px] font-bold text-on-surface-variant uppercase"><?= $m['origem'] === 'mesmo_dia' ? 'Mesmo dia' : 'Marcação' ?></td>
-    <td class="py-3 text-right">
-        <div class="flex gap-1 justify-end">
-        <?php if($m['estado']==='confirmada'): ?>
-            <button onclick="abrirTriagem(<?= $m['id'] ?>)" class="bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-black hover:scale-105 transition-transform flex items-center gap-1">
-                <span class="material-symbols-outlined text-[14px]">vital_signs</span> Fazer Triagem
-            </button>
-            <button onclick="abrirRemarcar(<?= $m['id'] ?>)" class="bg-surface-container-low px-3 py-1 rounded-full text-[10px] font-bold hover:bg-surface-container transition-colors">Remarcar</button>
-            <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" class="inline m-0" onsubmit="return confirm('Marcar como falta?')">
-                <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
-                <input type="hidden" name="acao" value="falta"><input type="hidden" name="marcacao_id" value="<?= $m['id'] ?>">
-                <button class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-bold hover:bg-orange-200 transition-colors">Falta</button>
-            </form>
-            <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" class="inline m-0" onsubmit="return confirm('Cancelar esta marcação?')">
-                <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
-                <input type="hidden" name="acao" value="cancelar"><input type="hidden" name="marcacao_id" value="<?= $m['id'] ?>">
-                <input type="hidden" name="motivo" value="Cancelamento pela recepção">
-                <button class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-[10px] font-bold hover:bg-red-200 transition-colors">Cancelar</button>
-            </form>
-        <?php elseif($m['estado']==='marcada'): ?>
-            <button onclick="abrirTriagem(<?= $m['id'] ?>)" class="bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-black hover:scale-105 transition-transform flex items-center gap-1">
-                <span class="material-symbols-outlined text-[14px]">vital_signs</span> Fazer Triagem
-            </button>
-            <button onclick="abrirRemarcar(<?= $m['id'] ?>)" class="bg-surface-container-low px-3 py-1 rounded-full text-[10px] font-bold hover:bg-surface-container transition-colors">Remarcar</button>
-            <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" class="inline m-0" onsubmit="return confirm('Cancelar esta marcação?')">
-                <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
-                <input type="hidden" name="acao" value="cancelar"><input type="hidden" name="marcacao_id" value="<?= $m['id'] ?>">
-                <input type="hidden" name="motivo" value="Cancelamento pela recepção">
-                <button class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-[10px] font-bold hover:bg-red-200 transition-colors">Cancelar</button>
-            </form>
-        <?php endif; ?>
+<!-- Calendário Semanal -->
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white mb-6 fade-in-delay-3 overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+    <h3 class="text-xl font-headline font-extrabold tracking-tight">Semana de <?= dataFormatoPT($dataInicio) ?> a <?= dataFormatoPT($dataFim) ?></h3>
+    <p class="text-on-surface-variant font-bold text-sm"><?= count($agendaRaw) ?> marcações</p>
+</div>
+
+<div class="overflow-x-auto pb-4">
+<div class="grid grid-cols-7 gap-4 min-w-[900px]">
+    <?php 
+    $diasNomes = ['Sun'=>'DOM','Mon'=>'SEG','Tue'=>'TER','Wed'=>'QUA','Thu'=>'QUI','Fri'=>'SEX','Sat'=>'SÁB'];
+    foreach($diasSemana as $dia): 
+        $marcacoesDia = $agendaSemana[$dia];
+        $isHoje = ($dia === date('Y-m-d'));
+        $diaStr = date('D', strtotime($dia));
+        $nomeDia = $diasNomes[$diaStr];
+    ?>
+    <div class="flex flex-col border-r border-surface-container-low last:border-0 pr-4 last:pr-0">
+        <!-- Cabecalho do Dia -->
+        <div class="text-center mb-4 pb-2 border-b <?= $isHoje ? 'border-primary' : 'border-surface-container-low' ?>">
+            <p class="text-[10px] font-black uppercase tracking-widest <?= $isHoje ? 'text-primary' : 'text-on-surface-variant' ?>">
+                <?= $nomeDia ?>
+            </p>
+            <p class="text-xl font-extrabold <?= $isHoje ? 'text-primary' : 'text-black' ?>">
+                <?= date('d/m', strtotime($dia)) ?>
+            </p>
         </div>
-    </td>
-</tr>
-<?php endforeach; ?>
-</tbody>
-</table>
+        
+        <!-- Cartões de Marcações -->
+        <div class="flex flex-col gap-3 h-[600px] overflow-y-auto pr-1 custom-scrollbar">
+            <?php if(empty($marcacoesDia)): ?>
+                <p class="text-center text-xs text-on-surface-variant/50 mt-4 font-bold">Livre</p>
+            <?php else: ?>
+                <?php foreach($marcacoesDia as $m): 
+                    $eb = $estadoBadge[$m['estado']] ?? 'bg-gray-100 text-gray-500';
+                    $cardColor = 'bg-surface-container-low';
+                    if($m['estado'] === 'confirmada') $cardColor = 'bg-green-50';
+                    elseif($m['estado'] === 'em_atendimento') $cardColor = 'bg-yellow-50';
+                    elseif($m['estado'] === 'concluida') $cardColor = 'bg-gray-50';
+                    elseif($m['estado'] === 'falta' || $m['estado'] === 'cancelada') $cardColor = 'bg-red-50';
+                    else $cardColor = 'bg-blue-50'; // marcada
+                ?>
+                    <div class="<?= $cardColor ?> rounded-2xl p-3 shadow-sm border border-black/5 hover:shadow-md transition-shadow cursor-pointer relative group" onclick='abrirDetalhes(<?= json_encode($m) ?>)'>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 <?= $eb ?> text-[8px] font-black rounded-full"><?= strtoupper($m['estado']) ?></span>
+                            <span class="text-[10px] font-bold text-on-surface-variant">
+                                <?= !empty($m['hora_formatada']) ? $m['hora_formatada'] : ($m['turno'] === 'manha' ? 'Manhã' : 'Tarde') ?>
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-[13px] text-black leading-tight mb-1"><?= htmlspecialchars($m['paciente_nome']) ?></h4>
+                        <p class="text-[10px] text-on-surface-variant font-medium leading-tight mb-2">
+                            <?= htmlspecialchars($m['especialidade_nome']) ?><br>
+                            Dr. <?= htmlspecialchars(explode(' ', $m['medico_nome'])[0]) ?>
+                        </p>
+                        <?php if(!empty($m['senha_codigo'])): ?>
+                            <span class="inline-block px-2 py-1 bg-white text-black text-[10px] font-black rounded-lg shadow-sm">
+                                <?= htmlspecialchars($m['senha_codigo']) ?>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <!-- Hover Overlay -->
+                        <div class="absolute inset-0 bg-black/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+                            <span class="bg-white text-black px-3 py-1 rounded-full text-[10px] font-black shadow-lg">Detalhes</span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endforeach; ?>
 </div>
-<?php endif; ?>
 </div>
+</div>
+<style>
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+.custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); }
+</style>
 
 <!-- Falhas de Notificação -->
 <?php if(!empty($falhasNotif)): ?>
@@ -366,10 +389,106 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 </div>
 </div>
 
+<!-- Modal Detalhes -->
+<div id="modal-detalhes" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+<div class="bg-white rounded-[2rem] w-full max-w-md p-8 floating-card shadow-2xl">
+    <div class="flex justify-between items-start mb-6">
+        <div>
+            <h3 class="text-xl font-black text-black" id="det-paciente">Nome</h3>
+            <p class="text-sm font-bold text-on-surface-variant mt-1" id="det-info">Info</p>
+        </div>
+        <button onclick="fecharDetalhes()" class="text-on-surface-variant hover:text-black transition-colors">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    
+    <div class="bg-surface-container-low rounded-xl p-4 mb-6">
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Data e Hora</p>
+                <p class="text-sm font-bold text-black" id="det-data-hora">--</p>
+            </div>
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Estado</p>
+                <span id="det-estado" class="px-2 py-0.5 text-[10px] font-black rounded-full inline-block">--</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Prioridade</p>
+                <p class="text-sm font-bold text-black" id="det-prioridade">--</p>
+            </div>
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Senha</p>
+                <p class="text-sm font-black text-primary" id="det-senha">--</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acções Dinâmicas -->
+    <div id="det-accoes" class="flex flex-col gap-2">
+        <!-- Preenchido via JS -->
+    </div>
+</div>
+</div>
+
 <script>
+const estadoBadgeClass = <?= json_encode($estadoBadge) ?>;
+const prioLabels = <?= json_encode($prioLabels) ?>;
+
 function abrirTriagem(id){document.getElementById('triagem-marcacao-id').value=id;document.getElementById('modal-triagem').classList.remove('hidden')}
 function fecharTriagem(){document.getElementById('modal-triagem').classList.add('hidden')}
 function abrirRemarcar(id){document.getElementById('remarcar-marcacao-id').value=id;document.getElementById('modal-remarcar').classList.remove('hidden')}
+
+function fecharDetalhes() {
+    document.getElementById('modal-detalhes').classList.add('hidden');
+}
+
+function abrirDetalhes(m) {
+    document.getElementById('det-paciente').textContent = m.paciente_nome + ' (' + m.paciente_idade + 'a)';
+    document.getElementById('det-info').textContent = m.especialidade_nome + ' • Dr. ' + m.medico_nome;
+    
+    let hora = m.hora_formatada ? m.hora_formatada : (m.turno === 'manha' ? 'Manhã' : 'Tarde');
+    document.getElementById('det-data-hora').textContent = m.data_consulta.split('-').reverse().join('/') + ' às ' + hora;
+    
+    let ebClass = estadoBadgeClass[m.estado] || 'bg-gray-100 text-gray-500';
+    let estadoEl = document.getElementById('det-estado');
+    estadoEl.className = 'px-2 py-0.5 text-[10px] font-black rounded-full inline-block ' + ebClass;
+    estadoEl.textContent = m.estado.toUpperCase();
+    
+    document.getElementById('det-prioridade').textContent = prioLabels[m.prioridade] || 'Normal';
+    document.getElementById('det-senha').textContent = m.senha_codigo || '—';
+    
+    let accoesHtml = '';
+    
+    if (m.estado === 'confirmada' || m.estado === 'marcada') {
+        accoesHtml += `<button onclick="fecharDetalhes(); abrirTriagem(${m.id})" class="w-full bg-blue-600 text-white px-4 py-3 rounded-xl text-sm font-black hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">vital_signs</span> Fazer Triagem
+        </button>`;
+        
+        accoesHtml += `<button onclick="fecharDetalhes(); abrirRemarcar(${m.id})" class="w-full bg-surface-container-low text-black px-4 py-3 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">
+            Remarcar Consulta
+        </button>`;
+        
+        if (m.estado === 'confirmada') {
+            accoesHtml += `<form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" class="m-0" onsubmit="return confirm('Marcar como falta?')">
+                <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+                <input type="hidden" name="acao" value="falta"><input type="hidden" name="marcacao_id" value="${m.id}">
+                <button class="w-full bg-orange-100 text-orange-600 px-4 py-3 rounded-xl text-sm font-bold hover:bg-orange-200 transition-colors">Registar Falta</button>
+            </form>`;
+        }
+        
+        accoesHtml += `<form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" class="m-0" onsubmit="return confirm('Cancelar esta marcação?')">
+            <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
+            <input type="hidden" name="acao" value="cancelar"><input type="hidden" name="marcacao_id" value="${m.id}">
+            <input type="hidden" name="motivo" value="Cancelamento pela recepção">
+            <button class="w-full bg-red-100 text-red-600 px-4 py-3 rounded-xl text-sm font-bold hover:bg-red-200 transition-colors">Cancelar Marcação</button>
+        </form>`;
+    } else {
+        accoesHtml += `<p class="text-center text-xs text-on-surface-variant font-bold">Nenhuma ação disponível para o estado atual.</p>`;
+    }
+    
+    document.getElementById('det-accoes').innerHTML = accoesHtml;
+    document.getElementById('modal-detalhes').classList.remove('hidden');
+}
 </script>
 <script src="<?= BASE_URL ?>public/assets/js/fila.js"></script>
 </body></html>
