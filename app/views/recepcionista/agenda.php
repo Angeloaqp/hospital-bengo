@@ -305,51 +305,112 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 
 <!-- Modal Triagem -->
 <div id="modal-triagem" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
-<div class="bg-white rounded-[2rem] w-full max-w-lg p-8 floating-card max-h-[90vh] overflow-y-auto">
-<h3 class="text-xl font-black mb-6 flex items-center gap-2"><span class="material-symbols-outlined text-blue-600">vital_signs</span> Triagem Clínica</h3>
+<div class="bg-white rounded-[2rem] w-full max-w-2xl p-8 floating-card max-h-[90vh] overflow-y-auto">
+<div class="flex items-center gap-3 mb-2">
+    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+        <span class="material-symbols-outlined">vital_signs</span>
+    </div>
+    <div>
+        <h3 class="text-2xl font-black text-on-surface">Triagem Clínica</h3>
+        <p class="text-sm text-on-surface-variant font-medium">Registo de sinais vitais e avaliação inicial do paciente</p>
+    </div>
+</div>
+<hr class="border-surface-container-high my-6">
+
 <form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" id="form-triagem">
     <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
     <input type="hidden" name="acao" value="triagem">
     <input type="hidden" name="marcacao_id" id="triagem-marcacao-id" value="">
-    <div class="space-y-4">
-        <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Sintomas / Queixa</label>
-        <textarea name="sintomas" rows="2" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1" placeholder="Descreva os sintomas..."></textarea></div>
-        <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Temperatura (°C)</label>
-            <input type="number" step="0.1" name="temperatura" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1" placeholder="36.5"></div>
-            <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Pressão Arterial</label>
-            <input type="text" name="pressao_arterial" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1" placeholder="120/80"></div>
+    
+    <div class="space-y-6">
+        <!-- Sintomas -->
+        <div>
+            <label class="text-[11px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-1 mb-2">
+                <span class="material-symbols-outlined text-[14px]">psychology</span> Sintomas / Queixa Principal
+            </label>
+            <textarea name="sintomas" rows="2" class="w-full rounded-2xl border-surface-container-highest px-4 py-3 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all resize-none shadow-sm" placeholder="Ex: Paciente refere dores de cabeça intensas desde ontem..."></textarea>
         </div>
-        <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Peso (kg)</label>
-            <input type="number" step="0.1" name="peso" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1" placeholder="70"></div>
-            <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Freq. Cardíaca (bpm)</label>
-            <input type="number" name="frequencia_cardiaca" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1" placeholder="72"></div>
+
+        <!-- Sinais Vitais -->
+        <div class="bg-surface-container-lowest border border-surface-container-high rounded-3xl p-5 shadow-sm">
+            <h4 class="text-xs font-black uppercase tracking-widest text-primary mb-4 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">monitor_heart</span> Sinais Vitais
+            </h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="relative">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Temperatura</label>
+                    <div class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-3 text-on-surface-variant/50 text-[18px]">device_thermostat</span>
+                        <input type="number" step="0.1" name="temperatura" class="w-full rounded-xl border-surface-container-highest pl-10 pr-10 py-2.5 text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" placeholder="36.5">
+                        <span class="absolute right-4 text-xs font-bold text-on-surface-variant/50">°C</span>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Pressão Arterial</label>
+                    <div class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-3 text-on-surface-variant/50 text-[18px]">blood_pressure</span>
+                        <input type="text" name="pressao_arterial" class="w-full rounded-xl border-surface-container-highest pl-10 py-2.5 text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" placeholder="120/80">
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Peso</label>
+                    <div class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-3 text-on-surface-variant/50 text-[18px]">weight</span>
+                        <input type="number" step="0.1" name="peso" class="w-full rounded-xl border-surface-container-highest pl-10 pr-10 py-2.5 text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" placeholder="70">
+                        <span class="absolute right-4 text-xs font-bold text-on-surface-variant/50">kg</span>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Frequência Cardíaca</label>
+                    <div class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-3 text-on-surface-variant/50 text-[18px]">favorite</span>
+                        <input type="number" name="frequencia_cardiaca" class="w-full rounded-xl border-surface-container-highest pl-10 pr-10 py-2.5 text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" placeholder="72">
+                        <span class="absolute right-4 text-xs font-bold text-on-surface-variant/50">bpm</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Observações da Triagem</label>
-        <textarea name="observacoes_triagem" rows="2" class="w-full rounded-xl border-surface-container-high px-3 py-2 text-sm mt-1"></textarea></div>
-        <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Prioridade Clínica</label>
-        <div class="mt-1"><?php
-        $sel_id = 'cs-prioridade-triagem';
-        $sel_name = 'prioridade_clinica';
-        $sel_icon = 'check_circle';
-        $sel_placeholder = 'Normal';
-        $sel_value = '4';
-        $sel_size = 'sm';
-        $sel_options = [
-            '4' => ['label' => 'Normal', 'icon' => 'check_circle', 'color' => 'text-blue-600'],
-            '3' => ['label' => 'Moderada', 'icon' => 'warning', 'color' => 'text-amber-500'],
-            '2' => ['label' => 'Alta (Idoso/Grávida)', 'icon' => 'elderly', 'color' => 'text-orange-500'],
-            '1' => ['label' => 'Urgente', 'icon' => 'notification_important', 'color' => 'text-red-600'],
-        ];
-        include __DIR__ . '/../comum/custom_select.php';
-        ?></div></div>
+
+        <!-- Observações -->
+        <div>
+            <label class="text-[11px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-1 mb-2">
+                <span class="material-symbols-outlined text-[14px]">edit_note</span> Observações da Triagem
+            </label>
+            <textarea name="observacoes_triagem" rows="2" class="w-full rounded-2xl border-surface-container-highest px-4 py-3 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all resize-none shadow-sm" placeholder="Outras notas relevantes..."></textarea>
+        </div>
+
+        <!-- Prioridade -->
+        <div class="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
+            <label class="text-[11px] font-black uppercase tracking-widest text-blue-800 flex items-center gap-1 mb-2">
+                <span class="material-symbols-outlined text-[14px]">flag</span> Prioridade Clínica
+            </label>
+            <div><?php
+            $sel_id = 'cs-prioridade-triagem';
+            $sel_name = 'prioridade_clinica';
+            $sel_icon = 'check_circle';
+            $sel_placeholder = 'Normal';
+            $sel_value = '4';
+            $sel_size = 'md';
+            $sel_options = [
+                '4' => ['label' => 'Normal', 'icon' => 'check_circle', 'color' => 'text-blue-600'],
+                '3' => ['label' => 'Moderada', 'icon' => 'warning', 'color' => 'text-amber-500'],
+                '2' => ['label' => 'Alta (Idoso/Grávida)', 'icon' => 'elderly', 'color' => 'text-orange-500'],
+                '1' => ['label' => 'Urgente', 'icon' => 'notification_important', 'color' => 'text-red-600'],
+            ];
+            include __DIR__ . '/../comum/custom_select.php';
+            ?></div>
+        </div>
     </div>
-    <div class="flex gap-3 mt-6">
-        <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-full font-black text-sm hover:scale-[1.02] transition-transform shadow-md flex items-center justify-center gap-2">
-            <span class="material-symbols-outlined text-[18px]">check</span> Confirmar Triagem
+    
+    <div class="flex flex-col sm:flex-row gap-3 mt-8">
+        <button type="submit" class="flex-1 bg-blue-600 text-white py-3.5 rounded-2xl font-black text-sm hover:bg-blue-700 hover:scale-[1.02] transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">assignment_turned_in</span> Guardar Triagem
         </button>
-        <button type="button" onclick="fecharTriagem()" class="px-6 py-3 rounded-full font-bold text-sm bg-surface-container-low hover:bg-surface-container transition-colors">Cancelar</button>
+        <button type="button" onclick="fecharTriagem()" class="sm:w-32 py-3.5 rounded-2xl font-bold text-sm bg-surface-container-lowest border border-surface-container-high text-on-surface hover:bg-surface-container-low transition-colors">Cancelar</button>
     </div>
 </form>
 </div>
