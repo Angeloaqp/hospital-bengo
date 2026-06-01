@@ -12,15 +12,32 @@ exigirPerfil(['medico']);
 $meuPerfilObject = Utilizador::obter((int) sessao('utilizador_id'));
 $medicoId = (int) sessao('utilizador_id');
 
-$dataFiltro = trim($_GET['data'] ?? date('Y-m-d'));
+$dataInicio = trim($_GET['data'] ?? date('Y-m-d'));
+$dataFim = date('Y-m-d', strtotime("$dataInicio + 6 days"));
+$dataFiltro = $dataInicio;
+
 $turnoFiltro = trim($_GET['turno'] ?? '');
 $estadoFiltro = trim($_GET['estado'] ?? '');
 
-$agenda = Marcacao::listarAgendaDia($dataFiltro, $medicoId, null, $estadoFiltro ?: null, $turnoFiltro ?: null);
-$estatsDia = Marcacao::estatisticasDia($dataFiltro);
+$agendaRaw = Marcacao::listarAgendaIntervalo($dataInicio, $dataFim, $medicoId, null, $estadoFiltro ?: null, $turnoFiltro ?: null);
 
-// Calcular as estatísticas especificamente para o médico (já que estatisticasDia devolve global)
-// O ideal seria criar um método Marcacao::estatisticasDiaMedico, mas podemos calcular aqui
+// Agrupar por data para a grelha
+$agendaSemana = [];
+$diasSemana = [];
+for ($i = 0; $i < 7; $i++) {
+    $d = date('Y-m-d', strtotime("$dataInicio + $i days"));
+    $diasSemana[] = $d;
+    $agendaSemana[$d] = [];
+}
+
+foreach ($agendaRaw as $m) {
+    $data = $m['data_consulta'];
+    if (isset($agendaSemana[$data])) {
+        $agendaSemana[$data][] = $m;
+    }
+}
+
+// Calcular as estatísticas especificamente para o médico 
 $estatsMedico = [
     'total' => 0,
     'marcadas' => 0,
@@ -29,12 +46,14 @@ $estatsMedico = [
     'faltas' => 0,
 ];
 
-foreach ($agenda as $m) {
-    $estatsMedico['total']++;
-    if ($m['estado'] === 'marcada') $estatsMedico['marcadas']++;
-    if ($m['estado'] === 'confirmada') $estatsMedico['confirmadas']++;
-    if ($m['estado'] === 'concluida') $estatsMedico['concluidas']++;
-    if ($m['estado'] === 'falta') $estatsMedico['faltas']++;
+foreach ($agendaRaw as $m) {
+    if ($m['data_consulta'] === $dataFiltro) {
+        $estatsMedico['total']++;
+        if ($m['estado'] === 'marcada') $estatsMedico['marcadas']++;
+        if ($m['estado'] === 'confirmada') $estatsMedico['confirmadas']++;
+        if ($m['estado'] === 'concluida') $estatsMedico['concluidas']++;
+        if ($m['estado'] === 'falta') $estatsMedico['faltas']++;
+    }
 }
 
 $prioLabels = [1=>'Urgente',2=>'Idoso',3=>'Grávida',4=>'Normal'];
@@ -46,14 +65,6 @@ $estadoBadge = [
     'remarcada'=>'bg-indigo-100 text-indigo-600',
 ];
 $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
-
-if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
-    function agendaMedicoPrioridadeTriagemLabel(?int $prioridade): string
-    {
-        $labels = [1=>'Urgente',2=>'Alta',3=>'Moderada',4=>'Normal'];
-        return $labels[$prioridade ?: 4] ?? 'Normal';
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -62,199 +73,235 @@ if (!function_exists('agendaMedicoPrioridadeTriagemLabel')) {
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Minha Agenda — <?= APP_NOME ?></title>
     <?php include __DIR__ . '/../comum/head_assets.php'; ?>
+    <style>
+    .floating-card{box-shadow:0 4px 20px -2px rgba(0,0,0,.05),0 2px 10px -2px rgba(0,0,0,.03)}
+    </style>
 </head>
-<body class="text-on-surface bg-background">
+<body class="text-on-surface bg-surface-container-low">
 <?php $paginaActual='agenda'; include __DIR__.'/../comum/sidebar.php'; ?>
 <?php $tituloPagina='Minha Agenda'; $subtituloPagina=''; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
 
 <div class="ml-0 lg:ml-[17rem] lg:mr-6 px-4 sm:px-6 lg:px-0 mt-28 pb-24 lg:pb-8 flex justify-center min-h-screen">
-<main class="w-full space-y-10">
+<main class="w-full">
 
-<!-- Date Header -->
-<section class="mb-2">
-    <h2 class="font-headline font-black text-3xl text-on-surface tracking-tight"><?= dataFormatoPT($dataFiltro) ?></h2>
-    <p class="font-body text-sm font-semibold text-on-surface-variant mt-1 uppercase tracking-wider">Agenda do Dia</p>
-</section>
+<!-- Header + Ações -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 fade-in">
+    <div>
+        <h2 class="text-3xl font-extrabold text-black tracking-tight">Minha Agenda</h2>
+        <p class="text-on-surface-variant font-semibold mt-1 text-sm"><?= dataFormatoPT($dataFiltro) ?></p>
+    </div>
+</div>
 
-<!-- KPI Cards -->
-<section class="grid grid-cols-2 md:grid-cols-5 gap-4">
+<!-- Métricas (Dia selecionado) -->
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 fade-in-delay-1">
     <?php
     $metricas = [
-        ['label'=>'Total Pacientes','valor'=>$estatsMedico['total'],'icon'=>'groups','cor'=>'text-on-surface'],
-        ['label'=>'Marcados','valor'=>$estatsMedico['marcadas'],'icon'=>'event_available','cor'=>'text-on-surface'],
-        ['label'=>'Check-in','valor'=>$estatsMedico['confirmadas'],'icon'=>'how_to_reg','cor'=>'text-on-surface'],
-        ['label'=>'Concluídas','valor'=>$estatsMedico['concluidas'],'icon'=>'check_circle','cor'=>'text-on-surface'],
-        ['label'=>'Faltas','valor'=>$estatsMedico['faltas'],'icon'=>'person_cancel','cor'=>'text-error'],
+        ['label'=>'Total (Hoje)','valor'=>$estatsMedico['total'],'cor'=>'text-black'],
+        ['label'=>'Marcadas','valor'=>$estatsMedico['marcadas'],'cor'=>'text-blue-600'],
+        ['label'=>'Check-in','valor'=>$estatsMedico['confirmadas'],'cor'=>'text-green-600'],
+        ['label'=>'Concluídas','valor'=>$estatsMedico['concluidas'],'cor'=>'text-gray-500'],
+        ['label'=>'Faltas','valor'=>$estatsMedico['faltas'],'cor'=>'text-orange-600'],
     ];
     foreach($metricas as $m): ?>
-    <div class="bg-white rounded-[24px] p-6 floating-card border border-white flex flex-col justify-between h-32">
-        <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider"><?= $m['label'] ?></span>
-            <span class="material-symbols-outlined <?= $m['cor'] ?>" data-icon="<?= $m['icon'] ?>"><?= $m['icon'] ?></span>
-        </div>
-        <div class="font-headline font-black text-3xl text-on-surface"><?= $m['valor'] ?></div>
+    <div class="bg-white px-5 py-4 rounded-[1.5rem] floating-card border border-white">
+        <p class="text-on-surface-variant font-bold uppercase tracking-widest text-[10px]"><?= $m['label'] ?></p>
+        <p class="text-3xl font-extrabold <?= $m['cor'] ?> mt-1"><?= $m['valor'] ?></p>
     </div>
     <?php endforeach; ?>
-</section>
+</div>
 
-<!-- Filters Row -->
-<form method="GET" class="flex flex-wrap gap-4 items-center justify-between bg-white p-4 rounded-[24px] floating-card border border-white relative z-50">
-    <div class="flex items-center gap-3">
-        <!-- Date Navigation -->
-        <div class="flex items-center bg-surface-container-low rounded-xl p-1">
-            <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' -1 day')) ?>" class="p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors inline-flex">
-                <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
-            </a>
-            <a href="?data=<?= date('Y-m-d') ?>" class="px-4 py-1.5 font-body text-xs font-bold text-on-surface uppercase tracking-wider hover:bg-surface-container rounded-xl transition-colors">
-                Hoje
-            </a>
-            <a href="?data=<?= date('Y-m-d', strtotime($dataFiltro.' +1 day')) ?>" class="p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors inline-flex">
-                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-            </a>
-        </div>
-        <!-- Date Picker -->
-        <div class="relative group custom-calendar-dropdown" id="cal-filtro-medico-dropdown">
-            <input type="hidden" name="data" id="cal-filtro-medico-input" value="<?= $dataFiltro ?>" onchange="this.form.submit()">
-            <button type="button" class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-xl hover:bg-surface-container transition-colors text-xs font-bold text-on-surface uppercase tracking-wider" onclick="if(typeof HospitalCalendar !== 'undefined') HospitalCalendar.toggleDropdown('cal-filtro-medico', event)">
-                <span class="material-symbols-outlined text-[16px]" data-icon="calendar_today">calendar_today</span>
-                <span id="cal-filtro-medico-text"><?= date('d M Y', strtotime($dataFiltro)) ?></span>
-            </button>
-            <div class="custom-cal-wrapper absolute top-[calc(100%+8px)] left-0 w-[300px] bg-white rounded-[32px] p-2 floating-card border border-zinc-100 z-50 shadow-2xl transition-all duration-200 opacity-0 invisible -translate-y-2 pointer-events-none" id="cal-filtro-medico-wrapper" onclick="event.stopPropagation()"></div>
-            
-            <?php if (!isset($GLOBALS['calendar_widget_loaded'])): ?>
-                <script src="<?= BASE_URL ?>public/js/calendar_widget.js?v=<?= time() ?>"></script>
-                <?php $GLOBALS['calendar_widget_loaded'] = true; ?>
-            <?php endif; ?>
-            <script>
-                if (typeof HospitalCalendar !== 'undefined') {
-                    HospitalCalendar.init('cal-filtro-medico', '<?= $dataFiltro ?>');
-                } else {
-                    document.addEventListener('DOMContentLoaded', function() {
-                        HospitalCalendar.init('cal-filtro-medico', '<?= $dataFiltro ?>');
-                    });
-                }
-            </script>
-        </div>
+<!-- Filtros -->
+<form id="filtro-agenda" class="bg-white/90 backdrop-blur-md rounded-[1.5rem] p-5 floating-card border border-white mb-6 sticky top-24 z-[90] fade-in-delay-2 shadow-lg">
+<div class="flex flex-wrap gap-3 items-end">
+    <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Data</label>
+    <?php 
+    $cal_id = 'cal-filtro';
+    $cal_name = 'data';
+    $cal_value = $dataFiltro;
+    $cal_onchange = 'atualizarAgenda()';
+    require __DIR__ . '/../comum/calendario_dropdown.php'; 
+    ?>
     </div>
-    <div class="flex items-center gap-3">
-        <!-- Turno Dropdown -->
-        <div>
-            <?php
-            $sel_id = 'cs-turno-med';
-            $sel_name = 'turno';
-            $sel_icon = 'schedule';
-            $sel_placeholder = 'Todos os Turnos';
-            $sel_value = $turnoFiltro;
-            $sel_onchange = 'this.form.submit()';
-            $sel_size = 'sm';
-            $sel_options = [
-                '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
-                'manha' => ['label' => 'Manhã', 'icon' => 'light_mode', 'color' => 'text-amber-500'],
-                'tarde' => ['label' => 'Tarde', 'icon' => 'routine', 'color' => 'text-orange-500'],
-            ];
-            include __DIR__ . '/../comum/custom_select.php';
-            ?>
-        </div>
-        <!-- Estado Dropdown -->
-        <div>
-            <?php
-            $sel_id = 'cs-estado-med';
-            $sel_name = 'estado';
-            $sel_icon = 'info';
-            $sel_placeholder = 'Todos os Estados';
-            $sel_value = $estadoFiltro;
-            $sel_onchange = 'this.form.submit()';
-            $sel_size = 'sm';
-            $sel_options = [
-                '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
-                'marcada' => ['label' => 'Marcada', 'icon' => 'event', 'color' => 'text-blue-600'],
-                'confirmada' => ['label' => 'Confirmada', 'icon' => 'check_circle', 'color' => 'text-green-600'],
-                'em_atendimento' => ['label' => 'Em Atendimento', 'icon' => 'pending', 'color' => 'text-yellow-600'],
-                'concluida' => ['label' => 'Concluída', 'icon' => 'task_alt', 'color' => 'text-gray-500'],
-                'cancelada' => ['label' => 'Cancelada', 'icon' => 'cancel', 'color' => 'text-red-600'],
-                'falta' => ['label' => 'Falta', 'icon' => 'person_off', 'color' => 'text-orange-600'],
-            ];
-            include __DIR__ . '/../comum/custom_select.php';
-            ?>
-        </div>
+    <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Turno</label>
+    <?php
+    $sel_id = 'cs-turno';
+    $sel_name = 'turno';
+    $sel_icon = 'schedule';
+    $sel_placeholder = 'Todos';
+    $sel_value = $turnoFiltro;
+    $sel_onchange = 'atualizarAgenda()';
+    $sel_size = 'sm';
+    $sel_options = [
+        '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
+        'manha' => ['label' => 'Manhã', 'icon' => 'light_mode', 'color' => 'text-amber-500'],
+        'tarde' => ['label' => 'Tarde', 'icon' => 'routine', 'color' => 'text-orange-500'],
+    ];
+    include __DIR__ . '/../comum/custom_select.php';
+    ?></div>
+    <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Estado</label>
+    <?php
+    $sel_id = 'cs-estado';
+    $sel_name = 'estado';
+    $sel_icon = 'info';
+    $sel_placeholder = 'Todos';
+    $sel_value = $estadoFiltro;
+    $sel_onchange = 'atualizarAgenda()';
+    $sel_size = 'sm';
+    $sel_options = [
+        '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
+        'marcada' => ['label' => 'Marcada', 'icon' => 'event', 'color' => 'text-blue-600'],
+        'confirmada' => ['label' => 'Confirmada', 'icon' => 'check_circle', 'color' => 'text-green-600'],
+        'em_atendimento' => ['label' => 'Em Atendimento', 'icon' => 'pending', 'color' => 'text-yellow-600'],
+        'concluida' => ['label' => 'Concluída', 'icon' => 'task_alt', 'color' => 'text-gray-500'],
+        'cancelada' => ['label' => 'Cancelada', 'icon' => 'cancel', 'color' => 'text-red-600'],
+        'falta' => ['label' => 'Falta', 'icon' => 'person_off', 'color' => 'text-orange-600'],
+    ];
+    include __DIR__ . '/../comum/custom_select.php';
+    ?></div>
+    <div class="flex gap-2">
+    <div class="flex gap-2">
+        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d', strtotime($dataInicio.' -7 days')) ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">← Anterior</button>
+        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d') ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-primary text-white px-3 py-2 rounded-xl text-sm font-bold hover:scale-105 transition-transform">Semana Atual</button>
+        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d', strtotime($dataInicio.' +7 days')) ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">Seguinte →</button>
     </div>
+    </div>
+</div>
 </form>
 
-<!-- Patient List -->
-<section class="space-y-4">
-<?php if(empty($agenda)): ?>
-    <div class="text-center py-12 text-on-surface-variant font-semibold">Nenhum paciente agendado para este dia.</div>
-<?php else: ?>
-    <!-- Column Headers -->
-    <div class="grid grid-cols-[auto_2fr_1.5fr_1fr_1.5fr_1.5fr_1fr] gap-4 px-8 py-2 text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.15em] mb-2">
-        <div class="w-12 text-center">Turno</div>
-        <div>Paciente</div>
-        <div>Especialidade</div>
-        <div>Senha</div>
-        <div>Prioridade</div>
-        <div>Estado</div>
-        <div>Origem</div>
+<!-- Calendário Semanal -->
+<div id="calendario-container">
+<div class="bg-white rounded-[1.5rem] p-6 floating-card border border-white mb-6 fade-in-delay-3 overflow-hidden relative">
+    <!-- Indicador de Carregamento -->
+    <div id="loading-overlay" class="absolute inset-0 bg-white/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+        <span class="material-symbols-outlined animate-spin text-primary text-4xl">autorenew</span>
     </div>
-    
-    <?php foreach($agenda as $m):
-        $iniciais = strtoupper(substr($m['paciente_nome'], 0, 1) . (strpos($m['paciente_nome'], ' ') !== false ? substr(strrchr($m['paciente_nome'], ' '), 1, 1) : substr($m['paciente_nome'], 1, 1)));
-        
-        $prioCorBg = $m['prioridade'] == 1 ? 'bg-[var(--cor-priority-urgente-bg)]' : ($m['prioridade'] == 2 ? 'bg-[var(--cor-priority-idoso-bg)]' : 'bg-[var(--cor-priority-normal-bg)]');
-        $prioCorTexto = $m['prioridade'] == 1 ? 'text-[var(--cor-priority-urgente)]' : ($m['prioridade'] == 2 ? 'text-[var(--cor-priority-idoso)]' : 'text-[var(--cor-priority-normal)]');
-        $prioIcon = $m['prioridade'] == 1 ? 'warning' : ($m['prioridade'] == 2 ? 'elderly' : 'person');
-        $prioLabel = $m['prioridade'] == 1 ? 'Urgente' : ($m['prioridade'] == 2 ? 'Alta' : 'Normal');
+<div class="flex justify-between items-center mb-6">
+    <h3 class="text-xl font-headline font-extrabold tracking-tight">Semana de <?= dataFormatoPT($dataInicio) ?> a <?= dataFormatoPT($dataFim) ?></h3>
+    <p class="text-on-surface-variant font-bold text-sm"><?= count($agendaRaw) ?> marcações nesta semana</p>
+</div>
 
-        $estDot = 'bg-primary';
-        if($m['estado'] === 'em_espera' || $m['estado'] === 'marcada') $estDot = 'bg-[var(--cor-priority-idoso)]';
-        if($m['estado'] === 'confirmada') $estDot = 'border border-outline-variant';
-        if($m['estado'] === 'em_atendimento') $estDot = 'bg-primary';
-        if($m['estado'] === 'urgente' || $m['estado'] === 'falta' || $m['estado'] === 'cancelada') $estDot = 'bg-error';
-
-        $opacityClass = ($m['estado'] === 'concluida' || $m['estado'] === 'cancelada') ? 'opacity-70' : '';
+<div class="overflow-x-auto pb-4">
+<div class="grid grid-cols-7 gap-4 min-w-[900px]">
+    <?php 
+    $diasNomes = ['Sun'=>'DOM','Mon'=>'SEG','Tue'=>'TER','Wed'=>'QUA','Thu'=>'QUI','Fri'=>'SEX','Sat'=>'SÁB'];
+    foreach($diasSemana as $dia): 
+        $marcacoesDia = $agendaSemana[$dia];
+        $isHoje = ($dia === date('Y-m-d'));
+        $diaStr = date('D', strtotime($dia));
+        $nomeDia = $diasNomes[$diaStr];
     ?>
-    <div class="grid grid-cols-[auto_2fr_1.5fr_1fr_1.5fr_1.5fr_1fr] gap-4 items-center bg-white p-5 rounded-[24px] floating-card border border-white hover:shadow-lg transition-shadow cursor-pointer <?= $opacityClass ?>">
-        <div class="w-12 flex flex-col items-center justify-center text-on-surface-variant">
-            <span class="font-headline font-black text-on-surface text-[14px]"><?= $m['turno'] === 'manha' ? 'Manhã' : 'Tarde' ?></span>
-            <?php if(!empty($m['hora_formatada'])): ?>
-                <span class="font-headline font-bold text-primary text-[11px] mt-0.5"><?= $m['hora_formatada'] ?></span>
+    <div class="flex flex-col border-r border-surface-container-low last:border-0 pr-4 last:pr-0">
+        <!-- Cabecalho do Dia -->
+        <div class="text-center mb-4 pb-2 border-b <?= $isHoje ? 'border-primary' : 'border-surface-container-low' ?>">
+            <p class="text-[10px] font-black uppercase tracking-widest <?= $isHoje ? 'text-primary' : 'text-on-surface-variant' ?>">
+                <?= $nomeDia ?>
+            </p>
+            <p class="text-xl font-extrabold <?= $isHoje ? 'text-primary' : 'text-black' ?>">
+                <?= date('d/m', strtotime($dia)) ?>
+            </p>
+        </div>
+        
+        <!-- Cartões de Marcações -->
+        <div class="flex flex-col gap-3 h-[600px] overflow-y-auto pr-1 custom-scrollbar">
+            <?php if(empty($marcacoesDia)): ?>
+                <p class="text-center text-xs text-on-surface-variant/50 mt-4 font-bold">Livre</p>
             <?php else: ?>
-                <span class="material-symbols-outlined text-[14px] mt-1" data-icon="<?= $m['turno'] === 'manha' ? 'light_mode' : 'routine' ?>"><?= $m['turno'] === 'manha' ? 'light_mode' : 'routine' ?></span>
+                <?php foreach($marcacoesDia as $m): 
+                    $eb = $estadoBadge[$m['estado']] ?? 'bg-gray-100 text-gray-500';
+                    $cardColor = 'bg-surface-container-low';
+                    if($m['estado'] === 'confirmada') $cardColor = 'bg-green-50';
+                    elseif($m['estado'] === 'em_atendimento') $cardColor = 'bg-yellow-50';
+                    elseif($m['estado'] === 'concluida') $cardColor = 'bg-gray-50';
+                    elseif($m['estado'] === 'falta' || $m['estado'] === 'cancelada') $cardColor = 'bg-red-50';
+                    else $cardColor = 'bg-blue-50'; // marcada
+                ?>
+                    <div class="<?= $cardColor ?> rounded-2xl p-3 shadow-sm border border-black/5 hover:shadow-md transition-shadow relative group">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 <?= $eb ?> text-[8px] font-black rounded-full"><?= strtoupper($m['estado']) ?></span>
+                            <span class="text-[10px] font-bold text-on-surface-variant">
+                                <?= !empty($m['hora_formatada']) ? $m['hora_formatada'] : ($m['turno'] === 'manha' ? 'Manhã' : 'Tarde') ?>
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-[13px] text-black leading-tight mb-1"><?= htmlspecialchars($m['paciente_nome']) ?></h4>
+                        <p class="text-[10px] text-on-surface-variant font-medium leading-tight mb-2">
+                            <?= htmlspecialchars($m['especialidade_nome']) ?>
+                        </p>
+                        <?php if(!empty($m['senha_codigo'])): ?>
+                            <span class="inline-block px-2 py-1 bg-white text-black text-[10px] font-black rounded-lg shadow-sm">
+                                <?= htmlspecialchars($m['senha_codigo']) ?>
+                            </span>
+                        <?php endif; ?>
+                        <?php if(!empty($m['triagem_id'])): ?>
+                            <span class="inline-flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-700 rounded-full shadow-sm ml-1" title="Triagem Efetuada">
+                                <span class="material-symbols-outlined text-[12px]">vital_signs</span>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
             <?php endif; ?>
         </div>
-        <div class="flex items-center gap-3">
-            <div>
-                <h3 class="font-headline font-black text-on-surface text-sm line-clamp-1"><?= htmlspecialchars($m['paciente_nome']) ?></h3>
-                <p class="font-body text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant mt-0.5"><?= $m['paciente_idade'] ?> anos</p>
-            </div>
-        </div>
-        <div class="text-xs font-semibold text-on-surface-variant truncate"><?= htmlspecialchars($m['especialidade_nome']) ?></div>
-        <div>
-            <?php if(!empty($m['senha_codigo'])): ?>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-[10px] text-xs font-bold bg-surface-container-low text-on-surface">
-                    <?= htmlspecialchars($m['senha_codigo']) ?>
-                </span>
-            <?php else: ?>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-[10px] text-xs font-bold text-on-surface-variant">-</span>
-            <?php endif; ?>
-        </div>
-        <div>
-            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold <?= $prioCorBg ?> <?= $prioCorTexto ?>">
-                <span class="material-symbols-outlined text-[12px]" data-icon="<?= $prioIcon ?>"><?= $prioIcon ?></span> <?= $prioLabel ?>
-            </span>
-        </div>
-        <div>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-surface-container-low text-on-surface-variant">
-                <span class="w-1.5 h-1.5 rounded-full <?= $estDot ?>"></span> <?= ucfirst(str_replace('_', ' ', $m['estado'])) ?>
-            </span>
-        </div>
-        <div class="text-xs text-on-surface-variant font-medium"><?= $m['origem'] === 'mesmo_dia' ? 'Mesmo dia' : 'Marcação' ?></div>
     </div>
     <?php endforeach; ?>
-<?php endif; ?>
-</section>
+</div>
+</div>
+</div>
+</div>
+<style>
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+.custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); }
+</style>
 
 </main>
 </div>
 
+<script>
+function atualizarAgenda(urlBase) {
+    const form = document.getElementById('filtro-agenda');
+    let url = urlBase || '?';
+    
+    if(!urlBase) {
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        
+        for (let [key, value] of formData.entries()) {
+            if (value && key !== 'csrf_token') {
+                params.append(key, value);
+            }
+        }
+        url += params.toString();
+    }
+    
+    history.pushState(null, '', url);
+    
+    const container = document.getElementById('calendario-container');
+    const overlay = document.getElementById('loading-overlay');
+    if(overlay) overlay.classList.remove('hidden');
+    else container.style.opacity = '0.5';
+
+    fetch(url, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+        .then(r => r.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const novoConteudo = doc.getElementById('calendario-container');
+            if (novoConteudo) {
+                container.innerHTML = novoConteudo.innerHTML;
+            } else {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar agenda:', error);
+            if(overlay) overlay.classList.add('hidden');
+            else container.style.opacity = '1';
+        });
+}
+</script>
 </body>
 </html>
