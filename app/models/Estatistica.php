@@ -166,7 +166,7 @@ class Estatistica
     {
         $db = Database::ligar();
         return $db->query(
-            "SELECT u.id, u.nome, u.nome_utilizador,
+            "SELECT u.id, u.nome, u.sexo, u.nome_utilizador,
                     u.perfil, u.estado, u.criado_em,
                     u.telefone,
                     e.nome AS especialidade,
@@ -212,15 +212,16 @@ class Estatistica
         $db = Database::ligar();
         $stmt = $db->prepare(
             "INSERT INTO utilizadores
-                (nome, nome_utilizador, senha_hash,
+                (nome, sexo, nome_utilizador, senha_hash,
                  perfil, especialidade_id,
                  consultorio_id, telefone, foto_path, estado)
              VALUES
-                (:nome, :user, :hash,
+                (:nome, :sexo, :user, :hash,
                  :perfil, :esp, :cons, :tel, :foto, 1)"
         );
         $stmt->execute([
             ':nome' => $d['nome'],
+            ':sexo' => $d['sexo'],
             ':user' => $d['nome_utilizador'],
             ':hash' => password_hash(
                 $d['senha'],
@@ -269,6 +270,7 @@ class Estatistica
 
         $sql = "UPDATE utilizadores SET
                     nome = :nome,
+                    sexo = :sexo,
                     nome_utilizador = :user,
                     perfil = :perfil,
                     especialidade_id = :esp,
@@ -277,6 +279,7 @@ class Estatistica
 
         $params = [
             ':nome' => $d['nome'],
+            ':sexo' => $d['sexo'],
             ':user' => $d['nome_utilizador'],
             ':perfil' => $d['perfil'],
             ':esp' => $d['especialidade_id'] ?: null,

@@ -393,6 +393,21 @@ unset($_SESSION['erro'], $_SESSION['form_data'], $_SESSION['utilizador_criado'])
                                     <label for="nome" class="fl">Nome Completo *</label>
                                 </div>
 
+                                <!-- Sexo -->
+                                <?php
+                                $sel_id = 'sexo';
+                                $sel_name = 'sexo';
+                                $sel_icon = 'wc';
+                                $sel_label = 'Sexo *';
+                                $sel_value = $form['sexo'] ?? 'M';
+                                $sel_required = true;
+                                $sel_options = [
+                                    'M' => ['label' => 'Masculino (M)'],
+                                    'F' => ['label' => 'Feminino (F)']
+                                ];
+                                include __DIR__ . '/../comum/custom_select_floating.php';
+                                ?>
+
                                 <!-- Nome de Utilizador -->
                                 <div>
                                     <div class="field-wrap">

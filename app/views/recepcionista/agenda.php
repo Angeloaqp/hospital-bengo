@@ -19,10 +19,11 @@ $dataFiltro = $dataInicio;
 
 $turnoFiltro = trim($_GET['turno'] ?? '');
 $medicoFiltro = !empty($_GET['medico_id']) ? (int) $_GET['medico_id'] : null;
+$especialidadeFiltro = !empty($_GET['especialidade_id']) ? (int) $_GET['especialidade_id'] : null;
 $estadoFiltro = trim($_GET['estado'] ?? '');
 $checkinId = (int) ($_GET['checkin'] ?? 0);
 
-$agendaRaw = Marcacao::listarAgendaIntervalo($dataInicio, $dataFim, $medicoFiltro, null, $estadoFiltro ?: null, $turnoFiltro ?: null);
+$agendaRaw = Marcacao::listarAgendaIntervalo($dataInicio, $dataFim, $medicoFiltro, $especialidadeFiltro, $estadoFiltro ?: null, $turnoFiltro ?: null);
 
 // Agrupar por data para a grelha
 $agendaSemana = [];
@@ -42,6 +43,7 @@ foreach ($agendaRaw as $m) {
 
 $estatsDia = Marcacao::estatisticasDia($dataFiltro);
 $medicos = Disponibilidade::listarMedicos();
+$especialidades = Disponibilidade::listarEspecialidades();
 $falhasNotif = Notificacao::listarFalhasRecentes(5);
 
 $mensagem = $_SESSION['mensagem'] ?? '';
@@ -116,8 +118,8 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 </div>
 
 <!-- Filtros -->
-<form id="filtro-agenda" class="bg-white/90 backdrop-blur-md rounded-[1.5rem] p-5 floating-card border border-white mb-6 sticky top-24 z-[90] fade-in-delay-2 shadow-lg">
-<div class="flex flex-wrap gap-3 items-end">
+<form id="filtro-agenda" class="bg-white/90 backdrop-blur-md rounded-[1.5rem] p-3 px-4 floating-card border border-white mb-6 sticky top-24 z-[90] fade-in-delay-2 shadow-lg">
+<div class="flex flex-wrap xl:flex-nowrap gap-2 lg:gap-3 items-end justify-center w-full">
     <div><label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-1">Data</label>
     <?php 
     $cal_id = 'cal-filtro';
@@ -145,8 +147,27 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
     ?></div>
     <div>
         <label class="text-[11px] font-black uppercase tracking-widest text-primary flex items-center gap-1 mb-1 bg-primary/10 px-2 py-0.5 rounded-md w-max">
+            <span class="material-symbols-outlined text-[14px]">medical_services</span>
+            Especialidade
+        </label>
+    <?php
+    $sel_id = 'cs-especialidade';
+    $sel_name = 'especialidade_id';
+    $sel_icon = 'medical_services';
+    $sel_placeholder = 'Todas';
+    $sel_value = (string)$especialidadeFiltro;
+    $sel_onchange = 'atualizarAgenda()';
+    $sel_size = 'sm';
+    $sel_options = ['' => ['label' => 'Todas', 'icon' => 'category', 'color' => 'text-on-surface-variant']];
+    foreach($especialidades as $esp) {
+        $sel_options[(string)$esp['id']] = ['label' => htmlspecialchars($esp['nome']), 'icon' => 'medical_services', 'color' => 'text-indigo-600'];
+    }
+    include __DIR__ . '/../comum/custom_select.php';
+    ?></div>
+    <div>
+        <label class="text-[11px] font-black uppercase tracking-widest text-primary flex items-center gap-1 mb-1 bg-primary/10 px-2 py-0.5 rounded-md w-max">
             <span class="material-symbols-outlined text-[14px]">stethoscope</span>
-            Filtrar por Médico
+            Médico
         </label>
     <?php
     $sel_id = 'cs-medico';
@@ -175,19 +196,18 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
         '' => ['label' => 'Todos', 'icon' => 'filter_list', 'color' => 'text-on-surface-variant'],
         'marcada' => ['label' => 'Marcada', 'icon' => 'event', 'color' => 'text-blue-600'],
         'confirmada' => ['label' => 'Confirmada', 'icon' => 'check_circle', 'color' => 'text-green-600'],
-        'em_atendimento' => ['label' => 'Em Atendimento', 'icon' => 'pending', 'color' => 'text-yellow-600'],
+        'em_atendimento' => ['label' => 'Em Atend.', 'icon' => 'pending', 'color' => 'text-yellow-600'],
         'concluida' => ['label' => 'Concluída', 'icon' => 'task_alt', 'color' => 'text-gray-500'],
         'cancelada' => ['label' => 'Cancelada', 'icon' => 'cancel', 'color' => 'text-red-600'],
         'falta' => ['label' => 'Falta', 'icon' => 'person_off', 'color' => 'text-orange-600'],
     ];
     include __DIR__ . '/../comum/custom_select.php';
     ?></div>
-    <div class="flex gap-2">
-    <div class="flex gap-2">
-        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d', strtotime($dataInicio.' -7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">← Anterior</button>
-        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d') ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-primary text-white px-3 py-2 rounded-xl text-sm font-bold hover:scale-105 transition-transform">Semana Atual</button>
-        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d', strtotime($dataInicio.' +7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-surface-container-low px-3 py-2 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">Seguinte →</button>
-    </div>
+    
+    <div class="flex gap-1.5 ml-0 lg:ml-2 pb-0.5">
+        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d', strtotime($dataInicio.' -7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-surface-container-low px-2 py-1.5 rounded-lg text-[11px] font-bold hover:bg-surface-container transition-colors whitespace-nowrap">← Anterior</button>
+        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d') ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-primary text-white px-2 py-1.5 rounded-lg text-[11px] font-bold hover:scale-105 transition-transform whitespace-nowrap">Semana Atual</button>
+        <button type="button" onclick="atualizarAgenda('?data=<?= date('Y-m-d', strtotime($dataInicio.' +7 days')) ?>&medico_id=<?= $medicoFiltro ?>&turno=<?= $turnoFiltro ?>&estado=<?= $estadoFiltro ?>')" class="bg-surface-container-low px-2 py-1.5 rounded-lg text-[11px] font-bold hover:bg-surface-container transition-colors whitespace-nowrap">Seguinte →</button>
     </div>
 </div>
 </form>
@@ -205,7 +225,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 </div>
 
 <div class="overflow-x-auto pb-4">
-<div class="grid grid-cols-7 gap-4 min-w-[900px]">
+<div class="grid grid-cols-7 gap-4 min-w-[1100px]">
     <?php 
     $diasNomes = ['Sun'=>'DOM','Mon'=>'SEG','Tue'=>'TER','Wed'=>'QUA','Thu'=>'QUI','Fri'=>'SEX','Sat'=>'SÁB'];
     foreach($diasSemana as $dia): 
@@ -223,48 +243,72 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
             <p class="text-xl font-extrabold <?= $isHoje ? 'text-primary' : 'text-black' ?>">
                 <?= date('d/m', strtotime($dia)) ?>
             </p>
+            <div class="flex justify-center mt-1">
+                <?php 
+                $qtdMarcacoes = count($marcacoesDia);
+                if ($qtdMarcacoes === 0): ?>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300" title="Livre / Sem Marcações"></span>
+                <?php elseif ($qtdMarcacoes >= 15): ?>
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" title="Agenda Cheia"></span>
+                <?php else: ?>
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500" title="Vagas Disponíveis (<?= $qtdMarcacoes ?> agendada<?= $qtdMarcacoes > 1 ? 's' : '' ?>)"></span>
+                <?php endif; ?>
+            </div>
         </div>
         
         <!-- Cartões de Marcações -->
-        <div class="flex flex-col gap-3 h-[600px] overflow-y-auto pr-1 custom-scrollbar">
+        <div class="flex flex-col gap-3 pb-4">
             <?php if(empty($marcacoesDia)): ?>
                 <p class="text-center text-xs text-on-surface-variant/50 mt-4 font-bold">Livre</p>
             <?php else: ?>
                 <?php foreach($marcacoesDia as $m): 
                     $eb = $estadoBadge[$m['estado']] ?? 'bg-gray-100 text-gray-500';
                     $cardColor = 'bg-surface-container-low';
-                    if($m['estado'] === 'confirmada') $cardColor = 'bg-green-50';
-                    elseif($m['estado'] === 'em_atendimento') $cardColor = 'bg-yellow-50';
-                    elseif($m['estado'] === 'concluida') $cardColor = 'bg-gray-50';
-                    elseif($m['estado'] === 'falta' || $m['estado'] === 'cancelada') $cardColor = 'bg-red-50';
-                    else $cardColor = 'bg-blue-50'; // marcada
+                    if($m['estado'] === 'confirmada') $cardColor = 'bg-green-50/70 border-green-100';
+                    elseif($m['estado'] === 'em_atendimento') $cardColor = 'bg-yellow-50/70 border-yellow-100';
+                    elseif($m['estado'] === 'concluida') $cardColor = 'bg-gray-50/70 border-gray-100';
+                    elseif($m['estado'] === 'falta' || $m['estado'] === 'cancelada') $cardColor = 'bg-red-50/70 border-red-100';
+                    else $cardColor = 'bg-blue-50/70 border-blue-100'; // marcada
                 ?>
-                    <div class="<?= $cardColor ?> rounded-2xl p-3 shadow-sm border border-black/5 hover:shadow-md transition-shadow cursor-pointer relative group" onclick='abrirDetalhes(<?= json_encode($m) ?>)'>
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="px-2 py-0.5 <?= $eb ?> text-[8px] font-black rounded-full"><?= strtoupper($m['estado']) ?></span>
-                            <span class="text-[10px] font-bold text-on-surface-variant">
+                    <div class="<?= $cardColor ?> rounded-2xl p-3 shadow-sm border border-black/5 hover:shadow-md hover:border-primary/30 transition-all cursor-pointer relative group flex flex-col" onclick='abrirDetalhes(<?= json_encode($m) ?>)'>
+                        <!-- Top Info -->
+                        <div class="flex justify-between items-start mb-2 gap-1">
+                            <span class="px-1.5 py-0.5 <?= $eb ?> text-[7.5px] font-black rounded-md truncate max-w-[65%]">
+                                <?= strtoupper($m['estado']) ?>
+                            </span>
+                            <span class="text-[10px] font-black text-on-surface-variant whitespace-nowrap shrink-0">
                                 <?= !empty($m['hora_formatada']) ? $m['hora_formatada'] : ($m['turno'] === 'manha' ? 'Manhã' : 'Tarde') ?>
                             </span>
                         </div>
-                        <h4 class="font-bold text-[13px] text-black leading-tight mb-1"><?= htmlspecialchars($m['paciente_nome']) ?></h4>
-                        <p class="text-[10px] text-on-surface-variant font-medium leading-tight mb-2">
-                            <?= htmlspecialchars($m['especialidade_nome']) ?><br>
-                            Dr. <?= htmlspecialchars(explode(' ', $m['medico_nome'])[0]) ?>
-                        </p>
-                        <?php if(!empty($m['senha_codigo'])): ?>
-                            <span class="inline-block px-2 py-1 bg-white text-black text-[10px] font-black rounded-lg shadow-sm">
-                                <?= htmlspecialchars($m['senha_codigo']) ?>
-                            </span>
-                        <?php endif; ?>
-                        <?php if(!empty($m['triagem_id'])): ?>
-                            <span class="inline-flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-700 rounded-full shadow-sm ml-1" title="Triagem Efetuada">
-                                <span class="material-symbols-outlined text-[12px]">vital_signs</span>
-                            </span>
-                        <?php endif; ?>
                         
-                        <!-- Hover Overlay -->
-                        <div class="absolute inset-0 bg-black/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
-                            <span class="bg-white text-black px-3 py-1 rounded-full text-[10px] font-black shadow-lg">Detalhes</span>
+                        <!-- Paciente -->
+                        <h4 class="font-bold text-[12px] text-black leading-tight mb-1 line-clamp-2" title="<?= htmlspecialchars($m['paciente_nome']) ?>">
+                            <?= htmlspecialchars($m['paciente_nome']) ?>
+                        </h4>
+                        
+                        <!-- Medico e Especialidade -->
+                        <p class="text-[9px] text-on-surface-variant font-medium leading-tight mb-3">
+                            <span class="truncate block w-full"><?= htmlspecialchars($m['especialidade_nome']) ?></span>
+                            <span class="truncate block w-full">Dr. <?= htmlspecialchars(explode(' ', $m['medico_nome'])[0]) ?></span>
+                        </p>
+                        
+                        <!-- Bottom Info -->
+                        <div class="mt-auto flex items-center justify-between gap-1 pt-2 border-t border-black/5">
+                            <?php if(!empty($m['senha_codigo'])): ?>
+                                <div class="bg-white/80 px-2 py-1 rounded-lg border border-black/5 flex-grow overflow-hidden text-center" title="<?= htmlspecialchars($m['senha_codigo']) ?>">
+                                    <span class="text-[9px] font-black text-primary truncate block w-full">
+                                        <?= htmlspecialchars($m['senha_codigo']) ?>
+                                    </span>
+                                </div>
+                            <?php else: ?>
+                                <div></div>
+                            <?php endif; ?>
+                            
+                            <?php if(!empty($m['triagem_id'])): ?>
+                                <div class="shrink-0 w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center" title="Triagem Efetuada">
+                                    <span class="material-symbols-outlined text-[12px]">vital_signs</span>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -310,7 +354,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 
 <!-- Modal Triagem -->
 <div id="modal-triagem" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
-<div class="bg-blue-50/40 rounded-[2rem] w-full max-w-2xl p-8 floating-card max-h-[90vh] overflow-y-auto border border-blue-100 shadow-2xl backdrop-blur-md">
+<div class="bg-white rounded-[2rem] w-full max-w-2xl p-8 floating-card max-h-[90vh] overflow-y-auto border border-blue-100 shadow-2xl">
 <div class="flex items-center gap-3 mb-2">
     <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
         <span class="material-symbols-outlined">vital_signs</span>
@@ -488,8 +532,16 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
                 <span id="det-estado" class="px-2 py-0.5 text-[10px] font-black rounded-full inline-block">--</span>
             </div>
             <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Tipo de Atendimento</p>
+                <p class="text-sm font-bold text-black" id="det-tipo-atendimento">--</p>
+            </div>
+            <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Prioridade</p>
                 <p class="text-sm font-bold text-black" id="det-prioridade">--</p>
+            </div>
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Consultório</p>
+                <p class="text-sm font-bold text-black" id="det-consultorio">--</p>
             </div>
             <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Senha</p>
@@ -498,11 +550,72 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
         </div>
     </div>
 
+    <!-- Triage info moved to separate modal -->
+
     <!-- Acções Dinâmicas -->
     <div id="det-accoes" class="flex flex-col gap-2">
         <!-- Preenchido via JS -->
     </div>
 </div>
+</div>
+
+<!-- Modal Visualizar Triagem -->
+<div id="modal-visualizar-triagem" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[120] hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] w-full max-w-sm p-8 floating-card shadow-2xl">
+        <div class="flex justify-between items-start mb-6">
+            <h3 class="text-xl font-black text-black flex items-center gap-2">
+                <span class="material-symbols-outlined text-blue-600">vital_signs</span>
+                Dados da Triagem
+            </h3>
+            <button onclick="fecharVisualizarTriagem()" class="text-on-surface-variant hover:text-black transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        
+        <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 mb-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-[9px] font-bold text-blue-600/70 uppercase">Pressão Art.</p>
+                    <p class="text-sm font-black text-blue-900" id="det-triagem-pa">--</p>
+                </div>
+                <div>
+                    <p class="text-[9px] font-bold text-blue-600/70 uppercase">Temperatura</p>
+                    <p class="text-sm font-black text-blue-900" id="det-triagem-temp">--</p>
+                </div>
+                <div>
+                    <p class="text-[9px] font-bold text-blue-600/70 uppercase">Peso</p>
+                    <p class="text-sm font-black text-blue-900" id="det-triagem-peso">--</p>
+                </div>
+                <div>
+                    <p class="text-[9px] font-bold text-blue-600/70 uppercase">Freq. Cardíaca</p>
+                    <p class="text-sm font-black text-blue-900" id="det-triagem-fc">--</p>
+                </div>
+                <div class="col-span-2">
+                    <p class="text-[9px] font-bold text-blue-600/70 uppercase">Sintomas</p>
+                    <p class="text-sm font-black text-blue-900" id="det-triagem-sintomas">--</p>
+                </div>
+            </div>
+        </div>
+        
+        <button onclick="fecharVisualizarTriagem()" class="w-full bg-surface-container-low text-black px-4 py-3 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">
+            Fechar
+        </button>
+    </div>
+</div>
+
+<!-- Modal Confirmacao -->
+<div id="modal-confirmacao" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] w-full max-w-sm p-8 floating-card text-center shadow-2xl">
+        <div id="confirmacao-icon-wrapper" class="w-20 h-20 mx-auto rounded-full bg-red-100 flex items-center justify-center mb-5">
+            <span id="confirmacao-icon" class="material-symbols-outlined text-4xl text-red-600">warning</span>
+        </div>
+        <h3 id="confirmacao-titulo" class="text-2xl font-black mb-2 text-on-surface">Cancelar?</h3>
+        <p id="confirmacao-texto" class="text-sm text-on-surface-variant font-medium mb-8">Esta acção não poderá ser revertida.</p>
+        <div class="flex gap-3">
+            <button type="button" onclick="fecharConfirmacao()" class="flex-1 py-3.5 rounded-2xl font-bold text-sm bg-surface-container-lowest border border-surface-container-high text-on-surface hover:bg-surface-container-low transition-colors">Voltar</button>
+            <button type="button" id="confirmacao-btn" class="flex-1 bg-red-600 text-white py-3.5 rounded-2xl font-black text-sm hover:bg-red-700 transition-colors shadow-md shadow-red-600/20">Confirmar</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -537,6 +650,69 @@ function fecharDetalhes() {
     document.getElementById('modal-detalhes').classList.add('hidden');
 }
 
+let formParaSubmeter = null;
+
+function confirmarAcao(acao, id) {
+    let titulo, texto, iconWrapperClass, iconClass, btnClass, iconName;
+    
+    if (acao === 'falta') {
+        titulo = "Registar Falta?";
+        texto = "O paciente será marcado como ausente.";
+        iconWrapperClass = "bg-orange-100";
+        iconClass = "text-orange-600";
+        btnClass = "bg-orange-600 hover:bg-orange-700 shadow-orange-600/20";
+        iconName = "person_off";
+        formParaSubmeter = document.getElementById('form-falta-' + id);
+    } else if (acao === 'cancelar') {
+        titulo = "Cancelar Marcação?";
+        texto = "Esta acção não poderá ser revertida.";
+        iconWrapperClass = "bg-red-100";
+        iconClass = "text-red-600";
+        btnClass = "bg-red-600 hover:bg-red-700 shadow-red-600/20";
+        iconName = "cancel";
+        formParaSubmeter = document.getElementById('form-cancelar-' + id);
+    }
+    
+    document.getElementById('confirmacao-icon-wrapper').className = `w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-5 ${iconWrapperClass}`;
+    document.getElementById('confirmacao-icon').className = `material-symbols-outlined text-4xl ${iconClass}`;
+    document.getElementById('confirmacao-icon').textContent = iconName;
+    
+    document.getElementById('confirmacao-titulo').textContent = titulo;
+    document.getElementById('confirmacao-texto').textContent = texto;
+    
+    document.getElementById('confirmacao-btn').className = `flex-1 text-white py-3.5 rounded-2xl font-black text-sm transition-colors shadow-md ${btnClass}`;
+    
+    document.getElementById('modal-confirmacao').classList.remove('hidden');
+}
+
+function fecharConfirmacao() {
+    document.getElementById('modal-confirmacao').classList.add('hidden');
+    formParaSubmeter = null;
+}
+
+function abrirVisualizarTriagem() {
+    if (!window.marcacaoSelecionada || !window.marcacaoSelecionada.triagem_id) return;
+    let m = window.marcacaoSelecionada;
+    
+    document.getElementById('det-triagem-pa').textContent = m.triagem_pressao_arterial ? m.triagem_pressao_arterial + ' mmHg' : '—';
+    document.getElementById('det-triagem-temp').textContent = m.triagem_temperatura ? m.triagem_temperatura + ' °C' : '—';
+    document.getElementById('det-triagem-peso').textContent = m.triagem_peso ? m.triagem_peso + ' kg' : '—';
+    document.getElementById('det-triagem-fc').textContent = m.triagem_frequencia_cardiaca ? m.triagem_frequencia_cardiaca + ' bpm' : '—';
+    document.getElementById('det-triagem-sintomas').textContent = m.triagem_sintomas || '—';
+    
+    document.getElementById('modal-visualizar-triagem').classList.remove('hidden');
+}
+
+function fecharVisualizarTriagem() {
+    document.getElementById('modal-visualizar-triagem').classList.add('hidden');
+}
+
+document.getElementById('confirmacao-btn').addEventListener('click', function() {
+    if (formParaSubmeter) {
+        formParaSubmeter.submit();
+    }
+});
+
 function abrirDetalhes(m) {
     window.marcacaoSelecionada = m;
     
@@ -551,33 +727,45 @@ function abrirDetalhes(m) {
     estadoEl.className = 'px-2 py-0.5 text-[10px] font-black rounded-full inline-block ' + ebClass;
     estadoEl.textContent = m.estado.toUpperCase();
     
+    document.getElementById('det-tipo-atendimento').textContent = m.tipo_atendimento_nome || '—';
+    document.getElementById('det-consultorio').textContent = m.consultorio_nome || '—';
     document.getElementById('det-prioridade').textContent = prioLabels[m.prioridade] || 'Normal';
     document.getElementById('det-senha').textContent = m.senha_codigo || '—';
     
     let accoesHtml = '';
     
     if (m.estado === 'confirmada' || m.estado === 'marcada') {
-        accoesHtml += `<button onclick="fecharDetalhes(); abrirTriagem()" class="w-full bg-blue-600 text-white px-4 py-3 rounded-xl text-sm font-black hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
-            <span class="material-symbols-outlined text-[18px]">vital_signs</span> Fazer Triagem
-        </button>`;
+        if (m.triagem_id) {
+            accoesHtml += `<button type="button" onclick="abrirVisualizarTriagem()" class="w-full bg-blue-50 border border-blue-100 text-blue-700 px-4 py-3 rounded-xl text-sm font-black hover:bg-blue-100 transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">visibility</span> Mostrar Dados da Triagem
+            </button>`;
+            
+            accoesHtml += `<button type="button" onclick="fecharDetalhes(); abrirTriagem()" class="w-full bg-blue-600 text-white px-4 py-3 rounded-xl text-sm font-black hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">edit_square</span> Editar Triagem
+            </button>`;
+        } else {
+            accoesHtml += `<button onclick="fecharDetalhes(); abrirTriagem()" class="w-full bg-blue-600 text-white px-4 py-3 rounded-xl text-sm font-black hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">vital_signs</span> Fazer Triagem
+            </button>`;
+        }
         
         accoesHtml += `<button onclick="fecharDetalhes(); abrirRemarcar(${m.id})" class="w-full bg-surface-container-low text-black px-4 py-3 rounded-xl text-sm font-bold hover:bg-surface-container transition-colors">
             Remarcar Consulta
         </button>`;
         
         if (m.estado === 'confirmada') {
-            accoesHtml += `<form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" class="m-0" onsubmit="return confirm('Marcar como falta?')">
+            accoesHtml += `<form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" class="m-0" id="form-falta-${m.id}">
                 <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
                 <input type="hidden" name="acao" value="falta"><input type="hidden" name="marcacao_id" value="${m.id}">
-                <button class="w-full bg-orange-100 text-orange-600 px-4 py-3 rounded-xl text-sm font-bold hover:bg-orange-200 transition-colors">Registar Falta</button>
+                <button type="button" onclick="confirmarAcao('falta', ${m.id})" class="w-full bg-orange-100 text-orange-600 px-4 py-3 rounded-xl text-sm font-bold hover:bg-orange-200 transition-colors">Registar Falta</button>
             </form>`;
         }
         
-        accoesHtml += `<form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" class="m-0" onsubmit="return confirm('Cancelar esta marcação?')">
+        accoesHtml += `<form method="POST" action="<?= BASE_URL ?>app/controllers/marcacoes.php" class="m-0" id="form-cancelar-${m.id}">
             <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
             <input type="hidden" name="acao" value="cancelar"><input type="hidden" name="marcacao_id" value="${m.id}">
             <input type="hidden" name="motivo" value="Cancelamento pela recepção">
-            <button class="w-full bg-red-100 text-red-600 px-4 py-3 rounded-xl text-sm font-bold hover:bg-red-200 transition-colors">Cancelar Marcação</button>
+            <button type="button" onclick="confirmarAcao('cancelar', ${m.id})" class="w-full bg-red-100 text-red-600 px-4 py-3 rounded-xl text-sm font-bold hover:bg-red-200 transition-colors">Cancelar Marcação</button>
         </form>`;
     } else {
         accoesHtml += `<p class="text-center text-xs text-on-surface-variant font-bold">Nenhuma ação disponível para o estado atual.</p>`;

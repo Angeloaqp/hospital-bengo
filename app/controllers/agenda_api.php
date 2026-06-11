@@ -46,6 +46,37 @@ if ($acao === 'pesquisar_paciente') {
 }
 
 // ------------------------------------------------
+// Estatisticas de Marcações do Mês (Calendário Dropdown)
+// ------------------------------------------------
+if ($acao === 'estatisticas_mes') {
+    $mes = $_GET['mes'] ?? date('Y-m'); // "2026-06"
+    $medico_id = !empty($_GET['medico_id']) ? (int) $_GET['medico_id'] : null;
+    
+    $db = Database::ligar();
+    $params = [':mes' => $mes . '-%'];
+    $sql = "SELECT DATE(data_consulta) as data, COUNT(*) as total FROM marcacoes WHERE data_consulta LIKE :mes";
+    
+    if ($medico_id) {
+        $sql .= " AND medico_id = :med_id";
+        $params[':med_id'] = $medico_id;
+    }
+    
+    $sql .= " GROUP BY DATE(data_consulta)";
+    
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll();
+    
+    $result = [];
+    foreach($rows as $row) {
+        $result[$row['data']] = (int) $row['total'];
+    }
+    
+    echo json_encode(['stats' => $result]);
+    exit;
+}
+
+// ------------------------------------------------
 // Capacidade/ocupação de um médico num dia/turno
 // ------------------------------------------------
 if ($acao === 'capacidade') {
@@ -141,7 +172,8 @@ if ($acao === 'obter_paciente') {
 // ------------------------------------------------
 if ($acao === 'medicos_da_especialidade') {
     $espId = (int) ($_GET['especialidade_id'] ?? 0);
-    
+    $origem = $_GET['origem'] ?? '';
+
     $db = Database::ligar();
     $sql = "SELECT u.id, u.nome, 
             (
@@ -157,6 +189,10 @@ if ($acao === 'medicos_da_especialidade') {
             
     if ($espId > 0) {
         $sql .= " AND (u.especialidade_id = " . $espId . " OR u.id IN (SELECT medico_id FROM medico_especialidades WHERE especialidade_id = " . $espId . "))";
+    }
+    
+    if ($origem === 'mesmo_dia') {
+        $sql .= " AND u.aceitar_walkins = 1";
     }
     
     $sql .= " ORDER BY u.nome ASC";

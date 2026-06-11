@@ -55,6 +55,8 @@ if ($acao === 'toggle_utilizador') {
 // ------------------------------------------------
 if ($acao === 'criar_utilizador') {
     $nome = trim($_POST['nome'] ?? '');
+    $sexo = trim($_POST['sexo'] ?? 'M');
+    if (!in_array($sexo, ['M', 'F'])) $sexo = 'M';
     $username = trim($_POST['nome_utilizador'] ?? '');
     $senha = $_POST['senha'] ?? '';
     $perfil = trim($_POST['perfil'] ?? '');
@@ -135,6 +137,7 @@ if ($acao === 'criar_utilizador') {
     try {
         Estatistica::criarUtilizador([
             'nome' => $nome,
+            'sexo' => $sexo,
             'nome_utilizador' => $username,
             'senha' => $senha,
             'perfil' => $perfil,
@@ -162,6 +165,7 @@ if ($acao === 'criar_utilizador') {
 
         $_SESSION['utilizador_criado'] = [
             'nome' => $nome,
+            'sexo' => $sexo,
             'nome_utilizador' => $username,
             'perfil' => $perfil,
             'especialidade' => $espNome,
@@ -197,6 +201,8 @@ if ($acao === 'criar_utilizador') {
 if ($acao === 'editar_utilizador') {
     $id = (int) ($_POST['id'] ?? 0);
     $nome = trim($_POST['nome'] ?? '');
+    $sexo = trim($_POST['sexo'] ?? 'M');
+    if (!in_array($sexo, ['M', 'F'])) $sexo = 'M';
     $username = trim($_POST['nome_utilizador'] ?? '');
     $senha = $_POST['senha'] ?? '';
     $perfil = trim($_POST['perfil'] ?? '');
@@ -238,6 +244,7 @@ if ($acao === 'editar_utilizador') {
     try {
         Estatistica::editarUtilizador($id, [
             'nome' => $nome,
+            'sexo' => $sexo,
             'nome_utilizador' => $username,
             'senha' => $senha,
             'perfil' => $perfil,

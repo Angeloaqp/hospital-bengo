@@ -177,6 +177,22 @@ $prioridades = [
                                                 </div>
                                             </div>
                                         </div>
+                                        <?php 
+                                        $triagemAtendData = [
+                                            'id' => $emAtend['triagem_id'] ?? null,
+                                            'sintomas' => $emAtend['triagem_sintomas'] ?? null,
+                                            'temperatura' => $emAtend['triagem_temperatura'] ?? null,
+                                            'pressao_arterial' => $emAtend['triagem_pressao_arterial'] ?? null,
+                                            'peso' => $emAtend['triagem_peso'] ?? null,
+                                            'frequencia_cardiaca' => $emAtend['triagem_frequencia_cardiaca'] ?? null,
+                                            'observacoes' => $emAtend['triagem_observacoes'] ?? null
+                                        ];
+                                        if (!empty($emAtend['triagem_id'])): ?>
+                                        <button type="button" onclick="abrirTriagemView('<?= addslashes(htmlspecialchars($emAtend['paciente_nome'])) ?>', <?= htmlspecialchars(json_encode($triagemAtendData)) ?>)" class="px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 hover:bg-blue-100 transition-colors border border-blue-100 shadow-sm mt-1">
+                                            <span class="material-symbols-outlined text-[16px]">vital_signs</span>
+                                            Ver Triagem
+                                        </button>
+                                        <?php endif; ?>
                                     </div>
 
                                     <!-- Formulário de Prontuário -->
@@ -294,7 +310,25 @@ $prioridades = [
                         <section class="bg-surface-container-low/50 rounded-[2rem] p-8 flex flex-col justify-between border-2 border-dashed <?= $pP['border'] ?> relative overflow-hidden group min-h-[420px] transition-all duration-500" id="proximo-card">
                             <div class="h-full flex flex-col justify-between" id="proximo-content">
                                 <div>
-                                    <span class="px-3 py-1 bg-white rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Próximo Paciente</span>
+                                    <div class="flex justify-between items-start">
+                                        <span class="px-3 py-1 bg-white rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Próximo Paciente</span>
+                                        <?php 
+                                        $triagemProximaData = [
+                                            'id' => $proxima['triagem_id'] ?? null,
+                                            'sintomas' => $proxima['triagem_sintomas'] ?? null,
+                                            'temperatura' => $proxima['triagem_temperatura'] ?? null,
+                                            'pressao_arterial' => $proxima['triagem_pressao_arterial'] ?? null,
+                                            'peso' => $proxima['triagem_peso'] ?? null,
+                                            'frequencia_cardiaca' => $proxima['triagem_frequencia_cardiaca'] ?? null,
+                                            'observacoes' => $proxima['triagem_observacoes'] ?? null
+                                        ];
+                                        if (!empty($proxima['triagem_id'])): ?>
+                                        <button type="button" onclick="abrirTriagemView('<?= addslashes(htmlspecialchars($proxima['paciente_nome'])) ?>', <?= htmlspecialchars(json_encode($triagemProximaData)) ?>)" class="px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 hover:bg-blue-100 transition-colors border border-blue-100 shadow-sm">
+                                            <span class="material-symbols-outlined text-[16px]">vital_signs</span>
+                                            Ver Triagem
+                                        </button>
+                                        <?php endif; ?>
+                                    </div>
                                     <div class="mt-8 flex items-end gap-6">
                                         <span class="text-5xl tactile-mono text-zinc-400"><?= htmlspecialchars($proxima['codigo']) ?></span>
                                         <div class="mb-1">
@@ -355,12 +389,29 @@ $prioridades = [
                                     <?php foreach (array_slice($filaRestante, 0, 10) as $s): 
                                         $p = $prioridades[$s['prioridade']] ?? $prioridades[4];
                                         $minutosEspera = max(0, floor((time() - strtotime($s['criado_em'])) / 60));
+                                        
+                                        $triagemData = [
+                                            'id' => $s['triagem_id'] ?? null,
+                                            'sintomas' => $s['triagem_sintomas'] ?? null,
+                                            'temperatura' => $s['triagem_temperatura'] ?? null,
+                                            'pressao_arterial' => $s['triagem_pressao_arterial'] ?? null,
+                                            'peso' => $s['triagem_peso'] ?? null,
+                                            'frequencia_cardiaca' => $s['triagem_frequencia_cardiaca'] ?? null,
+                                            'observacoes' => $s['triagem_observacoes'] ?? null
+                                        ];
                                     ?>
-                                        <tr class="hover:bg-surface-container-low/20 transition-colors group cursor-pointer">
+                                        <tr onclick="abrirTriagemView('<?= addslashes(htmlspecialchars($s['paciente_nome'])) ?>', <?= htmlspecialchars(json_encode($triagemData)) ?>)" class="hover:bg-surface-container-low/20 transition-colors group cursor-pointer">
                                             <td class="px-8 py-6">
                                                 <span class="tactile-mono text-lg px-2.5 py-1 bg-surface-container-high rounded text-on-surface group-hover:bg-primary group-hover:text-white transition-all"><?= htmlspecialchars($s['codigo']) ?></span>
                                             </td>
-                                            <td class="px-8 py-6 font-bold text-on-surface text-sm"><?= htmlspecialchars($s['paciente_nome']) ?></td>
+                                            <td class="px-8 py-6 font-bold text-on-surface text-sm flex items-center gap-2">
+                                                <?= htmlspecialchars($s['paciente_nome']) ?>
+                                                <?php if(!empty($s['triagem_id'])): ?>
+                                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-700 rounded-full shadow-sm" title="Triagem Efetuada">
+                                                        <span class="material-symbols-outlined text-[12px]">vital_signs</span>
+                                                    </span>
+                                                <?php endif; ?>
+                                            </td>
                                             <td class="px-8 py-6">
                                                 <span class="px-3 py-1 <?= $p['bg'] ?> <?= $p['text'] ?> rounded-full text-[10px] font-black uppercase tracking-wider"><?= $p['label'] ?></span>
                                             </td>
@@ -622,5 +673,6 @@ $prioridades = [
         }, 15000); // 15 seconds
     })();
     </script>
+<?php include __DIR__ . '/../comum/modal_triagem_view.php'; ?>
 </body>
 </html>

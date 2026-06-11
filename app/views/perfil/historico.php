@@ -66,22 +66,23 @@ $grafico = Utilizador::sparkline7Dias($meuId, $meuPerfil);
     <?php $paginaActual = 'perfil'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
-    <?php $tituloPagina = 'Métricas e Histórico'; ob_start(); ?>
-    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-on-surface hover:bg-primary hover:text-white hover:border-primary rounded-full flex items-center gap-2 transition-all shadow-sm">
-        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-        <span class="text-xs font-bold">Resumo do Perfil</span>
-    </a>
-    <?php $accoesPagina = ob_get_clean(); ?>
+    <?php $tituloPagina = 'Métricas e Histórico'; $accoesPagina = ''; ?>
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
     <div class="ml-[17rem] mr-6 mt-28 py-8 ">
 <main class="w-full">
         <div class="pb-32">
 
-            <div class="mb-10 bento-card flex items-end justify-between">
-                <div>
-                    <h2 class="text-3xl font-headline font-black text-on-surface tracking-tight leading-none">Análise de Produtividade</h2>
-                    <p class="text-sm font-bold text-gray-400 mt-2">Visão geral do seu histórico de volume e tempos no sistema.</p>
+            <div class="mb-10 bento-card flex items-end justify-between flex-wrap gap-4">
+                <div class="flex flex-col items-start gap-4">
+                    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-on-surface hover:bg-primary hover:text-white hover:border-primary rounded-full flex items-center gap-2 transition-all shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                        <span class="text-xs font-bold">Resumo do Perfil</span>
+                    </a>
+                    <div>
+                        <h2 class="text-3xl font-headline font-black text-on-surface tracking-tight leading-none">Análise de Produtividade</h2>
+                        <p class="text-sm font-bold text-gray-400 mt-2">Visão geral do seu histórico de volume e tempos no sistema.</p>
+                    </div>
                 </div>
                 <div class="px-4 py-2 bg-gray-100/50 rounded-xl">
                     <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Cargo Operacional: </span>

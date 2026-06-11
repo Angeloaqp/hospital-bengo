@@ -79,14 +79,14 @@
 /* 2. Painéis Laterais (Drawers) */
 .drawer-backdrop {
     position: fixed; inset: 0; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px);
-    z-index: 40; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    z-index: 998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
 }
 .drawer-backdrop.active {
     opacity: 1; pointer-events: auto;
 }
 .drawer-panel {
     position: fixed; top: 0; right: 0; bottom: 0; width: 100%; max-width: 440px;
-    background: #fff; z-index: 50; box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+    background: #fff; z-index: 999; box-shadow: -10px 0 40px rgba(0,0,0,0.1);
     transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex; flex-direction: column;
 }

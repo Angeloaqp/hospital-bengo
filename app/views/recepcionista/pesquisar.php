@@ -433,12 +433,14 @@ $tipos = $db->query(
                         success.style.pointerEvents = 'auto';
                         success.style.transform = 'translateY(0)';
                     } else {
-                        alert(data.mensagem || 'Ocorreu um erro.');
+                        if (typeof window.showToast === 'function') window.showToast(data.mensagem || 'Ocorreu um erro.', 'error');
+                        else alert(data.mensagem || 'Ocorreu um erro.');
                         resetLoadingState();
                     }
                 })
                 .catch(error => {
-                    alert('Erro na comunicação com o servidor.');
+                    if (typeof window.showToast === 'function') window.showToast('Erro na comunicação com o servidor.', 'error');
+                    else alert('Erro na comunicação com o servidor.');
                     resetLoadingState();
                 });
 

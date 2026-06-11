@@ -230,7 +230,7 @@ $avatarColors = [
     </style>
 </head>
 
-<body class="text-on-surface h-screen overflow-hidden bg-background">
+<body class="text-on-surface bg-background">
 
     <?php $paginaActual = 'utilizadores'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
@@ -250,9 +250,8 @@ $avatarColors = [
     <?php $accoesPagina = ob_get_clean(); ?>
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
-    <div class="ml-56 mt-28 h-[calc(100vh-7rem)] flex flex-col">
-        <div class="flex-1 overflow-y-auto custom-scrollbar">
-            <main class="w-full max-w-[1500px] mx-auto px-8 pb-24 pt-4">
+    <div class="ml-[17rem] mr-6 mt-28 py-8">
+        <main class="w-full">
 
                 <!-- Toast Messages -->
                 <?php if ($mensagem): ?>
@@ -487,7 +486,6 @@ $avatarColors = [
                 </div>
 
             </main>
-        </div>
     </div>
 
     <!-- Client-side Search, Filter & Pagination -->

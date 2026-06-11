@@ -90,11 +90,11 @@ window.HospitalCalendar = {
             if(state.minDate && thisDate.getTime() < state.minDate) isDisabled = true;
             
             if(isDisabled) {
-                html += `<button type="button" disabled class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all disabled:opacity-30">${i}</button>`;
+                html += `<button type="button" disabled class="hover:bg-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto transition-all disabled:opacity-30 relative" data-date="${dateStr}"><span class="z-10">${i}</span></button>`;
             } else if(isSelected) {
-                html += `<button type="button" onclick="HospitalCalendar.selectDate('${id}', '${dateStr}', '${formattedDate}', event)" class="bg-black text-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto shadow-md transition-all hover:scale-[1.1]">${i}</button>`;
+                html += `<button type="button" onclick="HospitalCalendar.selectDate('${id}', '${dateStr}', '${formattedDate}', event)" class="bg-black text-white rounded-[12px] w-8 h-8 flex items-center justify-center mx-auto shadow-md transition-all hover:scale-[1.1] relative" data-date="${dateStr}"><span class="z-10">${i}</span></button>`;
             } else {
-                html += `<button type="button" onclick="HospitalCalendar.selectDate('${id}', '${dateStr}', '${formattedDate}', event)" class="hover:bg-white rounded-[12px] w-8 h-8 flex flex-col items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm text-black relative"><span class="z-10">${i}</span></button>`;
+                html += `<button type="button" onclick="HospitalCalendar.selectDate('${id}', '${dateStr}', '${formattedDate}', event)" class="hover:bg-white rounded-[12px] w-8 h-8 flex flex-col items-center justify-center mx-auto transition-all hover:scale-[1.1] hover:shadow-sm text-black relative" data-date="${dateStr}"><span class="z-10">${i}</span></button>`;
             }
         }
         
@@ -110,6 +110,35 @@ window.HospitalCalendar = {
             </div>
         </div>`;
         wrapper.innerHTML = html;
+        
+        // --- Injeta pontos indicadores assincronamente ---
+        let url = new URL(window.location.href);
+        let baseUrl = '/hospital-bengo/app/controllers/agenda_api.php?acao=estatisticas_mes';
+        let mesStr = state.currentYear + '-' + String(state.currentMonth+1).padStart(2,'0');
+        let fetchUrl = baseUrl + '&mes=' + mesStr;
+        let medicoId = url.searchParams.get('medico_id');
+        if (medicoId) fetchUrl += '&medico_id=' + medicoId;
+
+        fetch(fetchUrl)
+            .then(r => r.json())
+            .then(data => {
+                if(data && data.stats) {
+                    let buttons = wrapper.querySelectorAll('button[data-date]');
+                    buttons.forEach(btn => {
+                        let dStr = btn.getAttribute('data-date');
+                        let count = data.stats[dStr] || 0;
+                        let dotHtml = '';
+                        if (count === 0) {
+                            dotHtml = '<span class="w-[3px] h-[3px] rounded-full bg-gray-300 absolute bottom-[2px]" title="Livre"></span>';
+                        } else if (count >= 15) {
+                            dotHtml = '<span class="w-[3px] h-[3px] rounded-full bg-red-500 animate-pulse absolute bottom-[2px]" title="Agenda Cheia"></span>';
+                        } else {
+                            dotHtml = '<span class="w-[3px] h-[3px] rounded-full bg-green-500 absolute bottom-[2px]" title="Vagas ('+count+' marcadas)"></span>';
+                        }
+                        btn.innerHTML += dotHtml;
+                    });
+                }
+            }).catch(e => console.log('Sem stats'));
     },
 
     toggleDropdown: function(id, event) {

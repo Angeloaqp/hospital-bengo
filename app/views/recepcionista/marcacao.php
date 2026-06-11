@@ -108,8 +108,8 @@ $subtituloPagina = 'Agendar consulta para data futura';
 
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
-    <div class="ml-56 mt-28 p-8 flex justify-center pb-24">
-        <main class="w-full max-w-[1200px]">
+    <div class="ml-[17rem] mr-6 mt-28 py-8 flex justify-center pb-24">
+        <main class="w-full">
 
             <?php if (!empty($erros)): ?>
                 <div class="bg-error-container text-error px-5 py-4 rounded-2xl text-sm font-bold shadow-sm mb-6 max-w-[800px]">
@@ -131,7 +131,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
                 <div class="flex flex-col lg:flex-row gap-8" id="booking-form-state">
 
                     <!-- Left Column: Forms -->
-                    <div class="flex-1 space-y-6">
+                    <div class="flex-1 min-w-0 space-y-6">
 
                         <!-- Step 1: Identificação do Paciente -->
                         <section class="bg-white rounded-[32px] p-8 floating-card border border-white relative z-50 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both">
@@ -157,17 +157,40 @@ $subtituloPagina = 'Agendar consulta para data futura';
                             <input type="hidden" name="paciente_id" id="paciente-id" value="<?= $dados['paciente_id'] ?? '' ?>" required>
 
                             <!-- Selected Patient Card -->
-                            <div class="p-5 bg-blue-50/50 rounded-[24px] border border-blue-100 items-start gap-4 transition-all hover:shadow-sm hidden" id="paciente-info">
-                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                                    <span class="font-bold text-blue-600 text-lg" id="paciente-iniciais">P</span>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h4 class="text-base font-black text-on-surface" id="paciente-nome-display">Nome do Paciente</h4>
-                                            <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mt-0.5" id="paciente-extra">Detalhes</p>
+                            <div class="p-6 bg-surface-container-lowest rounded-[32px] border border-surface-variant/30 flex-col sm:flex-row gap-6 transition-all hover:shadow-md hidden relative overflow-hidden" id="paciente-info">
+                                <div class="flex items-start gap-4 w-full">
+                                    <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border-4 border-white shadow-sm mt-1 sm:mt-0">
+                                        <span class="font-black text-primary text-2xl" id="paciente-iniciais">P</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex justify-between items-start mb-4">
+                                            <div class="min-w-0">
+                                                <h4 class="text-lg font-black text-on-surface tracking-tight truncate" id="paciente-nome-display">Nome do Paciente</h4>
+                                                <div class="flex items-center gap-2 mt-1">
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest" id="paciente-proc-badge"><span class="material-symbols-outlined text-[12px]">folder_shared</span> <span id="paciente-proc"></span></span>
+                                                </div>
+                                            </div>
+                                            <button type="button" onclick="limparPaciente()" class="text-xs font-black text-error hover:bg-error/10 px-4 py-2 rounded-full transition-colors active:scale-95 flex items-center gap-1 shrink-0 ml-4"><span class="material-symbols-outlined text-[16px]">close</span> Alterar</button>
                                         </div>
-                                        <button type="button" onclick="limparPaciente()" class="text-xs font-bold text-error hover:bg-error/10 px-3 py-1.5 rounded-[12px] transition-colors active:scale-95">Alterar</button>
+                                        
+                                        <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 bg-surface-container-low p-4 rounded-[20px]">
+                                            <div class="min-w-0">
+                                                <p class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1">Idade</p>
+                                                <p class="text-xs font-bold text-on-surface flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">cake</span> <span id="paciente-idade"></span></p>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <p class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1">Doc. Identidade</p>
+                                                <p class="text-xs font-bold text-on-surface flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">badge</span> <span id="paciente-bi"></span></p>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <p class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1">Telefone</p>
+                                                <p class="text-xs font-bold text-on-surface flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">call</span> <span id="paciente-telefone"></span></p>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <p class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1">E-mail</p>
+                                                <p class="text-xs font-bold text-on-surface flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">mail</span> <span id="paciente-email" class="truncate" title="Email"></span></p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -573,8 +596,10 @@ $subtituloPagina = 'Agendar consulta para data futura';
                             const safeBi = p.bi_nif || '';
                             const safeIdade = p.idade || '';
                             const safeProc = p.numero_processo || '';
+                            const safeTelefone = p.telefone || 'S/ Registo';
+                            const safeEmail = p.email || 'S/ Registo';
 
-                            return `<div class="px-5 py-3 hover:bg-surface-container-low cursor-pointer transition-colors border-b border-surface-container-low/50 last:border-0" onclick="seleccionarPaciente(${safeId},'${safeNome}','${safeBi}','${safeIdade}','${safeProc}')">
+                            return `<div class="px-5 py-3 hover:bg-surface-container-low cursor-pointer transition-colors border-b border-surface-container-low/50 last:border-0" onclick="seleccionarPaciente(${safeId},'${safeNome}','${safeBi}','${safeIdade}','${safeProc}','${safeTelefone}','${safeEmail}')">
                     <div class="flex items-center justify-between">
                         <span class="font-black text-sm text-on-surface">${displayNome}</span>
                         <span class="text-xs font-bold text-on-surface-variant bg-surface-container px-2 py-1 rounded-md">${safeIdade||'?'} anos</span>
@@ -591,18 +616,22 @@ $subtituloPagina = 'Agendar consulta para data futura';
             }, 300);
         });
 
-        function seleccionarPaciente(id, nome, bi, idade, numero_processo = '') {
+        function seleccionarPaciente(id, nome, bi, idade, numero_processo = '', telefone = 'S/ Registo', email = 'S/ Registo') {
             document.getElementById('paciente-id').value = id;
             document.getElementById('paciente-nome-display').textContent = nome;
 
-            let extraParts = [];
-            if (numero_processo) extraParts.push('Nº Proc: ' + numero_processo);
-            if (bi) extraParts.push('BI: ' + bi);
-            if (idade) extraParts.push(idade + ' anos');
+            document.getElementById('paciente-proc').textContent = numero_processo || 'S/ Nº Proc';
+            if (!numero_processo) {
+                document.getElementById('paciente-proc-badge').classList.add('opacity-50');
+            } else {
+                document.getElementById('paciente-proc-badge').classList.remove('opacity-50');
+            }
 
-            const extraInfo = extraParts.length > 0 ? extraParts.join(' • ') : 'S/ Dados Extra';
+            document.getElementById('paciente-idade').textContent = idade ? idade + ' anos' : 'Desconhecida';
+            document.getElementById('paciente-bi').textContent = bi || 'Não Registado';
+            document.getElementById('paciente-telefone').textContent = telefone;
+            document.getElementById('paciente-email').textContent = email;
 
-            document.getElementById('paciente-extra').textContent = extraInfo;
             document.getElementById('paciente-iniciais').textContent = nome.charAt(0).toUpperCase();
 
             document.getElementById('paciente-info').classList.remove('hidden');
@@ -612,6 +641,13 @@ $subtituloPagina = 'Agendar consulta para data futura';
 
             // Update Resumo
             document.getElementById('resumo-paciente-nome').textContent = nome;
+            
+            let extraParts = [];
+            if (numero_processo) extraParts.push('Nº Proc: ' + numero_processo);
+            if (bi) extraParts.push('BI: ' + bi);
+            if (idade) extraParts.push(idade + ' anos');
+            const extraInfo = extraParts.length > 0 ? extraParts.join(' • ') : 'S/ Dados Extra';
+            
             document.getElementById('resumo-paciente-extra').textContent = extraInfo;
             updateIndicator('step1-indicator', true);
 
@@ -644,7 +680,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
             fetch(BASE + 'app/controllers/agenda_api.php?acao=obter_paciente&paciente_id=' + pacienteIdInicial)
                 .then(r => r.json()).then(d => {
                     if (d.paciente) {
-                        seleccionarPaciente(d.paciente.id, d.paciente.nome, d.paciente.bi_nif, d.paciente.idade, d.paciente.numero_processo);
+                        seleccionarPaciente(d.paciente.id, d.paciente.nome, d.paciente.bi_nif, d.paciente.idade, d.paciente.numero_processo, d.paciente.telefone, d.paciente.email);
                     }
                 });
         }
@@ -963,6 +999,7 @@ $subtituloPagina = 'Agendar consulta para data futura';
                 if (selData.value) {
                     const dateObj = new Date(selData.value);
                     const options = {
+                        timeZone: 'UTC',
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric'
@@ -1050,7 +1087,11 @@ $subtituloPagina = 'Agendar consulta para data futura';
                     const icon = document.getElementById('cap-icon');
                     const txt = document.getElementById('cap-texto');
 
-                    if (d.lotado) {
+                    if (!d.definida) {
+                        badge.className = 'flex items-center gap-2 p-3 rounded-xl inline-flex text-xs font-bold bg-surface-container text-zinc-500 border border-zinc-200';
+                        icon.textContent = 'event_available';
+                        txt.textContent = 'Sem vaga definida';
+                    } else if (d.lotado) {
                         badge.className = 'flex items-center gap-2 p-3 rounded-xl inline-flex text-xs font-bold bg-error-container text-error';
                         icon.textContent = 'warning';
                         txt.textContent = `Agenda Lotada — ${d.ocupacao}/${d.capacidade} vagas ocupadas`;
@@ -1111,36 +1152,36 @@ $subtituloPagina = 'Agendar consulta para data futura';
             }
 
             c.insertAdjacentHTML('beforeend', `
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-surface-container-low rounded-[24px] border border-transparent hover:border-primary/5 transition-colors group gap-4" id="contacto-${i}">
-            <div class="flex items-center gap-4 flex-1">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between p-3 bg-surface-container-low rounded-[24px] border border-transparent hover:border-primary/5 transition-colors group gap-4 flex-wrap" id="contacto-${i}">
+            <div class="flex items-center gap-3 flex-1">
                 <div class="w-10 h-10 rounded-full ${bg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                     <span class="material-symbols-outlined ${iconColor} text-[20px]">${icon}</span>
                 </div>
-                <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" name="contactos[${i}][valor]" value="${valor}" class="w-full bg-transparent border-b border-primary/10 focus:border-primary px-1 py-1 text-sm font-bold text-on-surface" placeholder="Contacto..." required>
-                    <div class="flex gap-2">
-                        <select name="contactos[${i}][tipo]" class="bg-transparent border-b border-primary/10 focus:border-primary px-1 py-1 text-[10px] uppercase font-semibold text-on-surface-variant w-1/2">
-                            <option value="telefone" ${tipo==='telefone'?'selected':''}>Telefone</option>
-                            <option value="whatsapp" ${tipo==='whatsapp'?'selected':''}>WhatsApp</option>
-                            <option value="email" ${tipo==='email'?'selected':''}>Email</option>
-                            <option value="emergencia" ${tipo==='emergencia'?'selected':''}>Emerg.</option>
-                        </select>
-                        <input type="text" name="contactos[${i}][nome_contacto]" value="${nome}" class="w-1/2 bg-transparent border-b border-primary/10 focus:border-primary px-1 py-1 text-xs font-semibold text-on-surface-variant" placeholder="Nome (Opcional)">
-                    </div>
+                <div class="flex-1 flex flex-wrap gap-2">
+                    <input type="text" name="contactos[${i}][valor]" value="${valor}" class="flex-1 min-w-[140px] border-none bg-white rounded-xl px-3 py-2.5 text-sm font-black text-on-surface shadow-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:font-medium placeholder:text-on-surface-variant/40" placeholder="Contacto..." required>
+                    
+                    <select name="contactos[${i}][tipo]" class="flex-1 min-w-[110px] max-w-[140px] shrink-0 border-none bg-white rounded-xl px-3 py-2.5 text-[10px] uppercase font-black text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary/20 transition-all">
+                        <option value="telefone" ${tipo==='telefone'?'selected':''}>Telefone</option>
+                        <option value="whatsapp" ${tipo==='whatsapp'?'selected':''}>WhatsApp</option>
+                        <option value="email" ${tipo==='email'?'selected':''}>Email</option>
+                        <option value="emergencia" ${tipo==='emergencia'?'selected':''}>Emerg.</option>
+                    </select>
+                    
+                    <input type="text" name="contactos[${i}][nome_contacto]" value="${nome}" class="flex-1 min-w-[130px] max-w-[160px] shrink-0 border-none bg-white rounded-xl px-3 py-2.5 text-xs font-bold text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:font-medium placeholder:text-on-surface-variant/40" placeholder="Nome (Opcional)">
                 </div>
             </div>
             
-            <div class="flex items-center justify-end gap-4 shrink-0">
-                <label class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-                    <span class="text-[10px] font-bold text-on-surface-variant uppercase">Lembretes</span>
+            <div class="flex items-center justify-end gap-3 shrink-0">
+                <label class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity bg-white px-3 py-2.5 rounded-xl shadow-sm border border-transparent hover:border-primary/10">
+                    <span class="text-[10px] font-black text-on-surface-variant uppercase">Lembretes</span>
                     <div class="relative">
                         <input type="checkbox" name="contactos[${i}][consentimento]" value="1" ${checked} class="sr-only peer toggle-checkbox"/>
-                        <div class="block bg-surface-container-high peer-checked:bg-primary w-10 h-6 rounded-full transition-colors duration-300 toggle-label"></div>
-                        <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 peer-checked:translate-x-full"></div>
+                        <div class="block bg-surface-container-high peer-checked:bg-primary w-9 h-5 rounded-full transition-colors duration-300 toggle-label"></div>
+                        <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-300 peer-checked:translate-x-4"></div>
                     </div>
                 </label>
-                <button type="button" onclick="document.getElementById('contacto-${i}').remove()" class="text-error hover:bg-error/10 p-2 rounded-full transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                <button type="button" onclick="document.getElementById('contacto-${i}').remove()" class="text-error bg-white hover:bg-error/10 hover:text-error p-2.5 rounded-xl shadow-sm transition-colors border border-transparent hover:border-error/20">
+                    <span class="material-symbols-outlined text-[20px] block">delete</span>
                 </button>
             </div>
         </div>
@@ -1172,11 +1213,13 @@ $subtituloPagina = 'Agendar consulta para data futura';
             if (isSubmitting) return;
 
             if (!document.getElementById('paciente-id').value) {
-                alert('Por favor seleccione um paciente primeiro.');
+                if (typeof window.showToast === 'function') window.showToast('Por favor seleccione um paciente primeiro.', 'error');
+                else alert('Por favor seleccione um paciente primeiro.');
                 return;
             }
             if (!document.getElementById('medico-id').value) {
-                alert('Por favor seleccione o médico responsável.');
+                if (typeof window.showToast === 'function') window.showToast('Por favor seleccione o médico responsável.', 'error');
+                else alert('Por favor seleccione o médico responsável.');
                 return;
             }
 
@@ -1241,12 +1284,15 @@ $subtituloPagina = 'Agendar consulta para data futura';
                         document.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(el => el.disabled = true);
 
                     } else {
-                        alert('Erro: ' + (d.erros ? d.erros.join('\n') : 'Falha desconhecida.'));
+                        let errorMsg = 'Erro: ' + (d.erros ? d.erros.join('\n') : 'Falha desconhecida.');
+                        if (typeof window.showToast === 'function') window.showToast(errorMsg, 'error');
+                        else alert(errorMsg);
                         isSubmitting = false;
                     }
                 })
                 .catch(err => {
-                    alert('Erro de rede ao processar marcação.');
+                    if (typeof window.showToast === 'function') window.showToast('Erro de rede ao processar marcação.', 'error');
+                    else alert('Erro de rede ao processar marcação.');
                     isSubmitting = false;
                 })
                 .finally(() => {

@@ -39,6 +39,7 @@ DROP TABLE IF EXISTS `utilizadores`;
 CREATE TABLE `utilizadores` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
+  `sexo` enum('M','F') NOT NULL DEFAULT 'M',
   `nome_utilizador` varchar(50) NOT NULL,
   `senha_hash` varchar(255) NOT NULL,
   `perfil` enum('recepcionista','medico','admin') NOT NULL,

@@ -26,8 +26,13 @@ class Senha
              JOIN pacientes p  ON s.paciente_id = p.id
              JOIN tipos_atendimento ta 
                   ON s.tipo_atendimento_id = ta.id
+             LEFT JOIN marcacoes m ON s.marcacao_id = m.id
              WHERE s.estado = 'espera'
-             ORDER BY s.prioridade ASC, s.criado_em ASC"
+             AND (m.data_consulta = CURDATE() OR (s.marcacao_id IS NULL AND DATE(s.criado_em) = CURDATE()))
+             ORDER BY s.prioridade ASC, 
+                      m.turno ASC, 
+                      CASE WHEN s.origem = 'mesmo_dia' THEN 1 ELSE 0 END ASC, 
+                      s.criado_em ASC"
         );
         $stmt->execute();
         return $stmt->fetchAll();
@@ -41,7 +46,11 @@ class Senha
     ): int {
         $db = Database::ligar();
         $stmt = $db->prepare(
-            "SELECT COUNT(*) FROM senhas WHERE estado = :e"
+            "SELECT COUNT(*) 
+             FROM senhas s
+             LEFT JOIN marcacoes m ON s.marcacao_id = m.id
+             WHERE s.estado = :e
+             AND (m.data_consulta = CURDATE() OR (s.marcacao_id IS NULL AND DATE(s.criado_em) = CURDATE()))"
         );
         $stmt->execute([':e' => $estado]);
         return (int) $stmt->fetchColumn();
@@ -54,8 +63,11 @@ class Senha
     {
         $db = Database::ligar();
         $stmt = $db->query(
-            "SELECT COUNT(*) FROM senhas 
-             WHERE estado = 'espera' AND prioridade = 1"
+            "SELECT COUNT(*) 
+             FROM senhas s
+             LEFT JOIN marcacoes m ON s.marcacao_id = m.id
+             WHERE s.estado = 'espera' AND s.prioridade = 1
+             AND (m.data_consulta = CURDATE() OR (s.marcacao_id IS NULL AND DATE(s.criado_em) = CURDATE()))"
         );
         return (int) $stmt->fetchColumn();
     }
@@ -111,11 +123,12 @@ class Senha
         
         $prefixoMedico = '';
         if ($medicoId) {
-            $stmtM = $db->prepare("SELECT nome_utilizador FROM utilizadores WHERE id = :id");
+            $stmtM = $db->prepare("SELECT nome_utilizador, sexo FROM utilizadores WHERE id = :id");
             $stmtM->execute([':id' => $medicoId]);
-            $username = $stmtM->fetchColumn();
-            if ($username) {
-                $prefixoMedico = strtoupper($username) . '-';
+            $medico = $stmtM->fetch();
+            if ($medico) {
+                $drPrefix = ($medico['sexo'] === 'F') ? 'DRA' : 'DR';
+                $prefixoMedico = $drPrefix . '-' . strtoupper($medico['nome_utilizador']) . '-';
             }
         }
         
@@ -153,8 +166,13 @@ class Senha
                   ON s.paciente_id = p.id
              JOIN tipos_atendimento ta 
                   ON s.tipo_atendimento_id = ta.id
+             LEFT JOIN marcacoes m ON s.marcacao_id = m.id
              WHERE s.estado = 'espera'
-             ORDER BY s.prioridade ASC, s.criado_em ASC
+             AND (m.data_consulta = CURDATE() OR (s.marcacao_id IS NULL AND DATE(s.criado_em) = CURDATE()))
+             ORDER BY s.prioridade ASC, 
+                      m.turno ASC, 
+                      CASE WHEN s.origem = 'mesmo_dia' THEN 1 ELSE 0 END ASC, 
+                      s.criado_em ASC
              LIMIT 1"
         );
         $stmt->execute();
@@ -346,7 +364,14 @@ class Senha
                     s.hora_chamada,
                     p.nome AS paciente_nome,
                     ta.nome AS tipo_atendimento,
-                    c.nome AS consultorio
+                    c.nome AS consultorio,
+                    t.id AS triagem_id,
+                    t.sintomas AS triagem_sintomas,
+                    t.temperatura AS triagem_temperatura,
+                    t.pressao_arterial AS triagem_pressao_arterial,
+                    t.peso AS triagem_peso,
+                    t.frequencia_cardiaca AS triagem_frequencia_cardiaca,
+                    t.observacoes AS triagem_observacoes
              FROM senhas s
              JOIN pacientes p  
                   ON s.paciente_id = p.id
@@ -354,6 +379,8 @@ class Senha
                   ON s.tipo_atendimento_id = ta.id
              LEFT JOIN consultorios c 
                   ON s.consultorio_id = c.id
+             LEFT JOIN marcacoes m ON s.marcacao_id = m.id
+             LEFT JOIN triagens t ON m.id = t.marcacao_id
              WHERE s.estado       = 'chamada'
              AND   s.atendido_por = :medico
              ORDER BY s.hora_chamada DESC
@@ -411,7 +438,10 @@ class Senha
                   ON s.consultorio_id = c.id
              LEFT JOIN pacientes p
                   ON s.paciente_id = p.id
+             LEFT JOIN marcacoes m
+                  ON s.marcacao_id = m.id
              WHERE s.estado = 'chamada'
+             AND (m.data_consulta = CURDATE() OR (s.marcacao_id IS NULL AND DATE(s.criado_em) = CURDATE()))
              ORDER BY s.hora_chamada DESC
              LIMIT 1"
         );
@@ -428,10 +458,16 @@ class Senha
     ): array {
         $db = Database::ligar();
         $stmt = $db->prepare(
-            "SELECT s.codigo, s.prioridade
+            "SELECT s.codigo, s.prioridade, p.nome AS paciente_nome
              FROM senhas s
+             LEFT JOIN pacientes p ON s.paciente_id = p.id
+             LEFT JOIN marcacoes m ON s.marcacao_id = m.id
              WHERE s.estado = 'espera'
-             ORDER BY s.prioridade ASC, s.criado_em ASC
+             AND (m.data_consulta = CURDATE() OR (s.marcacao_id IS NULL AND DATE(s.criado_em) = CURDATE()))
+             ORDER BY s.prioridade ASC, 
+                      m.turno ASC, 
+                      CASE WHEN s.origem = 'mesmo_dia' THEN 1 ELSE 0 END ASC, 
+                      s.criado_em ASC
              LIMIT :lim"
         );
         $stmt->bindValue(':lim', $limite, PDO::PARAM_INT);
@@ -571,12 +607,20 @@ class Senha
                         s.estado, s.criado_em, s.origem,
                         p.nome AS paciente_nome,
                         p.idade,
-                        ta.nome AS tipo_atendimento
+                        ta.nome AS tipo_atendimento,
+                        t.id AS triagem_id,
+                        t.sintomas AS triagem_sintomas,
+                        t.temperatura AS triagem_temperatura,
+                        t.pressao_arterial AS triagem_pressao_arterial,
+                        t.peso AS triagem_peso,
+                        t.frequencia_cardiaca AS triagem_frequencia_cardiaca,
+                        t.observacoes AS triagem_observacoes
                  FROM senhas s
                  JOIN pacientes p  ON s.paciente_id = p.id
                  JOIN tipos_atendimento ta
                       ON s.tipo_atendimento_id = ta.id
                  LEFT JOIN marcacoes m ON s.marcacao_id = m.id
+                 LEFT JOIN triagens t ON m.id = t.marcacao_id
                  WHERE s.estado = 'espera'
                  AND (
                      m.data_consulta = CURDATE() 
@@ -595,6 +639,8 @@ class Senha
                     OR s.prioridade = 1
                  )
                  ORDER BY s.prioridade ASC,
+                          m.turno ASC,
+                          CASE WHEN s.origem = 'mesmo_dia' THEN 1 ELSE 0 END ASC,
                           s.criado_em ASC"
             );
             $stmt->execute([
@@ -610,12 +656,20 @@ class Senha
                         s.estado, s.criado_em, s.origem,
                         p.nome AS paciente_nome,
                         p.idade,
-                        ta.nome AS tipo_atendimento
+                        ta.nome AS tipo_atendimento,
+                        t.id AS triagem_id,
+                        t.sintomas AS triagem_sintomas,
+                        t.temperatura AS triagem_temperatura,
+                        t.pressao_arterial AS triagem_pressao_arterial,
+                        t.peso AS triagem_peso,
+                        t.frequencia_cardiaca AS triagem_frequencia_cardiaca,
+                        t.observacoes AS triagem_observacoes
                  FROM senhas s
                  JOIN pacientes p  ON s.paciente_id = p.id
                  JOIN tipos_atendimento ta
                       ON s.tipo_atendimento_id = ta.id
                  LEFT JOIN marcacoes m ON s.marcacao_id = m.id
+                 LEFT JOIN triagens t ON m.id = t.marcacao_id
                  WHERE s.estado = 'espera'
                  AND (
                      m.data_consulta = CURDATE() 
@@ -628,6 +682,8 @@ class Senha
                     OR s.prioridade = 1
                  )
                  ORDER BY s.prioridade ASC,
+                          m.turno ASC,
+                          CASE WHEN s.origem = 'mesmo_dia' THEN 1 ELSE 0 END ASC,
                           s.criado_em ASC"
             );
             $stmt->execute([':aceita_walkins' => $aceitaWalkins]);

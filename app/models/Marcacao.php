@@ -172,6 +172,13 @@ class Marcacao
                        ta.nome AS tipo_atendimento_nome,
                        c.nome AS consultorio_nome,
                        u.nome AS medico_nome,
+                       t.id AS triagem_id,
+                       t.sintomas AS triagem_sintomas,
+                       t.temperatura AS triagem_temperatura,
+                       t.pressao_arterial AS triagem_pressao_arterial,
+                       t.peso AS triagem_peso,
+                       t.frequencia_cardiaca AS triagem_frequencia_cardiaca,
+                       t.observacoes AS triagem_observacoes,
                        t.prioridade_clinica AS triagem_prioridade,
                        s.codigo AS senha_codigo
                 FROM marcacoes m
@@ -489,6 +496,7 @@ class Marcacao
             'ocupacao'   => $ocupacao,
             'livre'      => $capacidade - $ocupacao,
             'lotado'     => $ocupacao >= $capacidade,
+            'definida'   => $disp ? true : false,
         ];
     }
 

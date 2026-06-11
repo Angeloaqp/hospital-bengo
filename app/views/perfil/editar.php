@@ -106,19 +106,18 @@ unset($_SESSION['mensagem_senha'], $_SESSION['erro_senha']);
     <?php $paginaActual = 'perfil'; ?>
     <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
-    <?php $tituloPagina = 'Editar Perfil'; ob_start(); ?>
-    <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-on-surface rounded-full flex items-center gap-2 btn-action shadow-sm">
-        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-        <span class="text-xs font-bold">Voltar ao Perfil</span>
-    </a>
-    <?php $accoesPagina = ob_get_clean(); ?>
+    <?php $tituloPagina = 'Editar Perfil'; $accoesPagina = ''; ?>
     <?php include __DIR__ . '/../comum/header.php'; ?>
 
     <div class="ml-[17rem] mr-6 mt-28 py-8 ">
 <main class="w-full">
         <div class="pb-24">
             
-            <div class="mb-10 flex justify-between items-end glide-in">
+            <div class="mb-10 flex flex-col items-start gap-4 glide-in">
+                <a href="index.php" class="px-5 py-2.5 bg-white border border-gray-200 text-on-surface hover:bg-surface-container-low rounded-full flex items-center gap-2 btn-action shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    <span class="text-xs font-bold">Voltar ao Perfil</span>
+                </a>
                 <div>
                     <h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Definições da Conta</h2>
                     <p class="text-sm font-semibold text-on-surface-variant mt-1 max-w-xl">Mantenha as suas informações atualizadas e a sua conta segura.</p>

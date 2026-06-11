@@ -81,7 +81,7 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
 <?php $paginaActual='agenda'; include __DIR__.'/../comum/sidebar.php'; ?>
 <?php $tituloPagina='Minha Agenda'; $subtituloPagina=''; $accoesPagina=''; include __DIR__.'/../comum/header.php'; ?>
 
-<div class="ml-0 lg:ml-[17rem] lg:mr-6 px-4 sm:px-6 lg:px-0 mt-28 pb-24 lg:pb-8 flex justify-center min-h-screen">
+<div class="ml-4 sm:ml-6 lg:ml-[17rem] mr-4 sm:mr-6 mt-28 pb-24 lg:pb-8">
 <main class="w-full">
 
 <!-- Header + Ações -->
@@ -199,6 +199,17 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
             <p class="text-xl font-extrabold <?= $isHoje ? 'text-primary' : 'text-black' ?>">
                 <?= date('d/m', strtotime($dia)) ?>
             </p>
+            <div class="flex justify-center mt-1">
+                <?php 
+                $qtdMarcacoes = count($marcacoesDia);
+                if ($qtdMarcacoes === 0): ?>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300" title="Livre / Sem Marcações"></span>
+                <?php elseif ($qtdMarcacoes >= 15): ?>
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" title="Agenda Cheia"></span>
+                <?php else: ?>
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500" title="Vagas Disponíveis (<?= $qtdMarcacoes ?> agendada<?= $qtdMarcacoes > 1 ? 's' : '' ?>)"></span>
+                <?php endif; ?>
+            </div>
         </div>
         
         <!-- Cartões de Marcações -->
@@ -214,8 +225,18 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
                     elseif($m['estado'] === 'concluida') $cardColor = 'bg-gray-50';
                     elseif($m['estado'] === 'falta' || $m['estado'] === 'cancelada') $cardColor = 'bg-red-50';
                     else $cardColor = 'bg-blue-50'; // marcada
+                    
+                    $triagemData = [
+                        'id' => $m['triagem_id'] ?? null,
+                        'sintomas' => $m['triagem_sintomas'] ?? null,
+                        'temperatura' => $m['triagem_temperatura'] ?? null,
+                        'pressao_arterial' => $m['triagem_pressao_arterial'] ?? null,
+                        'peso' => $m['triagem_peso'] ?? null,
+                        'frequencia_cardiaca' => $m['triagem_frequencia_cardiaca'] ?? null,
+                        'observacoes' => $m['triagem_observacoes'] ?? null
+                    ];
                 ?>
-                    <div class="<?= $cardColor ?> rounded-2xl p-3 shadow-sm border border-black/5 hover:shadow-md transition-shadow relative group">
+                    <div onclick="abrirTriagemView('<?= addslashes(htmlspecialchars($m['paciente_nome'])) ?>', <?= htmlspecialchars(json_encode($triagemData)) ?>)" class="<?= $cardColor ?> rounded-2xl p-3 shadow-sm border border-black/5 hover:shadow-md hover:border-primary/30 transition-all relative group cursor-pointer">
                         <div class="flex justify-between items-start mb-2">
                             <span class="px-2 py-0.5 <?= $eb ?> text-[8px] font-black rounded-full"><?= strtoupper($m['estado']) ?></span>
                             <span class="text-[10px] font-bold text-on-surface-variant">
@@ -226,9 +247,12 @@ $turnoLabel = ['manha'=>'Manhã','tarde'=>'Tarde'];
                         <p class="text-[10px] text-on-surface-variant font-medium leading-tight mb-2">
                             <?= htmlspecialchars($m['especialidade_nome']) ?>
                         </p>
-                        <?php if(!empty($m['senha_codigo'])): ?>
-                            <span class="inline-block px-2 py-1 bg-white text-black text-[10px] font-black rounded-lg shadow-sm">
-                                <?= htmlspecialchars($m['senha_codigo']) ?>
+                        <?php if(!empty($m['senha_codigo'])): 
+                            $partes = explode('-', $m['senha_codigo']);
+                            $senhaCurta = count($partes) >= 2 ? $partes[count($partes)-2] . '-' . $partes[count($partes)-1] : $m['senha_codigo'];
+                        ?>
+                            <span class="inline-block px-2 py-1 bg-white text-black text-[10px] font-black rounded-lg shadow-sm" title="<?= htmlspecialchars($m['senha_codigo']) ?>">
+                                <?= htmlspecialchars($senhaCurta) ?>
                             </span>
                         <?php endif; ?>
                         <?php if(!empty($m['triagem_id'])): ?>
@@ -303,5 +327,6 @@ function atualizarAgenda(urlBase) {
         });
 }
 </script>
+<?php include __DIR__ . '/../comum/modal_triagem_view.php'; ?>
 </body>
 </html>

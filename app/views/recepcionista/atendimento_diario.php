@@ -43,7 +43,7 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
 
 <body class="text-on-surface bg-background">
 
-<?php $paginaActual = 'marcacao'; ?>
+<?php $paginaActual = 'atendimento_diario'; ?>
 <?php include __DIR__ . '/../comum/sidebar.php'; ?>
 
 <?php include __DIR__ . '/../comum/header.php'; ?>
@@ -85,18 +85,41 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
 
             <input type="hidden" name="paciente_id" id="paciente-id" value="<?= $dados['paciente_id'] ?? '' ?>">
             
-            <div id="paciente-info" class="bg-blue-50 border border-blue-100 rounded-2xl p-5 hidden transition-all">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg" id="paciente-iniciais">P</div>
-                        <div>
-                            <h4 id="paciente-nome-display" class="font-black text-base text-on-surface leading-tight">N/A</h4>
-                            <p id="paciente-extra" class="text-blue-800 text-xs font-bold tracking-wide mt-0.5">N/A</p>
+            <div class="p-6 bg-surface-container-lowest rounded-[32px] border border-surface-variant/30 flex-col sm:flex-row gap-6 transition-all hover:shadow-md hidden relative overflow-hidden" id="paciente-info">
+                <div class="flex items-start gap-4 w-full">
+                    <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border-4 border-white shadow-sm mt-1 sm:mt-0">
+                        <span class="font-black text-primary text-2xl" id="paciente-iniciais">P</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="min-w-0">
+                                <h4 class="text-lg font-black text-on-surface tracking-tight truncate" id="paciente-nome-display">Nome do Paciente</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest" id="paciente-proc-badge"><span class="material-symbols-outlined text-[12px]">folder_shared</span> <span id="paciente-proc"></span></span>
+                                </div>
+                            </div>
+                            <button type="button" onclick="limparPaciente()" class="text-xs font-black text-error hover:bg-error/10 px-4 py-2 rounded-full transition-colors active:scale-95 flex items-center gap-1 shrink-0 ml-4"><span class="material-symbols-outlined text-[16px]">close</span> Alterar</button>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 bg-surface-container-low p-4 rounded-[20px]">
+                            <div class="min-w-0">
+                                <p class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1">Idade</p>
+                                <p class="text-xs font-bold text-on-surface flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">cake</span> <span id="paciente-idade"></span></p>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1">Doc. Identidade</p>
+                                <p class="text-xs font-bold text-on-surface flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">badge</span> <span id="paciente-bi"></span></p>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1">Telefone</p>
+                                <p class="text-xs font-bold text-on-surface flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">call</span> <span id="paciente-telefone"></span></p>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1">E-mail</p>
+                                <p class="text-xs font-bold text-on-surface flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">mail</span> <span id="paciente-email" class="truncate" title="Email"></span></p>
+                            </div>
                         </div>
                     </div>
-                    <button type="button" onclick="limparPaciente()" class="text-xs font-black text-red-600 hover:text-red-800 uppercase tracking-widest bg-red-100 px-4 py-2 rounded-xl transition-colors">
-                        Alterar
-                    </button>
                 </div>
             </div>
         </section>
@@ -122,7 +145,19 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
                     $sel_required = true;
                     $sel_options = [];
                     foreach($especialidades as $e) {
-                        $sel_options[(string)$e['id']] = ['label' => htmlspecialchars($e['nome']), 'icon' => 'medical_services', 'color' => 'text-blue-600'];
+                        $icon = 'medical_services';
+                        $name = strtolower($e['nome']);
+                        if (strpos($name, 'urg') !== false) $icon = 'emergency';
+                        elseif (strpos($name, 'pediatr') !== false) $icon = 'child_care';
+                        elseif (strpos($name, 'ortopedi') !== false) $icon = 'personal_injury';
+                        elseif (strpos($name, 'oftalmologi') !== false) $icon = 'visibility';
+                        elseif (strpos($name, 'dermatologi') !== false) $icon = 'face';
+                        elseif (strpos($name, 'neurologi') !== false) $icon = 'psychology';
+                        elseif (strpos($name, 'ginecologi') !== false) $icon = 'female';
+                        elseif (strpos($name, 'otorrino') !== false) $icon = 'hearing';
+                        elseif (strpos($name, 'cirurgia') !== false) $icon = 'content_cut';
+
+                        $sel_options[(string)$e['id']] = ['label' => htmlspecialchars($e['nome']), 'icon' => $icon, 'color' => 'text-on-surface-variant'];
                     }
                     include __DIR__ . '/../comum/custom_select.php';
                     ?>
@@ -308,45 +343,23 @@ $subtituloPagina = 'Encaminhamento imediato para triagem';
             </a>
             <button type="submit" id="btn-submit" class="bg-primary text-white px-8 py-4 rounded-xl font-black text-sm hover:scale-[1.02] transition-transform shadow-lg flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-[18px]"><?= $mesmoDia ? 'assignment_turned_in' : 'event_available' ?></span>
-                <span id="btn-text"><?= $mesmoDia ? 'Confirmar & Ir para Check-in' : 'Agendar Consulta' ?></span>
+                <span id="btn-text"><?= $mesmoDia ? 'Adicionar na agenda do dia' : 'Agendar Consulta' ?></span>
             </button>
         </div>
 
     </form>
 
     <!-- Painel de Sucesso (escondido inicialmente) -->
-    <section class="bg-white rounded-[2rem] p-10 floating-card border border-white text-center flex flex-col items-center justify-center opacity-0 pointer-events-none absolute inset-0 transition-all duration-500 translate-y-8" id="section-sucesso">
+    <section class="hidden bg-white rounded-[2rem] p-10 floating-card border border-white text-center flex-col items-center justify-center transition-all duration-500 translate-y-8 opacity-0" id="section-sucesso">
         <div class="w-24 h-24 rounded-full bg-green-50 flex items-center justify-center mb-6 shadow-sm border border-green-100">
             <span class="material-symbols-outlined text-green-500 text-5xl font-bold">check_circle</span>
         </div>
-        <h3 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2">Consulta Agendada!</h3>
-        <p class="text-on-surface-variant font-medium text-sm max-w-sm mb-6">A marcação foi registada e a senha foi gerada automaticamente.</p>
+        <h3 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2">Sucesso!</h3>
+        <p class="text-on-surface-variant font-medium text-lg max-w-sm mb-6">O paciente foi adicionado na agenda do dia.</p>
         
-        <!-- Senha em destaque -->
-        <div class="bg-surface-container-low rounded-2xl px-10 py-6 mb-8 border border-primary/5 inline-block">
-            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2">Senha do Paciente</p>
-            <p class="text-5xl font-headline font-extrabold text-on-surface tracking-tight" id="sucesso-senha-codigo">---</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-            <a href="agenda.php" class="group p-6 bg-surface-container-low rounded-2xl hover:bg-primary hover:text-white transition-all text-left flex flex-col justify-between border border-transparent">
-                <div>
-                    <span class="material-symbols-outlined text-on-surface group-hover:text-white mb-4 text-3xl">calendar_month</span>
-                    <h4 class="text-lg font-black tracking-tight mb-1">Ir para a Agenda</h4>
-                    <p class="text-xs text-on-surface-variant group-hover:text-white/70 font-semibold leading-relaxed">Consultar marcações do dia e fazer triagens.</p>
-                </div>
-                <span class="material-symbols-outlined self-end mt-4 text-on-surface group-hover:text-white">arrow_forward</span>
-            </a>
-            
-            <button type="button" onclick="window.location.reload()" class="group p-6 bg-surface-container-low rounded-2xl hover:bg-primary hover:text-white transition-all text-left flex flex-col justify-between border border-transparent">
-                <div>
-                    <span class="material-symbols-outlined text-on-surface group-hover:text-white mb-4 text-3xl">add_circle</span>
-                    <h4 class="text-lg font-black tracking-tight mb-1">Nova Marcação</h4>
-                    <p class="text-xs text-on-surface-variant group-hover:text-white/70 font-semibold leading-relaxed">Agendar outra consulta para outro paciente.</p>
-                </div>
-                <span class="material-symbols-outlined self-end mt-4 text-on-surface group-hover:text-white">arrow_forward</span>
-            </button>
-        </div>
+        <button type="button" onclick="window.location.reload()" class="bg-primary text-white px-8 py-3 rounded-full font-black text-sm hover:scale-[1.02] transition-transform shadow-md mt-4">
+            Voltar e Fazer Nova Marcação
+        </button>
     </section>
 
 </main>
@@ -378,27 +391,48 @@ inputPesq.addEventListener('input', function(){
                 divResult.classList.remove('hidden');
                 return;
             }
-            divResult.innerHTML = d.resultados.map(p=>
-                `<div class="px-5 py-3 hover:bg-surface-container-low cursor-pointer transition-colors border-b border-surface-container-low/50 last:border-0" onclick="seleccionarPaciente(${p.id},'${p.nome.replace(/'/g,"\\'")}','${p.bi_nif||''}','${p.idade||''}')">
+            divResult.innerHTML = d.resultados.map(p=> {
+                const safeNome = p.nome.replace(/'/g,"\\'");
+                const safeId = p.id;
+                const safeBi = p.bi_nif || '';
+                const safeIdade = p.idade || '';
+                const safeProc = p.numero_processo || '';
+                const safeTelefone = p.telefone || 'S/ Registo';
+                const safeEmail = p.email || 'S/ Registo';
+                
+                return `<div class="px-5 py-3 hover:bg-surface-container-low cursor-pointer transition-colors border-b border-surface-container-low/50 last:border-0" onclick="seleccionarPaciente(${safeId},'${safeNome}','${safeBi}','${safeIdade}','${safeProc}','${safeTelefone}','${safeEmail}')">
                     <div class="flex items-center justify-between">
                         <span class="font-black text-sm text-on-surface">${p.nome}</span>
                         <span class="text-xs font-bold text-on-surface-variant bg-surface-container px-2 py-1 rounded-md">${p.idade||'?'} anos</span>
                     </div>
                     <div class="text-[10px] text-on-surface-variant font-bold mt-1 uppercase tracking-widest">${p.bi_nif ? 'BI: '+p.bi_nif : ''}</div>
-                </div>`
-            ).join('');
+                </div>`;
+            }).join('');
             divResult.classList.remove('hidden');
         });
     }, 300);
 });
 
-function seleccionarPaciente(id, nome, bi, idade){
+function seleccionarPaciente(id, nome, bi, idade, numero_processo = '', telefone = 'S/ Registo', email = 'S/ Registo') {
     document.getElementById('paciente-id').value = id;
     document.getElementById('paciente-nome-display').textContent = nome;
-    document.getElementById('paciente-extra').textContent = (bi ? 'BI: ' + bi : 'S/ BI') + (idade ? ' • ' + idade + ' anos' : '');
+
+    document.getElementById('paciente-proc').textContent = numero_processo || 'S/ Nº Proc';
+    if (!numero_processo) {
+        document.getElementById('paciente-proc-badge').classList.add('opacity-50');
+    } else {
+        document.getElementById('paciente-proc-badge').classList.remove('opacity-50');
+    }
+
+    document.getElementById('paciente-idade').textContent = idade ? idade + ' anos' : 'Desconhecida';
+    document.getElementById('paciente-bi').textContent = bi || 'Não Registado';
+    document.getElementById('paciente-telefone').textContent = telefone;
+    document.getElementById('paciente-email').textContent = email;
+
     document.getElementById('paciente-iniciais').textContent = nome.charAt(0).toUpperCase();
-    
+
     document.getElementById('paciente-info').classList.remove('hidden');
+    document.getElementById('paciente-info').classList.add('flex');
     document.getElementById('container-pesquisa').classList.add('hidden');
     divResult.classList.add('hidden');
     
@@ -408,6 +442,7 @@ function seleccionarPaciente(id, nome, bi, idade){
 function limparPaciente(){
     document.getElementById('paciente-id').value = '';
     document.getElementById('paciente-info').classList.add('hidden');
+    document.getElementById('paciente-info').classList.remove('flex');
     document.getElementById('container-pesquisa').classList.remove('hidden');
     inputPesq.value = '';
     inputPesq.focus();
@@ -428,7 +463,7 @@ if(pacienteIdInicial > 0) {
     fetch(BASE+'app/controllers/agenda_api.php?acao=obter_paciente&paciente_id='+pacienteIdInicial)
     .then(r=>r.json()).then(d=>{
         if(d.paciente) {
-            seleccionarPaciente(d.paciente.id, d.paciente.nome, d.paciente.bi_nif, d.paciente.idade);
+            seleccionarPaciente(d.paciente.id, d.paciente.nome, d.paciente.bi_nif, d.paciente.idade, d.paciente.numero_processo, d.paciente.telefone, d.paciente.email);
         }
     });
 }
@@ -436,7 +471,7 @@ if(pacienteIdInicial > 0) {
 // ==========================================
 // 3. ESPECIALIDADE -> MÉDICOS
 // ==========================================
-const selEsp = document.getElementById('sel-especialidade');
+const selEsp = document.getElementById('sel-especialidade-native');
 const contMedicos = document.getElementById('container-medicos');
 const loadingMed = document.getElementById('medicos-loading');
 
@@ -451,7 +486,7 @@ function carregarMedicos() {
     loadingMed.classList.remove('hidden');
     contMedicos.style.opacity = '0.5';
     
-    fetch(BASE+'app/controllers/agenda_api.php?acao=medicos_da_especialidade&especialidade_id='+espId)
+    fetch(BASE+'app/controllers/agenda_api.php?acao=medicos_da_especialidade&especialidade_id='+espId+'&origem=mesmo_dia')
     .then(r=>r.json()).then(d=>{
         loadingMed.classList.add('hidden');
         contMedicos.style.opacity = '1';
@@ -541,7 +576,11 @@ function checkCapacidade() {
         const icon = document.getElementById('cap-icon');
         const txt = document.getElementById('cap-texto');
         
-        if(d.lotado) {
+        if (!d.definida) {
+            badge.className = 'flex items-center gap-2 p-3 rounded-xl inline-flex text-xs font-bold bg-surface-container text-zinc-500 border border-zinc-200';
+            icon.textContent = 'event_available';
+            txt.textContent = 'Sem vaga definida';
+        } else if (d.lotado) {
             badge.className = 'flex items-center gap-2 p-3 rounded-xl inline-flex text-xs font-bold bg-error-container text-error';
             icon.textContent = 'warning';
             txt.textContent = `Agenda Lotada — ${d.ocupacao}/${d.capacidade} vagas ocupadas`;
@@ -620,11 +659,13 @@ document.getElementById('form-marcacao').addEventListener('submit', function(e) 
     e.preventDefault();
     
     if(!document.getElementById('paciente-id').value) {
-        alert('Por favor seleccione um paciente primeiro.');
+        if (typeof window.showToast === 'function') window.showToast('Por favor seleccione um paciente primeiro.', 'error');
+        else alert('Por favor seleccione um paciente primeiro.');
         return;
     }
     if(!document.getElementById('medico-id').value) {
-        alert('Por favor seleccione o médico responsável.');
+        if (typeof window.showToast === 'function') window.showToast('Por favor seleccione o médico responsável.', 'error');
+        else alert('Por favor seleccione o médico responsável.');
         return;
     }
     
@@ -648,22 +689,34 @@ document.getElementById('form-marcacao').addEventListener('submit', function(e) 
             
             // Setup success panel with senha
             const successPanel = document.getElementById('section-sucesso');
-            document.getElementById('sucesso-senha-codigo').textContent = d.senha_codigo || '---';
+            if (document.getElementById('sucesso-senha-codigo')) {
+                document.getElementById('sucesso-senha-codigo').textContent = d.senha_codigo || '---';
+            }
             
-            // Show success panel
+            // Hide form and show success panel
+            document.getElementById('form-marcacao').classList.add('hidden');
+            successPanel.classList.remove('hidden');
+            successPanel.classList.add('flex');
+            
+            // Scroll to top to ensure success message is clearly visible
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Animate in
             setTimeout(() => {
-                successPanel.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-8');
-            }, 300);
+                successPanel.classList.remove('opacity-0', 'translate-y-8');
+            }, 50);
             
         } else {
-            alert('Erro: ' + (d.erros ? d.erros.join('
-') : 'Falha desconhecida.'));
+            let errorMsg = 'Erro: ' + (d.erros ? d.erros.join('\n') : 'Falha desconhecida.');
+            if (typeof window.showToast === 'function') window.showToast(errorMsg, 'error');
+            else alert(errorMsg);
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = originalText;
         }
     })
     .catch(err => {
-        alert('Erro de rede ao processar marcação.');
+        if (typeof window.showToast === 'function') window.showToast('Erro de rede ao processar marcação.', 'error');
+        else alert('Erro de rede ao processar marcação.');
         btnSubmit.disabled = false;
         btnSubmit.innerHTML = originalText;
     });
